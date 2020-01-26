@@ -7,10 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		90A7269A23DCF6C3003A90FA /* Initialisation.c in Sources */ = {isa = PBXBuildFile; fileRef = 90A7269923DCF6C3003A90FA /* Initialisation.c */; };
 		CCF93F5423DC2B8100D5604A /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = CCF93F5323DC2B8100D5604A /* main.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		90A7269823DCF6C3003A90FA /* Initialisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Initialisation.h; sourceTree = "<group>"; };
+		90A7269923DCF6C3003A90FA /* Initialisation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Initialisation.c; sourceTree = "<group>"; };
 		CCF93F5023DC2B8100D5604A /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCF93F5323DC2B8100D5604A /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		CCF93F5623DC2B8100D5604A /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
@@ -38,6 +41,8 @@
 			children = (
 				CCF93F5323DC2B8100D5604A /* main.c */,
 				CCF93F5523DC2B8100D5604A /* Makefiles */,
+				90A7269823DCF6C3003A90FA /* Initialisation.h */,
+				90A7269923DCF6C3003A90FA /* Initialisation.c */,
 			);
 			path = LawnMower_MotherBoard;
 			sourceTree = "<group>";
@@ -175,6 +180,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90A7269A23DCF6C3003A90FA /* Initialisation.c in Sources */,
 				CCF93F5423DC2B8100D5604A /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -355,6 +361,7 @@
 				CCF93F5B23DC2B8100D5604A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CCF93F5C23DC2B8100D5604A /* Build configuration list for PBXLegacyTarget "Build" */ = {
 			isa = XCConfigurationList;
@@ -363,6 +370,7 @@
 				CCF93F5E23DC2B8100D5604A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CCF93F5F23DC2B8100D5604A /* Build configuration list for PBXLegacyTarget "Upload" */ = {
 			isa = XCConfigurationList;
@@ -371,6 +379,7 @@
 				CCF93F6123DC2B8100D5604A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CCF93F6223DC2B8100D5604A /* Build configuration list for PBXLegacyTarget "Clean" */ = {
 			isa = XCConfigurationList;
@@ -379,6 +388,7 @@
 				CCF93F6423DC2B8100D5604A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CCF93F6523DC2B8100D5604A /* Build configuration list for PBXNativeTarget "Index" */ = {
 			isa = XCConfigurationList;
@@ -387,6 +397,7 @@
 				CCF93F6723DC2B8100D5604A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

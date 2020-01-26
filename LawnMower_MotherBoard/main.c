@@ -1,14 +1,14 @@
 #include <stdio.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
+
 #include <util/delay.h>
 
-void initIO(void) {
-	
-}
+#include "Initialisation.h"
+
+#define F_CPU 8000000UL
 
 int main(void) {
-	initIO();
+
+    Initialisation();
 
     printf("helloWorld");
 	while (1) {
