@@ -41,8 +41,19 @@ void InitInterrupt()
 
 void InitPWM()
 {
-    TCCR0A |= (1<<WGM01) | (1<<WGM00); // Fast PWM
-    TCCR0B |= (1<<CS01) | (1<<CS00); // Prescale
+/***** Moteur 1 - Droit *****/
+    TCCR0A |= (1<<COM0A1) | (1<<COM0B1) | (1<<WGM01) | (1<<WGM00); // Fast PWM
+    TCCR0B |= (1<<CS00); // No Prescale
+    
+    OCR0A = 0x00; // Marche Avant
+    OCR0B = 0x00; // Marche Arrière
+    
+/***** Moteur 2 - Gauche *****/
+    TCCR2A |= (1<<COM2A1) | (1<<COM2B1) | (1<<WGM21) | (1<<WGM20); // Fast PWM
+    TCCR2B |= (1<<CS20); // No Prescale
+    
+    OCR2A = 0x00; // Marche Avant
+    OCR0B = 0x00; // Marche Arrière
 }
 
 void InitI2C()

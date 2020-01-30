@@ -8,12 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		90A7269A23DCF6C3003A90FA /* Initialisation.c in Sources */ = {isa = PBXBuildFile; fileRef = 90A7269923DCF6C3003A90FA /* Initialisation.c */; };
+		90A7269D23E0CEA5003A90FA /* I2c.c in Sources */ = {isa = PBXBuildFile; fileRef = 90A7269C23E0CEA5003A90FA /* I2c.c */; };
+		90A726A023E204E8003A90FA /* uart.c in Sources */ = {isa = PBXBuildFile; fileRef = 90A7269F23E204E8003A90FA /* uart.c */; };
+		90A726A323E20C28003A90FA /* Interrupt.c in Sources */ = {isa = PBXBuildFile; fileRef = 90A726A223E20C28003A90FA /* Interrupt.c */; };
+		90A726A623E37133003A90FA /* pwm.c in Sources */ = {isa = PBXBuildFile; fileRef = 90A726A523E37133003A90FA /* pwm.c */; };
 		CCF93F5423DC2B8100D5604A /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = CCF93F5323DC2B8100D5604A /* main.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		90A7269823DCF6C3003A90FA /* Initialisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Initialisation.h; sourceTree = "<group>"; };
 		90A7269923DCF6C3003A90FA /* Initialisation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Initialisation.c; sourceTree = "<group>"; };
+		90A7269B23E0CEA4003A90FA /* I2c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = I2c.h; sourceTree = "<group>"; };
+		90A7269C23E0CEA5003A90FA /* I2c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = I2c.c; sourceTree = "<group>"; };
+		90A7269E23E204E8003A90FA /* uart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uart.h; sourceTree = "<group>"; };
+		90A7269F23E204E8003A90FA /* uart.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = uart.c; sourceTree = "<group>"; };
+		90A726A123E20C28003A90FA /* Interrupt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Interrupt.h; sourceTree = "<group>"; };
+		90A726A223E20C28003A90FA /* Interrupt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Interrupt.c; sourceTree = "<group>"; };
+		90A726A423E37133003A90FA /* pwm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pwm.h; sourceTree = "<group>"; };
+		90A726A523E37133003A90FA /* pwm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pwm.c; sourceTree = "<group>"; };
 		CCF93F5023DC2B8100D5604A /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCF93F5323DC2B8100D5604A /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		CCF93F5623DC2B8100D5604A /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
@@ -43,6 +55,14 @@
 				CCF93F5523DC2B8100D5604A /* Makefiles */,
 				90A7269823DCF6C3003A90FA /* Initialisation.h */,
 				90A7269923DCF6C3003A90FA /* Initialisation.c */,
+				90A7269B23E0CEA4003A90FA /* I2c.h */,
+				90A7269C23E0CEA5003A90FA /* I2c.c */,
+				90A7269E23E204E8003A90FA /* uart.h */,
+				90A7269F23E204E8003A90FA /* uart.c */,
+				90A726A123E20C28003A90FA /* Interrupt.h */,
+				90A726A223E20C28003A90FA /* Interrupt.c */,
+				90A726A423E37133003A90FA /* pwm.h */,
+				90A726A523E37133003A90FA /* pwm.c */,
 			);
 			path = LawnMower_MotherBoard;
 			sourceTree = "<group>";
@@ -180,8 +200,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90A726A623E37133003A90FA /* pwm.c in Sources */,
+				90A7269D23E0CEA5003A90FA /* I2c.c in Sources */,
 				90A7269A23DCF6C3003A90FA /* Initialisation.c in Sources */,
+				90A726A323E20C28003A90FA /* Interrupt.c in Sources */,
 				CCF93F5423DC2B8100D5604A /* main.c in Sources */,
+				90A726A023E204E8003A90FA /* uart.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

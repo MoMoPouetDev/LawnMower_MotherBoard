@@ -18,6 +18,7 @@ void InitIO(void);
 void InitPWM(void);
 void InitInterrupt(void);
 void InitI2C(void);
+void InitUART(unsigned int);
 
 
 #endif /* Initialisation_h */
