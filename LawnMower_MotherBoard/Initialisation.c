@@ -33,9 +33,6 @@ void InitIO()
 
 void InitInterrupt()
 {
-    // Activation des interruptions sur PCINT[3:0]
-    PCICR |= (1<<PCIE0);
-    PCMSK0 |= (1<<PCINT0) | (1<<PCINT1) | (1<<PCINT2) | (1<<PCINT3);
     sei();
 }
 
