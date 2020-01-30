@@ -8,12 +8,17 @@
 
 #include "Initialisation.h"
 
+#define F_CPU 8000000UL
+#define BAUD 9600
+#define MYUBRR F_CPU/16/BAUD-1
+
 void Initialisation()
 {
     InitIO();
     InitPWM();
     InitInterrupt();
     InitI2C();
+    InitUART(MYUBRR);
 }
 
 void InitIO()
@@ -55,5 +60,18 @@ void InitPWM()
 
 void InitI2C()
 {
+    TWBR = 32; //TWBR  = ((F_CPU / SCL_CLK) – 16) / 2
+    TWCR = (1<<TWIE) | (1<<TWEN);
+}
+
+void InitUART(unsigned int ubrr)
+{
+/***** UART BaudRate *****/
+    UBRR0H = (unsigned char) (ubrr>>8);
+    UBRR0L = (unsigned char) ubrr;
+    
+/***** Autoriser Transmition et Reception *****/
+    UCSR0B |= (1<<RXCIE0) | (1<<TXEN0) | (1<<RXEN0);
+    UCSR0C |= (1<<UCSZ01) | (1<<UCSZ00);
     
 }
