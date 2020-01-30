@@ -1,10 +1,7 @@
 #include <stdio.h>
-
 #include <util/delay.h>
 
 #include "Initialisation.h"
-
-#define F_CPU 8000000UL
 
 int main(void) {
 
