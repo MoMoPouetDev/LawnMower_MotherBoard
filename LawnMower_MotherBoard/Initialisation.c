@@ -16,9 +16,9 @@ void Initialisation()
 {
     InitIO();
     InitPWM();
-    InitInterrupt();
     InitI2C();
     InitUART(MYUBRR);
+    InitInterrupt();
 }
 
 void InitIO()
@@ -68,6 +68,9 @@ void InitIO()
 
 void InitInterrupt()
 {
+    PCICR |= (1<<PCIE2) | (1<<PCIE0); // Activation des Interruptions sur PCINT[23:16] et PCINT[7:0]
+    PCMSK2 |= (1<<PCINT23); // Activation des Interruptions sur PCINT23
+    PCMSK0 |= (1<<PCINT0); // Activation des Interruptions sur PCINT0
     sei();
 }
 

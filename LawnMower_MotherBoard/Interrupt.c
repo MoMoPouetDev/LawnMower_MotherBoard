@@ -10,7 +10,7 @@
 
 ISR(USART_RX_vect)
 {
-
+    
 }
 
 ISR(ADC_vect)
@@ -18,3 +18,12 @@ ISR(ADC_vect)
     
 }
 
+ISR(PCINT2_vect)
+{
+    
+}
+
+ISR(PCINT0_vect)
+{
+    
+}

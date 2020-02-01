@@ -13,4 +13,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+#include "uart.h"
+
 #endif /* Interrupt_h */
