@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9070086523EC8A8100DDBE89 /* mower.c in Sources */ = {isa = PBXBuildFile; fileRef = 9070086423EC8A8100DDBE89 /* mower.c */; };
 		90A7269A23DCF6C3003A90FA /* Initialisation.c in Sources */ = {isa = PBXBuildFile; fileRef = 90A7269923DCF6C3003A90FA /* Initialisation.c */; };
 		90A7269D23E0CEA5003A90FA /* I2c.c in Sources */ = {isa = PBXBuildFile; fileRef = 90A7269C23E0CEA5003A90FA /* I2c.c */; };
 		90A726A023E204E8003A90FA /* uart.c in Sources */ = {isa = PBXBuildFile; fileRef = 90A7269F23E204E8003A90FA /* uart.c */; };
@@ -16,6 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9070086323EC8A8100DDBE89 /* mower.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mower.h; sourceTree = "<group>"; };
+		9070086423EC8A8100DDBE89 /* mower.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mower.c; sourceTree = "<group>"; };
 		90A7269823DCF6C3003A90FA /* Initialisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Initialisation.h; sourceTree = "<group>"; };
 		90A7269923DCF6C3003A90FA /* Initialisation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Initialisation.c; sourceTree = "<group>"; };
 		90A7269B23E0CEA4003A90FA /* I2c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = I2c.h; sourceTree = "<group>"; };
@@ -63,6 +66,8 @@
 				90A726A223E20C28003A90FA /* Interrupt.c */,
 				90A726A423E37133003A90FA /* pwm.h */,
 				90A726A523E37133003A90FA /* pwm.c */,
+				9070086323EC8A8100DDBE89 /* mower.h */,
+				9070086423EC8A8100DDBE89 /* mower.c */,
 			);
 			path = LawnMower_MotherBoard;
 			sourceTree = "<group>";
@@ -204,6 +209,7 @@
 				90A7269D23E0CEA5003A90FA /* I2c.c in Sources */,
 				90A7269A23DCF6C3003A90FA /* Initialisation.c in Sources */,
 				90A726A323E20C28003A90FA /* Interrupt.c in Sources */,
+				9070086523EC8A8100DDBE89 /* mower.c in Sources */,
 				CCF93F5423DC2B8100D5604A /* main.c in Sources */,
 				90A726A023E204E8003A90FA /* uart.c in Sources */,
 			);
