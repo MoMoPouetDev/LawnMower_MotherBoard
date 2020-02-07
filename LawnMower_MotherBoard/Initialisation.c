@@ -108,3 +108,9 @@ void InitUART(unsigned int ubrr)
     UCSR0C |= (1<<UCSZ01) | (1<<UCSZ00);
     
 }
+
+void InitADC()
+{
+    ADMUX |= (1<<REFS0);
+    ADCSRA |= (1<<ADEN) | (1<<ADIE) | (1<<ADPS2) | (1<<ADPS1); // Enable ADC, Interrup et 64 prescale
+}

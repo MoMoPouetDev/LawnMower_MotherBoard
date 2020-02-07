@@ -1,0 +1,332 @@
+   1               		.file	"Initialisation.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   8               		.text
+   9               	.Ltext0:
+ 112               	.global	InitIO
+ 114               	InitIO:
+   1:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** //
+   2:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** //  Initialisation.c
+   3:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** //  LawnMower_MotherBoard
+   4:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** //
+   5:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** //  Created by morgan on 25/01/2020.
+   6:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** //  Copyright © 2020 morgan venandy. All rights reserved.
+   7:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** //
+   8:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** 
+   9:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** #include "Initialisation.h"
+  10:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** 
+  11:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** #define F_CPU 8000000UL
+  12:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** #define BAUD 9600
+  13:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** #define MYUBRR F_CPU/16/BAUD-1
+  14:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** 
+  15:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** void Initialisation()
+  16:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
+  17:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     InitIO();
+  18:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     InitPWM();
+  19:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     InitI2C();
+  20:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     InitUART(MYUBRR);
+  21:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     InitInterrupt();
+  22:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** }
+  23:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** 
+  24:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** void InitIO()
+  25:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
+ 116               	.LM0:
+ 117               	.LFBB1:
+ 118               	/* prologue: function */
+ 119               	/* frame size = 0 */
+ 120               	/* stack size = 0 */
+ 121               	.L__stack_usage = 0
+  26:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** /***** PORT B *****/
+  27:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     DDRB = 0x00;
+ 123               	.LM1:
+ 124 0000 14B8      		out 0x4,__zero_reg__
+  28:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     //DDRB |= (0<<DDB0); // Bouton Poussoir
+  29:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     DDRB |= (1<<DDB1) | (1<<DDB2) | (1<<DDB4); // LED d'état Vert - Orange - Rouge
+ 126               	.LM2:
+ 127 0002 84B1      		in r24,0x4
+ 128 0004 8661      		ori r24,lo8(22)
+ 129 0006 84B9      		out 0x4,r24
+  30:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     DDRB |= (1<<DDB3); // Commande PWM Avant Moteur 2
+ 131               	.LM3:
+ 132 0008 239A      		sbi 0x4,3
+  31:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     DDRB |= (1<<DDB5); // Commande Relais Alim Moteur
+ 134               	.LM4:
+ 135 000a 259A      		sbi 0x4,5
+  32:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     DDRB |= (1<<DDB6) | (1<<DDB7); // Commande Moteur Lame Enable - ON
+ 137               	.LM5:
+ 138 000c 84B1      		in r24,0x4
+ 139 000e 806C      		ori r24,lo8(-64)
+ 140 0010 84B9      		out 0x4,r24
+  33:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     
+  34:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     PORTB = 0x00;
+ 142               	.LM6:
+ 143 0012 15B8      		out 0x5,__zero_reg__
+  35:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     PORTB |= (1<<PORTB0); // Pull-Up Bouton Poussoir
+ 145               	.LM7:
+ 146 0014 289A      		sbi 0x5,0
+  36:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     // PORTB &= ~(1<<PORTB1) & ~(1<<PORTB2) & ~(1<<PORTB4); // Force à 0 LED
+  37:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     // PORTB |= (1<<PORTB3); // Moteur 2 Avant
+  38:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     // PORTB |= (1<<PORTB5); // Commande Relais
+  39:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     // PORTB |= (1<<PORTB6); // Enable Moteur Lame
+  40:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     // PORTB |= (1<<PORTB7); // Moteur Lame
+  41:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     
+  42:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** /***** PORT C *****/
+  43:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     DDRC = 0x00;
+ 148               	.LM8:
+ 149 0016 17B8      		out 0x7,__zero_reg__
+  44:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     //DDRC |= (1<<DDC0) | (1<<DDC1); // ADC - Detection cable droite et gauche
+  45:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     //DDRC |= (1<<DDC2) | (1<<DDC3); // TBD
+  46:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     DDRC |= (1<<DDC4) | (1<<DDC5); // Config I2C SDA - SCL
+ 151               	.LM9:
+ 152 0018 87B1      		in r24,0x7
+ 153 001a 8063      		ori r24,lo8(48)
+ 154 001c 87B9      		out 0x7,r24
+  47:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     //DDRC |= (1<<DDC6); // TBD
+  48:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     
+  49:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     PORTC = 0x00;
+ 156               	.LM10:
+ 157 001e 18B8      		out 0x8,__zero_reg__
+  50:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     //PORTC &= ~(1<<PORTC0) & ~(1<<PORTC1); // ADC - No Pull-Up
+  51:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     PORTC |= (1<<PORTC2) | (1<<PORTC3); // TBD - Pull-Up
+ 159               	.LM11:
+ 160 0020 88B1      		in r24,0x8
+ 161 0022 8C60      		ori r24,lo8(12)
+ 162 0024 88B9      		out 0x8,r24
+  52:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     //PORTC &= ~(1<<PORTC4) & ~(1<<PORTC5); // I2C - Force à 0
+  53:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     PORTC |= (1<<PORTC6); // TBD - Pull-Up
+ 164               	.LM12:
+ 165 0026 469A      		sbi 0x8,6
+  54:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     
+  55:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** /***** PORT D *****/
+  56:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     DDRD = 0x00;
+ 167               	.LM13:
+ 168 0028 1AB8      		out 0xa,__zero_reg__
+  57:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     DDRD |= (1<<DDD1); //| (0<<DDD0); // UART - TXD - RXD
+ 170               	.LM14:
+ 171 002a 519A      		sbi 0xa,1
+  58:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     DDRD |= (1<<DDD2) | (1<<DDD3); // Commande Enable - PWM Arriere Moteur 2
+ 173               	.LM15:
+ 174 002c 8AB1      		in r24,0xa
+ 175 002e 8C60      		ori r24,lo8(12)
+ 176 0030 8AB9      		out 0xa,r24
+  59:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     DDRD |= (1<<DDD4) | (1<<DDD5) | (1<<DDD6); // Commande Enable - PWM Arriere - PWM Avant Moteur 
+ 178               	.LM16:
+ 179 0032 8AB1      		in r24,0xa
+ 180 0034 8067      		ori r24,lo8(112)
+ 181 0036 8AB9      		out 0xa,r24
+  60:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     //DDRD |= (0<<DDD7); // Bouton Poussoir
+  61:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     
+  62:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     PORTD = 0x00;
+ 183               	.LM17:
+ 184 0038 1BB8      		out 0xb,__zero_reg__
+  63:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     //PORTD |= (1<<PORTC0) | (1<<PORTC1); // UART - RX No Pull-Up - TX
+  64:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     //PORTD |= (1<<PORTD2) | (1<<PORTD3); // Commande Enable - PWM Arriere Moteur 2 - Force à 0
+  65:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     //PORTD |= (1<<PORTD4) | (1<<PORTD5) | (1<<PORTD6); // Commande Enable - PWM Arriere - PWM Avan
+  66:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     PORTD |= (1<<PORTD7); // Pull-Up Bouton Poussoir
+ 186               	.LM18:
+ 187 003a 5F9A      		sbi 0xb,7
+ 188 003c 0895      		ret
+ 190               	.Lscope1:
+ 192               	.global	InitInterrupt
+ 194               	InitInterrupt:
+  67:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** }
+  68:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** 
+  69:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** void InitInterrupt()
+  70:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
+ 196               	.LM19:
+ 197               	.LFBB2:
+ 198               	/* prologue: function */
+ 199               	/* frame size = 0 */
+ 200               	/* stack size = 0 */
+ 201               	.L__stack_usage = 0
+  71:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     PCICR |= (1<<PCIE2) | (1<<PCIE0); // Activation des Interruptions sur PCINT[23:16] et PCINT[7:0
+ 203               	.LM20:
+ 204 003e E8E6      		ldi r30,lo8(104)
+ 205 0040 F0E0      		ldi r31,0
+ 206 0042 8081      		ld r24,Z
+ 207 0044 8560      		ori r24,lo8(5)
+ 208 0046 8083      		st Z,r24
+  72:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     PCMSK2 |= (1<<PCINT23); // Activation des Interruptions sur PCINT23
+ 210               	.LM21:
+ 211 0048 EDE6      		ldi r30,lo8(109)
+ 212 004a F0E0      		ldi r31,0
+ 213 004c 8081      		ld r24,Z
+ 214 004e 8068      		ori r24,lo8(-128)
+ 215 0050 8083      		st Z,r24
+  73:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     PCMSK0 |= (1<<PCINT0); // Activation des Interruptions sur PCINT0
+ 217               	.LM22:
+ 218 0052 EBE6      		ldi r30,lo8(107)
+ 219 0054 F0E0      		ldi r31,0
+ 220 0056 8081      		ld r24,Z
+ 221 0058 8160      		ori r24,lo8(1)
+ 222 005a 8083      		st Z,r24
+  74:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     sei();
+ 224               	.LM23:
+ 225               	/* #APP */
+ 226               	 ;  74 "/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoar
+ 227 005c 7894      		sei
+ 228               	 ;  0 "" 2
+ 229               	/* #NOAPP */
+ 230 005e 0895      		ret
+ 232               	.Lscope2:
+ 234               	.global	InitPWM
+ 236               	InitPWM:
+  75:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** }
+  76:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** 
+  77:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** void InitPWM()
+  78:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
+ 238               	.LM24:
+ 239               	.LFBB3:
+ 240               	/* prologue: function */
+ 241               	/* frame size = 0 */
+ 242               	/* stack size = 0 */
+ 243               	.L__stack_usage = 0
+  79:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** /***** Moteur 1 - Droit *****/
+  80:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     TCCR0A |= (1<<COM0A1) | (1<<COM0B1) | (1<<WGM01) | (1<<WGM00); // Fast PWM
+ 245               	.LM25:
+ 246 0060 84B5      		in r24,0x24
+ 247 0062 836A      		ori r24,lo8(-93)
+ 248 0064 84BD      		out 0x24,r24
+  81:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     TCCR0B |= (1<<CS00); // No Prescale
+ 250               	.LM26:
+ 251 0066 85B5      		in r24,0x25
+ 252 0068 8160      		ori r24,lo8(1)
+ 253 006a 85BD      		out 0x25,r24
+  82:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     
+  83:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     OCR0A = 0x00; // Marche Avant
+ 255               	.LM27:
+ 256 006c 17BC      		out 0x27,__zero_reg__
+  84:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     OCR0B = 0x00; // Marche Arrière
+ 258               	.LM28:
+ 259 006e 18BC      		out 0x28,__zero_reg__
+  85:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     
+  86:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** /***** Moteur 2 - Gauche *****/
+  87:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     TCCR2A |= (1<<COM2A1) | (1<<COM2B1) | (1<<WGM21) | (1<<WGM20); // Fast PWM
+ 261               	.LM29:
+ 262 0070 E0EB      		ldi r30,lo8(-80)
+ 263 0072 F0E0      		ldi r31,0
+ 264 0074 8081      		ld r24,Z
+ 265 0076 836A      		ori r24,lo8(-93)
+ 266 0078 8083      		st Z,r24
+  88:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     TCCR2B |= (1<<CS20); // No Prescale
+ 268               	.LM30:
+ 269 007a E1EB      		ldi r30,lo8(-79)
+ 270 007c F0E0      		ldi r31,0
+ 271 007e 8081      		ld r24,Z
+ 272 0080 8160      		ori r24,lo8(1)
+ 273 0082 8083      		st Z,r24
+  89:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     
+  90:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     OCR2A = 0x00; // Marche Avant
+ 275               	.LM31:
+ 276 0084 1092 B300 		sts 179,__zero_reg__
+  91:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     OCR0B = 0x00; // Marche Arrière
+ 278               	.LM32:
+ 279 0088 18BC      		out 0x28,__zero_reg__
+ 280 008a 0895      		ret
+ 282               	.Lscope3:
+ 284               	.global	InitI2C
+ 286               	InitI2C:
+  92:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** }
+  93:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** 
+  94:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** void InitI2C()
+  95:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
+ 288               	.LM33:
+ 289               	.LFBB4:
+ 290               	/* prologue: function */
+ 291               	/* frame size = 0 */
+ 292               	/* stack size = 0 */
+ 293               	.L__stack_usage = 0
+  96:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     TWBR = 32; //TWBR  = ((F_CPU / SCL_CLK) – 16) / 2
+ 295               	.LM34:
+ 296 008c 80E2      		ldi r24,lo8(32)
+ 297 008e 8093 B800 		sts 184,r24
+  97:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     TWCR = (1<<TWIE) | (1<<TWEN);
+ 299               	.LM35:
+ 300 0092 85E0      		ldi r24,lo8(5)
+ 301 0094 8093 BC00 		sts 188,r24
+ 302 0098 0895      		ret
+ 304               	.Lscope4:
+ 306               	.global	InitUART
+ 308               	InitUART:
+  98:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** }
+  99:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** 
+ 100:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** void InitUART(unsigned int ubrr)
+ 101:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
+ 310               	.LM36:
+ 311               	.LFBB5:
+ 312               	/* prologue: function */
+ 313               	/* frame size = 0 */
+ 314               	/* stack size = 0 */
+ 315               	.L__stack_usage = 0
+ 102:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** /***** UART BaudRate *****/
+ 103:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     UBRR0H = (unsigned char) (ubrr>>8);
+ 317               	.LM37:
+ 318 009a 9093 C500 		sts 197,r25
+ 104:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     UBRR0L = (unsigned char) ubrr;
+ 320               	.LM38:
+ 321 009e 8093 C400 		sts 196,r24
+ 105:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     
+ 106:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** /***** Autoriser Transmition et Reception *****/
+ 107:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     UCSR0B |= (1<<RXCIE0) | (1<<TXEN0) | (1<<RXEN0);
+ 323               	.LM39:
+ 324 00a2 E1EC      		ldi r30,lo8(-63)
+ 325 00a4 F0E0      		ldi r31,0
+ 326 00a6 8081      		ld r24,Z
+ 327 00a8 8869      		ori r24,lo8(-104)
+ 328 00aa 8083      		st Z,r24
+ 108:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     UCSR0C |= (1<<UCSZ01) | (1<<UCSZ00);
+ 330               	.LM40:
+ 331 00ac E2EC      		ldi r30,lo8(-62)
+ 332 00ae F0E0      		ldi r31,0
+ 333 00b0 8081      		ld r24,Z
+ 334 00b2 8660      		ori r24,lo8(6)
+ 335 00b4 8083      		st Z,r24
+ 336 00b6 0895      		ret
+ 338               	.Lscope5:
+ 340               	.global	Initialisation
+ 342               	Initialisation:
+  16:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
+ 344               	.LM41:
+ 345               	.LFBB6:
+ 346               	/* prologue: function */
+ 347               	/* frame size = 0 */
+ 348               	/* stack size = 0 */
+ 349               	.L__stack_usage = 0
+  17:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     InitIO();
+ 351               	.LM42:
+ 352 00b8 0E94 0000 		call InitIO
+  18:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     InitPWM();
+ 354               	.LM43:
+ 355 00bc 0E94 0000 		call InitPWM
+  19:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     InitI2C();
+ 357               	.LM44:
+ 358 00c0 0E94 0000 		call InitI2C
+  20:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     InitUART(MYUBRR);
+ 360               	.LM45:
+ 361 00c4 83E3      		ldi r24,lo8(51)
+ 362 00c6 90E0      		ldi r25,0
+ 363 00c8 0E94 0000 		call InitUART
+  21:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     InitInterrupt();
+ 365               	.LM46:
+ 366 00cc 0C94 0000 		jmp InitInterrupt
+ 368               	.Lscope6:
+ 370               	.Letext0:
+ 371               		.ident	"GCC: (GNU) 4.8.1"
+DEFINED SYMBOLS
+                            *ABS*:00000000 Initialisation.c
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccbn6Do2.s:2      *ABS*:0000003e __SP_H__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccbn6Do2.s:3      *ABS*:0000003d __SP_L__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccbn6Do2.s:4      *ABS*:0000003f __SREG__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccbn6Do2.s:5      *ABS*:00000000 __tmp_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccbn6Do2.s:6      *ABS*:00000001 __zero_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccbn6Do2.s:114    .text:00000000 InitIO
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccbn6Do2.s:194    .text:0000003e InitInterrupt
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccbn6Do2.s:236    .text:00000060 InitPWM
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccbn6Do2.s:286    .text:0000008c InitI2C
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccbn6Do2.s:308    .text:0000009a InitUART
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccbn6Do2.s:342    .text:000000b8 Initialisation
+
+NO UNDEFINED SYMBOLS

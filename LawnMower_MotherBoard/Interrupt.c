@@ -27,3 +27,8 @@ ISR(PCINT0_vect)
 {
     
 }
+
+ISR(TWI_vect)
+{
+
+}

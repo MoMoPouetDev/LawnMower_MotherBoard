@@ -1,0 +1,188 @@
+   1               		.file	"I2c.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   8               		.text
+   9               	.Ltext0:
+ 112               	.global	I2C_start
+ 114               	I2C_start:
+   1:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** //
+   2:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** //  I2c.c
+   3:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** //  LawnMower_MotherBoard
+   4:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** //
+   5:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** //  Created by morgan on 28/01/2020.
+   6:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** //  Copyright © 2020 morgan venandy. All rights reserved.
+   7:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** //
+   8:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** 
+   9:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** #include "I2c.h"
+  10:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** 
+  11:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** #define ADDR_SLAVE_1 0x01
+  12:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** #define ADDR_SLAVE_2 0x02
+  13:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** #define I2C_WRITE   0
+  14:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** #define I2C_READ    1
+  15:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** 
+  16:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** void I2C_start()
+  17:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** {
+ 116               	.LM0:
+ 117               	.LFBB1:
+ 118               	/* prologue: function */
+ 119               	/* frame size = 0 */
+ 120               	/* stack size = 0 */
+ 121               	.L__stack_usage = 0
+  18:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     TWCR = (1<<TWEN) | (1<<TWINT) | (1<<TWSTA);
+ 123               	.LM1:
+ 124 0000 84EA      		ldi r24,lo8(-92)
+ 125 0002 8093 BC00 		sts 188,r24
+ 126               	.L3:
+  19:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     while (!(TWCR & (1<<TWINT)));
+ 128               	.LM2:
+ 129 0006 8091 BC00 		lds r24,188
+ 130 000a 87FF      		sbrs r24,7
+ 131 000c 00C0      		rjmp .L3
+ 132               	/* epilogue start */
+  20:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** }
+ 134               	.LM3:
+ 135 000e 0895      		ret
+ 137               	.Lscope1:
+ 140               	.global	I2C_write
+ 142               	I2C_write:
+  21:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** 
+  22:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** void I2C_write(unsigned char addrSlave)
+  23:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** {
+ 144               	.LM4:
+ 145               	.LFBB2:
+ 146               	/* prologue: function */
+ 147               	/* frame size = 0 */
+ 148               	/* stack size = 0 */
+ 149               	.L__stack_usage = 0
+  24:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     TWDR = addrSlave + I2C_WRITE;
+ 151               	.LM5:
+ 152 0010 8093 BB00 		sts 187,r24
+  25:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     TWCR = (1<<TWEN) | (1<<TWINT);
+ 154               	.LM6:
+ 155 0014 84E8      		ldi r24,lo8(-124)
+ 156 0016 8093 BC00 		sts 188,r24
+ 157               	.L7:
+  26:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     while (!(TWCR & (1<<TWINT)));
+ 159               	.LM7:
+ 160 001a 8091 BC00 		lds r24,188
+ 161 001e 87FF      		sbrs r24,7
+ 162 0020 00C0      		rjmp .L7
+ 163               	/* epilogue start */
+  27:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** }
+ 165               	.LM8:
+ 166 0022 0895      		ret
+ 168               	.Lscope2:
+ 171               	.global	I2C_write_data
+ 173               	I2C_write_data:
+  28:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** 
+  29:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** void I2C_write_data(unsigned char dataToSend)
+  30:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** {
+ 175               	.LM9:
+ 176               	.LFBB3:
+ 177               	/* prologue: function */
+ 178               	/* frame size = 0 */
+ 179               	/* stack size = 0 */
+ 180               	.L__stack_usage = 0
+  31:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     TWDR = dataToSend;
+ 182               	.LM10:
+ 183 0024 8093 BB00 		sts 187,r24
+  32:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     TWCR = (1<<TWEN) | (1<<TWINT);
+ 185               	.LM11:
+ 186 0028 84E8      		ldi r24,lo8(-124)
+ 187 002a 8093 BC00 		sts 188,r24
+ 188               	.L10:
+  33:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     while (!(TWCR & (1<<TWINT)));
+ 190               	.LM12:
+ 191 002e 8091 BC00 		lds r24,188
+ 192 0032 87FF      		sbrs r24,7
+ 193 0034 00C0      		rjmp .L10
+ 194               	/* epilogue start */
+  34:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** }
+ 196               	.LM13:
+ 197 0036 0895      		ret
+ 199               	.Lscope3:
+ 202               	.global	I2C_read
+ 204               	I2C_read:
+  35:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** 
+  36:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** unsigned char I2C_read(unsigned char addrSlave)
+  37:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** {
+ 206               	.LM14:
+ 207               	.LFBB4:
+ 208               	/* prologue: function */
+ 209               	/* frame size = 0 */
+ 210               	/* stack size = 0 */
+ 211               	.L__stack_usage = 0
+  38:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     TWDR = addrSlave + I2C_READ;
+ 213               	.LM15:
+ 214 0038 8F5F      		subi r24,lo8(-(1))
+ 215 003a 8093 BB00 		sts 187,r24
+  39:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     TWCR = (1<<TWEN) | (1<<TWINT);
+ 217               	.LM16:
+ 218 003e 84E8      		ldi r24,lo8(-124)
+ 219 0040 8093 BC00 		sts 188,r24
+ 220               	.L13:
+  40:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     while (!(TWCR & (1<<TWINT)));
+ 222               	.LM17:
+ 223 0044 8091 BC00 		lds r24,188
+ 224 0048 87FF      		sbrs r24,7
+ 225 004a 00C0      		rjmp .L13
+  41:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     return TWDR;
+ 227               	.LM18:
+ 228 004c 8091 BB00 		lds r24,187
+  42:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** }
+ 230               	.LM19:
+ 231 0050 0895      		ret
+ 233               	.Lscope4:
+ 235               	.global	I2C_repeat_start
+ 237               	I2C_repeat_start:
+  43:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** 
+  44:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** void I2C_repeat_start()
+  45:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** {
+ 239               	.LM20:
+ 240               	.LFBB5:
+ 241               	/* prologue: function */
+ 242               	/* frame size = 0 */
+ 243               	/* stack size = 0 */
+ 244               	.L__stack_usage = 0
+  46:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     I2C_start();
+ 246               	.LM21:
+ 247 0052 0C94 0000 		jmp I2C_start
+ 249               	.Lscope5:
+ 251               	.global	I2C_stop
+ 253               	I2C_stop:
+  47:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** }
+  48:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** 
+  49:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** void I2C_stop()
+  50:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c **** {
+ 255               	.LM22:
+ 256               	.LFBB6:
+ 257               	/* prologue: function */
+ 258               	/* frame size = 0 */
+ 259               	/* stack size = 0 */
+ 260               	.L__stack_usage = 0
+  51:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/I2c.c ****     TWCR = (1<<TWINT) | (1<<TWSTO) | (1<<TWEN);
+ 262               	.LM23:
+ 263 0056 84E9      		ldi r24,lo8(-108)
+ 264 0058 8093 BC00 		sts 188,r24
+ 265 005c 0895      		ret
+ 267               	.Lscope6:
+ 269               	.Letext0:
+ 270               		.ident	"GCC: (GNU) 4.8.1"
+DEFINED SYMBOLS
+                            *ABS*:00000000 I2c.c
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cc4ckXzo.s:2      *ABS*:0000003e __SP_H__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cc4ckXzo.s:3      *ABS*:0000003d __SP_L__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cc4ckXzo.s:4      *ABS*:0000003f __SREG__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cc4ckXzo.s:5      *ABS*:00000000 __tmp_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cc4ckXzo.s:6      *ABS*:00000001 __zero_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cc4ckXzo.s:114    .text:00000000 I2C_start
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cc4ckXzo.s:142    .text:00000010 I2C_write
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cc4ckXzo.s:173    .text:00000024 I2C_write_data
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cc4ckXzo.s:204    .text:00000038 I2C_read
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cc4ckXzo.s:237    .text:00000052 I2C_repeat_start
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cc4ckXzo.s:253    .text:00000056 I2C_stop
+
+NO UNDEFINED SYMBOLS
