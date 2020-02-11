@@ -9,13 +9,11 @@
 #ifndef pwm_h
 #define pwm_h
 
-#include <stdio.h>
-#include <avr/io.h>
-
-void PWM_avant(void);
-void PWM_arriere(void);
-void PWM_droite(void);
-void PWM_gauche(void);
+void PWM_forward(uint8_t);
+void PWM_reverse(uint8_t);
+void PWM_right(void);
+void PWM_left(void);
+void PWM_stop(void);
 
 
 #endif /* pwm_h */
