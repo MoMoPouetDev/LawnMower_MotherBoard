@@ -6,6 +6,9 @@
 //  Copyright © 2020 morgan venandy. All rights reserved.
 //
 
+#include <stdio.h>
+#include <avr/io.h>
+
 #include "uart.h"
 
 void UART_transmission(unsigned char dataToSend)

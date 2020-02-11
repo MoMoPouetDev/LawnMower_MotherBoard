@@ -9,9 +9,6 @@
 #ifndef uart_h
 #define uart_h
 
-#include <stdio.h>
-#include <avr/io.h>
-
 void UART_transmission(unsigned char);
 unsigned char UART_reception(void);
 

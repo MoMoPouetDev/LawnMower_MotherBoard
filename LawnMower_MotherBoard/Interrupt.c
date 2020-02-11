@@ -6,14 +6,13 @@
 //  Copyright © 2020 morgan venandy. All rights reserved.
 //
 
-#include "Interrupt.h"
+#include <stdio.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+#include "uart.h"
 
 ISR(USART_RX_vect)
-{
-    
-}
-
-ISR(ADC_vect)
 {
     
 }
@@ -26,9 +25,4 @@ ISR(PCINT2_vect)
 ISR(PCINT0_vect)
 {
     
-}
-
-ISR(TWI_vect)
-{
-
 }
