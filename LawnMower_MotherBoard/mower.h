@@ -9,15 +9,15 @@
 #ifndef mower_h
 #define mower_h
 
-#include <stdio.h>
-
-int isDocking(void);
-int isCharging(void);
-int isTimeToMow(void);
-int isEnoughCharged(void);
-int isRaining(void);
+uint8_t isDocking(void);
+uint8_t isCharging(void);
+uint8_t isTimeToMow(void);
+uint8_t isEnoughCharged(void);
+uint8_t isRaining(void);
 void startMower(void);
 void goDockCharger(void);
 void leaveDockCharger(void);
+void updateBladeState(void);
+void myDelayLoop(double);
 
 #endif /* mower_h */
