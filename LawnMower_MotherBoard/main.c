@@ -2,6 +2,7 @@
 #include <util/delay.h>
 
 #include "Initialisation.h"
+#include "mower.h"
 
 int main(void) {
 
@@ -19,7 +20,7 @@ int main(void) {
                 leaveDockCharger();
             }
         }
-        else if(isEnougCharged() && !isRaining())
+        else if(isEnoughCharged() && !isRaining())
         {
             startMower();
         }

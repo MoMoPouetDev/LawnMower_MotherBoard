@@ -13,6 +13,7 @@
 		90A726A023E204E8003A90FA /* uart.c in Sources */ = {isa = PBXBuildFile; fileRef = 90A7269F23E204E8003A90FA /* uart.c */; };
 		90A726A323E20C28003A90FA /* Interrupt.c in Sources */ = {isa = PBXBuildFile; fileRef = 90A726A223E20C28003A90FA /* Interrupt.c */; };
 		90A726A623E37133003A90FA /* pwm.c in Sources */ = {isa = PBXBuildFile; fileRef = 90A726A523E37133003A90FA /* pwm.c */; };
+		90B2451423EE0F76001EFC98 /* adc.c in Sources */ = {isa = PBXBuildFile; fileRef = 90B2451323EE0F76001EFC98 /* adc.c */; };
 		CCF93F5423DC2B8100D5604A /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = CCF93F5323DC2B8100D5604A /* main.c */; };
 /* End PBXBuildFile section */
 
@@ -25,10 +26,12 @@
 		90A7269C23E0CEA5003A90FA /* I2c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = I2c.c; sourceTree = "<group>"; };
 		90A7269E23E204E8003A90FA /* uart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uart.h; sourceTree = "<group>"; };
 		90A7269F23E204E8003A90FA /* uart.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = uart.c; sourceTree = "<group>"; };
-		90A726A123E20C28003A90FA /* Interrupt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Interrupt.h; sourceTree = "<group>"; };
 		90A726A223E20C28003A90FA /* Interrupt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Interrupt.c; sourceTree = "<group>"; };
 		90A726A423E37133003A90FA /* pwm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pwm.h; sourceTree = "<group>"; };
 		90A726A523E37133003A90FA /* pwm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pwm.c; sourceTree = "<group>"; };
+		90B2451223EE0F76001EFC98 /* adc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = adc.h; sourceTree = "<group>"; };
+		90B2451323EE0F76001EFC98 /* adc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = adc.c; sourceTree = "<group>"; };
+		90B2451523EEBB16001EFC98 /* constant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constant.h; sourceTree = "<group>"; };
 		CCF93F5023DC2B8100D5604A /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCF93F5323DC2B8100D5604A /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		CCF93F5623DC2B8100D5604A /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
@@ -62,12 +65,14 @@
 				90A7269C23E0CEA5003A90FA /* I2c.c */,
 				90A7269E23E204E8003A90FA /* uart.h */,
 				90A7269F23E204E8003A90FA /* uart.c */,
-				90A726A123E20C28003A90FA /* Interrupt.h */,
 				90A726A223E20C28003A90FA /* Interrupt.c */,
 				90A726A423E37133003A90FA /* pwm.h */,
 				90A726A523E37133003A90FA /* pwm.c */,
 				9070086323EC8A8100DDBE89 /* mower.h */,
 				9070086423EC8A8100DDBE89 /* mower.c */,
+				90B2451223EE0F76001EFC98 /* adc.h */,
+				90B2451323EE0F76001EFC98 /* adc.c */,
+				90B2451523EEBB16001EFC98 /* constant.h */,
 			);
 			path = LawnMower_MotherBoard;
 			sourceTree = "<group>";
@@ -211,6 +216,7 @@
 				90A726A323E20C28003A90FA /* Interrupt.c in Sources */,
 				9070086523EC8A8100DDBE89 /* mower.c in Sources */,
 				CCF93F5423DC2B8100D5604A /* main.c in Sources */,
+				90B2451423EE0F76001EFC98 /* adc.c in Sources */,
 				90A726A023E204E8003A90FA /* uart.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

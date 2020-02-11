@@ -6,22 +6,25 @@
 //  Copyright © 2020 morgan venandy. All rights reserved.
 //
 
-#include "Initialisation.h"
+#include <stdio.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 
-#define F_CPU 8000000UL
-#define BAUD 9600
-#define MYUBRR F_CPU/16/BAUD-1
+#include "constant.h"
+#include "Initialisation.h"
 
 void Initialisation()
 {
-    InitIO();
-    InitPWM();
-    InitI2C();
-    InitUART(MYUBRR);
-    InitInterrupt();
+    INIT_io();
+    INIT_variable();
+    INIT_pwm();
+    INIT_i2c();
+    INIT_uart(MYUBRR);
+    INIT_adc();
+    INIT_interrupt();
 }
 
-void InitIO()
+void INIT_io()
 {
 /***** PORT B *****/
     DDRB = 0x00;
@@ -66,7 +69,7 @@ void InitIO()
     PORTD |= (1<<PORTD7); // Pull-Up Bouton Poussoir
 }
 
-void InitInterrupt()
+void INIT_interrupt()
 {
     PCICR |= (1<<PCIE2) | (1<<PCIE0); // Activation des Interruptions sur PCINT[23:16] et PCINT[7:0]
     PCMSK2 |= (1<<PCINT23); // Activation des Interruptions sur PCINT23
@@ -74,7 +77,7 @@ void InitInterrupt()
     sei();
 }
 
-void InitPWM()
+void INIT_pwm()
 {
 /***** Moteur 1 - Droit *****/
     TCCR0A |= (1<<COM0A1) | (1<<COM0B1) | (1<<WGM01) | (1<<WGM00); // Fast PWM
@@ -88,16 +91,16 @@ void InitPWM()
     TCCR2B |= (1<<CS20); // No Prescale
     
     OCR2A = 0x00; // Marche Avant
-    OCR0B = 0x00; // Marche Arrière
+    OCR2B = 0x00; // Marche Arrière
 }
 
-void InitI2C()
+void INIT_i2c()
 {
     TWBR = 32; //TWBR  = ((F_CPU / SCL_CLK) – 16) / 2
-    TWCR = (1<<TWIE) | (1<<TWEN);
+    TWCR = (1<<TWEN);
 }
 
-void InitUART(unsigned int ubrr)
+void INIT_uart(uint8_t ubrr)
 {
 /***** UART BaudRate *****/
     UBRR0H = (unsigned char) (ubrr>>8);
@@ -109,8 +112,15 @@ void InitUART(unsigned int ubrr)
     
 }
 
-void InitADC()
+void INIT_adc()
 {
     ADMUX |= (1<<REFS0);
-    ADCSRA |= (1<<ADEN) | (1<<ADIE) | (1<<ADPS2) | (1<<ADPS1); // Enable ADC, Interrup et 64 prescale
+    ADCSRA |= (1<<ADEN) | (1<<ADPS2) | (1<<ADPS1); // Enable ADC, Interrup et 64 prescale
 }
+
+void INIT_variable()
+{
+    etatBlade = OFF;
+    inCharge = 0;
+}
+

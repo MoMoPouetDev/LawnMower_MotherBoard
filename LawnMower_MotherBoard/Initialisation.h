@@ -9,17 +9,14 @@
 #ifndef Initialisation_h
 #define Initialisation_h
 
-#include <stdio.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
-
 void Initialisation(void);
-void InitIO(void);
-void InitPWM(void);
-void InitInterrupt(void);
-void InitI2C(void);
-void InitUART(unsigned int);
-void InitADC(void);
+void INIT_io(void);
+void INIT_pwm(void);
+void INIT_interrupt(void);
+void INIT_i2c(void);
+void INIT_uart(uint8_t);
+void INIT_adc(void);
+void INIT_variable(void);
 
 
 #endif /* Initialisation_h */

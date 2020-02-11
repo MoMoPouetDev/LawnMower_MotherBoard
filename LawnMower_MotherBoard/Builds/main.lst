@@ -6,39 +6,98 @@
    6               	__zero_reg__ = 1
    8               		.text
    9               	.Ltext0:
- 111               		.section	.text.startup,"ax",@progbits
- 113               	.global	main
- 115               	main:
+ 104               		.section	.text.startup,"ax",@progbits
+ 106               	.global	main
+ 108               	main:
    1:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** #include <stdio.h>
    2:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** #include <util/delay.h>
    3:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** 
    4:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** #include "Initialisation.h"
-   5:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** 
-   6:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** int main(void) {
- 117               	.LM0:
- 118               	.LFBB1:
- 119               	/* prologue: function */
- 120               	/* frame size = 0 */
- 121               	/* stack size = 0 */
- 122               	.L__stack_usage = 0
-   7:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** 
-   8:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****     Initialisation();
- 124               	.LM1:
- 125 0000 0E94 0000 		call Initialisation
- 126               	.L2:
- 127 0004 00C0      		rjmp .L2
- 129               	.Lscope1:
- 130               		.text
- 132               	.Letext0:
- 133               		.ident	"GCC: (GNU) 4.8.1"
+   5:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** #include "mower.h"
+   6:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** 
+   7:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** int main(void) {
+ 110               	.LM0:
+ 111               	.LFBB1:
+ 112               	/* prologue: function */
+ 113               	/* frame size = 0 */
+ 114               	/* stack size = 0 */
+ 115               	.L__stack_usage = 0
+   8:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** 
+   9:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****     Initialisation();
+ 117               	.LM1:
+ 118 0000 0E94 0000 		call Initialisation
+ 119               	.L2:
+  10:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** 
+  11:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c **** 	while (1) {
+  12:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****         if(isDocking())
+ 121               	.LM2:
+ 122 0004 0E94 0000 		call isDocking
+ 123 0008 892B      		or r24,r25
+ 124 000a 01F0      		breq .L3
+  13:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****         {
+  14:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****             if(isCharging())
+ 126               	.LM3:
+ 127 000c 0E94 0000 		call isCharging
+ 128 0010 892B      		or r24,r25
+ 129 0012 01F4      		brne .L2
+  15:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****             {
+  16:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****                 //Envoie periodique BLE "En Charge" Avec valeur batterie
+  17:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****             }
+  18:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****             else if(isTimeToMow())
+ 131               	.LM4:
+ 132 0014 0E94 0000 		call isTimeToMow
+ 133 0018 892B      		or r24,r25
+ 134 001a 01F0      		breq .L2
+  19:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****             {
+  20:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****                 leaveDockCharger();
+ 136               	.LM5:
+ 137 001c 0E94 0000 		call leaveDockCharger
+ 138 0020 00C0      		rjmp .L2
+ 139               	.L3:
+  21:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****             }
+  22:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****         }
+  23:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****         else if(isEnoughCharged() && !isRaining())
+ 141               	.LM6:
+ 142 0022 0E94 0000 		call isEnoughCharged
+ 143 0026 892B      		or r24,r25
+ 144 0028 01F0      		breq .L6
+ 146               	.LM7:
+ 147 002a 0E94 0000 		call isRaining
+ 148 002e 892B      		or r24,r25
+ 149 0030 01F4      		brne .L6
+  24:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****         {
+  25:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****             startMower();
+ 151               	.LM8:
+ 152 0032 0E94 0000 		call startMower
+ 153 0036 00C0      		rjmp .L2
+ 154               	.L6:
+  26:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****         }
+  27:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****         else
+  28:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****         {
+  29:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/main.c ****             goDockCharger();
+ 156               	.LM9:
+ 157 0038 0E94 0000 		call goDockCharger
+ 158 003c 00C0      		rjmp .L2
+ 160               	.Lscope1:
+ 161               		.text
+ 163               	.Letext0:
+ 164               		.ident	"GCC: (GNU) 4.8.1"
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cclz1cv8.s:2      *ABS*:0000003e __SP_H__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cclz1cv8.s:3      *ABS*:0000003d __SP_L__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cclz1cv8.s:4      *ABS*:0000003f __SREG__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cclz1cv8.s:5      *ABS*:00000000 __tmp_reg__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cclz1cv8.s:6      *ABS*:00000001 __zero_reg__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cclz1cv8.s:115    .text.startup:00000000 main
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccu20Hlj.s:2      *ABS*:0000003e __SP_H__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccu20Hlj.s:3      *ABS*:0000003d __SP_L__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccu20Hlj.s:4      *ABS*:0000003f __SREG__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccu20Hlj.s:5      *ABS*:00000000 __tmp_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccu20Hlj.s:6      *ABS*:00000001 __zero_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccu20Hlj.s:108    .text.startup:00000000 main
 
 UNDEFINED SYMBOLS
 Initialisation
+isDocking
+isCharging
+isTimeToMow
+leaveDockCharger
+isEnoughCharged
+isRaining
+startMower
+goDockCharger
