@@ -9,13 +9,10 @@
 #ifndef I2c_h
 #define I2c_h
 
-#include <stdio.h>
-#include <avr/io.h>
-
 void I2C_start(void);
-void I2C_write(unsigned char);
-unsigned char I2C_read(unsigned char);
-void I2C_repeat_start(void);
+void I2C_write(uint8_t, uint8_t);
+uint8_t I2C_readACK();
+uint8_t I2C_readNACK();
 void I2C_stop(void);
 
 #endif /* I2c_h */
