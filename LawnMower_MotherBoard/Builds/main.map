@@ -30,7 +30,16 @@ Archive member included because of file (symbol)
 Allocating common symbols
 Common symbol       size              file
 
-etatBlade           0x2               Builds/I2c.o
+distanceSonarFR     0x1               Builds/I2c.o
+distanceSonarFL     0x1               Builds/I2c.o
+_uUnderTheRain      0x1               Builds/I2c.o
+_uBattery           0x1               Builds/I2c.o
+_uTimeToMow         0x1               Builds/I2c.o
+etatBlade           0x1               Builds/I2c.o
+distanceSonarRC     0x1               Builds/I2c.o
+_uCharge            0x1               Builds/I2c.o
+distanceSonarFC     0x1               Builds/I2c.o
+_uDock              0x1               Builds/I2c.o
 
 Memory Configuration
 
@@ -153,7 +162,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x602
+.text           0x00000000      0x6a4
  *(.vectors)
  .vectors       0x00000000       0x68 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
                 0x00000000                __vectors
@@ -210,6 +219,7 @@ END GROUP
  .text          0x0000008c        0x4 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
                 0x0000008c                __vector_20
                 0x0000008c                __vector_1
+                0x0000008c                __vector_24
                 0x0000008c                __vector_12
                 0x0000008c                __bad_interrupt
                 0x0000008c                __vector_6
@@ -230,138 +240,137 @@ END GROUP
                 0x0000008c                __vector_10
                 0x0000008c                __vector_16
                 0x0000008c                __vector_22
- .text          0x00000090       0x5e Builds/I2c.o
+ .text          0x00000090       0x6a Builds/I2c.o
                 0x00000090                I2C_start
                 0x000000a0                I2C_write
-                0x000000b4                I2C_write_data
-                0x000000c8                I2C_read
-                0x000000e2                I2C_repeat_start
-                0x000000e6                I2C_stop
- .text          0x000000ee      0x104 Builds/Initialisation.o
-                0x000000ee                INIT_io
-                0x0000012c                INIT_interrupt
-                0x0000014e                INIT_pwm
-                0x0000017c                INIT_i2c
-                0x0000018a                INIT_uart
-                0x000001a8                INIT_adc
-                0x000001be                Initialisation
-                0x000001e4                INIT_variable
- .text          0x000001f2       0x50 Builds/Interrupt.o
-                0x000001f2                __vector_18
-                0x00000206                __vector_5
-                0x0000021a                __vector_3
-                0x0000022e                __vector_24
- .text          0x00000242       0x2a Builds/adc.o
-                0x00000242                ADC_read
- .text          0x0000026c        0x0 Builds/main.o
- .text          0x0000026c      0x110 Builds/mower.o
-                0x0000026c                isDocking
-                0x00000272                isCharging
-                0x00000278                isTimeToMow
-                0x0000027e                isEnoughCharged
-                0x00000284                isRaining
-                0x0000028a                goDockCharger
-                0x0000028c                leaveDockCharger
-                0x0000028e                updateBladeState
+                0x000000b6                I2C_write_data
+                0x000000ca                I2C_readACK
+                0x000000de                I2C_readNACK
+                0x000000f2                I2C_stop
+ .text          0x000000fa      0x10a Builds/Initialisation.o
+                0x000000fa                INIT_io
+                0x00000138                INIT_interrupt
+                0x0000015a                INIT_pwm
+                0x00000188                INIT_i2c
+                0x00000196                INIT_uart
+                0x000001b6                INIT_adc
+                0x000001cc                INIT_variable
+                0x000001e8                Initialisation
+ .text          0x00000204       0x3c Builds/Interrupt.o
+                0x00000204                __vector_18
+                0x00000218                __vector_5
+                0x0000022c                __vector_3
+ .text          0x00000240       0x2a Builds/adc.o
+                0x00000240                ADC_read
+ .text          0x0000026a        0x0 Builds/main.o
+ .text          0x0000026a      0x1b4 Builds/mower.o
+                0x0000026a                isDocking
+                0x00000270                isCharging
+                0x00000276                isTimeToMow
+                0x0000027c                isEnoughCharged
+                0x0000028a                isRaining
+                0x00000290                goDockCharger
+                0x00000292                updateBladeState
                 0x000002a8                myDelayLoop
                 0x00000306                startMower
- .text          0x0000037c       0x6c Builds/pwm.o
-                0x0000037c                PWM_forward
-                0x00000392                PWM_reverse
-                0x000003a8                PWM_right
-                0x000003be                PWM_left
-                0x000003d4                PWM_stop
- .text          0x000003e8       0x1c Builds/uart.o
-                0x000003e8                UART_transmission
-                0x000003f6                UART_reception
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(addsf3.o)
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(addsf3x.o)
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(cmpsf2.o)
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_cmp.o)
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_inf.o)
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_nan.o)
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_pscA.o)
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_pscB.o)
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_round.o)
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_split3.o)
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_zero.o)
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
- .text          0x00000404        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
-                0x00000404                . = ALIGN (0x2)
+                0x000003ba                leaveDockCharger
+ .text          0x0000041e       0x6c Builds/pwm.o
+                0x0000041e                PWM_forward
+                0x00000434                PWM_reverse
+                0x0000044a                PWM_right
+                0x00000460                PWM_left
+                0x00000476                PWM_stop
+ .text          0x0000048a       0x1c Builds/uart.o
+                0x0000048a                UART_transmission
+                0x00000498                UART_reception
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(addsf3.o)
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(addsf3x.o)
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(cmpsf2.o)
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_cmp.o)
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_inf.o)
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_nan.o)
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_pscA.o)
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_pscB.o)
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_round.o)
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_split3.o)
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_zero.o)
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
+ .text          0x000004a6        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
+                0x000004a6                . = ALIGN (0x2)
  *(.text.*)
- .text.startup  0x00000404       0x3e Builds/main.o
-                0x00000404                main
+ .text.startup  0x000004a6       0x3e Builds/main.o
+                0x000004a6                main
  .text.avr-libc.fplib
-                0x00000442        0xa /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(addsf3.o)
-                0x00000442                __subsf3
-                0x00000444                __addsf3
+                0x000004e4        0xa /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(addsf3.o)
+                0x000004e4                __subsf3
+                0x000004e6                __addsf3
  .text.avr-libc.fplib
-                0x0000044c       0xc0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(addsf3x.o)
-                0x00000466                __addsf3x
+                0x000004ee       0xc0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(addsf3x.o)
+                0x00000508                __addsf3x
  .text.avr-libc.fplib
-                0x0000050c        0x8 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(cmpsf2.o)
-                0x0000050c                __lesf2
-                0x0000050c                __nesf2
-                0x0000050c                __eqsf2
-                0x0000050c                __cmpsf2
-                0x0000050c                __ltsf2
+                0x000005ae        0x8 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(cmpsf2.o)
+                0x000005ae                __lesf2
+                0x000005ae                __nesf2
+                0x000005ae                __eqsf2
+                0x000005ae                __cmpsf2
+                0x000005ae                __ltsf2
  .text.avr-libc.fplib
-                0x00000514       0x48 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_cmp.o)
-                0x00000514                __fp_cmp
+                0x000005b6       0x48 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_cmp.o)
+                0x000005b6                __fp_cmp
  .text.avr-libc.fplib
-                0x0000055c        0xc /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_inf.o)
-                0x0000055c                __fp_inf
+                0x000005fe        0xc /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_inf.o)
+                0x000005fe                __fp_inf
  .text.avr-libc.fplib
-                0x00000568        0x6 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_nan.o)
-                0x00000568                __fp_nan
+                0x0000060a        0x6 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_nan.o)
+                0x0000060a                __fp_nan
  .text.avr-libc.fplib
-                0x0000056e        0xe /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_pscA.o)
-                0x0000056e                __fp_pscA
+                0x00000610        0xe /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_pscA.o)
+                0x00000610                __fp_pscA
  .text.avr-libc.fplib
-                0x0000057c        0xe /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_pscB.o)
-                0x0000057c                __fp_pscB
+                0x0000061e        0xe /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_pscB.o)
+                0x0000061e                __fp_pscB
  .text.avr-libc.fplib
-                0x0000058a       0x22 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_round.o)
-                0x0000058a                __fp_round
+                0x0000062c       0x22 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_round.o)
+                0x0000062c                __fp_round
  .text.avr-libc.fplib
-                0x000005ac       0x44 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_split3.o)
-                0x000005ac                __fp_split3
-                0x000005bc                __fp_splitA
+                0x0000064e       0x44 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_split3.o)
+                0x0000064e                __fp_split3
+                0x0000065e                __fp_splitA
  .text.avr-libc.fplib
-                0x000005f0        0xe /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_zero.o)
-                0x000005f0                __fp_zero
-                0x000005f2                __fp_szero
+                0x00000692        0xe /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/libm.a(fp_zero.o)
+                0x00000692                __fp_zero
+                0x00000694                __fp_szero
  .text.libgcc.mul
-                0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
+                0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
  .text.libgcc.div
-                0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
- .text.libgcc   0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
+                0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
+ .text.libgcc   0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
  .text.libgcc.prologue
-                0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
+                0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
  .text.libgcc.builtins
-                0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
+                0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
  .text.libgcc.fmul
-                0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
+                0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
  .text.libgcc.fixed
-                0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
+                0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
  .text.libgcc.mul
-                0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
+                0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
  .text.libgcc.div
-                0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
- .text.libgcc   0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
+                0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
+ .text.libgcc   0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
  .text.libgcc.prologue
-                0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
+                0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
  .text.libgcc.builtins
-                0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
+                0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
  .text.libgcc.fmul
-                0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
+                0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
  .text.libgcc.fixed
-                0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
-                0x000005fe                . = ALIGN (0x2)
+                0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
+                0x000006a0                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000005fe        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
-                0x000005fe                exit
-                0x000005fe                _exit
+ .fini9         0x000006a0        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
+                0x000006a0                exit
+                0x000006a0                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -380,11 +389,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000005fe        0x4 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
+ .fini0         0x000006a0        0x4 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
  *(.fini0)
-                0x00000602                _etext = .
+                0x000006a4                _etext = .
 
-.data           0x00800100        0x0 load address 0x00000602
+.data           0x00800100        0x0 load address 0x000006a4
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
@@ -417,7 +426,7 @@ END GROUP
                 0x00800100                _edata = .
                 0x00800100                PROVIDE (__data_end, .)
 
-.bss            0x00800100        0x2
+.bss            0x00800100        0xa
                 0x00800100                PROVIDE (__bss_start, .)
  *(.bss)
  .bss           0x00800100        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
@@ -444,18 +453,27 @@ END GROUP
  .bss           0x00800100        0x0 /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_clear_bss.o)
  *(.bss*)
  *(COMMON)
- COMMON         0x00800100        0x2 Builds/I2c.o
-                0x00800100                etatBlade
-                0x00800102                PROVIDE (__bss_end, .)
-                0x00000602                __data_load_start = LOADADDR (.data)
-                0x00000602                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800100        0xa Builds/I2c.o
+                0x00800100                distanceSonarFR
+                0x00800101                distanceSonarFL
+                0x00800102                _uUnderTheRain
+                0x00800103                _uBattery
+                0x00800104                _uTimeToMow
+                0x00800105                etatBlade
+                0x00800106                distanceSonarRC
+                0x00800107                _uCharge
+                0x00800108                distanceSonarFC
+                0x00800109                _uDock
+                0x0080010a                PROVIDE (__bss_end, .)
+                0x000006a4                __data_load_start = LOADADDR (.data)
+                0x000006a4                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800102        0x0
-                0x00800102                PROVIDE (__noinit_start, .)
+.noinit         0x0080010a        0x0
+                0x0080010a                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800102                PROVIDE (__noinit_end, .)
-                0x00800102                _end = .
-                0x00800102                PROVIDE (__heap_start, .)
+                0x0080010a                PROVIDE (__noinit_end, .)
+                0x0080010a                _end = .
+                0x0080010a                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -476,27 +494,27 @@ END GROUP
 .user_signatures
  *(.user_signatures*)
 
-.stab           0x00000000     0x22e0
+.stab           0x00000000     0x252c
  *(.stab)
- .stab          0x00000000      0x690 Builds/I2c.o
- .stab          0x00000690      0x5c4 Builds/Initialisation.o
-                                0x7f8 (size before relaxing)
- .stab          0x00000c54      0x348 Builds/Interrupt.o
-                                0x558 (size before relaxing)
- .stab          0x00000f9c      0x330 Builds/adc.o
+ .stab          0x00000000      0x714 Builds/I2c.o
+ .stab          0x00000714      0x660 Builds/Initialisation.o
+                                0x894 (size before relaxing)
+ .stab          0x00000d74      0x324 Builds/Interrupt.o
+                                0x534 (size before relaxing)
+ .stab          0x00001098      0x330 Builds/adc.o
                                 0x540 (size before relaxing)
- .stab          0x000012cc      0x324 Builds/main.o
+ .stab          0x000013c8      0x324 Builds/main.o
                                 0x510 (size before relaxing)
- .stab          0x000015f0      0x54c Builds/mower.o
-                                0x780 (size before relaxing)
- .stab          0x00001b3c      0x474 Builds/pwm.o
+ .stab          0x000016ec      0x69c Builds/mower.o
+                                0x8d0 (size before relaxing)
+ .stab          0x00001d88      0x474 Builds/pwm.o
                                 0x684 (size before relaxing)
- .stab          0x00001fb0      0x330 Builds/uart.o
+ .stab          0x000021fc      0x330 Builds/uart.o
                                 0x540 (size before relaxing)
 
-.stabstr        0x00000000     0x14a8
+.stabstr        0x00000000     0x1545
  *(.stabstr)
- .stabstr       0x00000000     0x14a8 Builds/I2c.o
+ .stabstr       0x00000000     0x1545 Builds/I2c.o
 
 .stab.excl
  *(.stab.excl)
@@ -588,8 +606,8 @@ Cross Reference Table
 Symbol                                            File
 ADC_read                                          Builds/adc.o
                                                   Builds/mower.o
-I2C_read                                          Builds/I2c.o
-I2C_repeat_start                                  Builds/I2c.o
+I2C_readACK                                       Builds/I2c.o
+I2C_readNACK                                      Builds/I2c.o
 I2C_start                                         Builds/I2c.o
 I2C_stop                                          Builds/I2c.o
 I2C_write                                         Builds/I2c.o
@@ -608,6 +626,7 @@ PWM_forward                                       Builds/pwm.o
 PWM_left                                          Builds/pwm.o
                                                   Builds/mower.o
 PWM_reverse                                       Builds/pwm.o
+                                                  Builds/mower.o
 PWM_right                                         Builds/pwm.o
                                                   Builds/mower.o
 PWM_stop                                          Builds/pwm.o
@@ -670,8 +689,7 @@ __vector_20                                       /usr/local/CrossPack-AVR-20131
 __vector_21                                       /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
 __vector_22                                       /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
 __vector_23                                       /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
-__vector_24                                       Builds/Interrupt.o
-                                                  /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
+__vector_24                                       /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
 __vector_25                                       /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
 __vector_3                                        Builds/Interrupt.o
                                                   /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
@@ -685,6 +703,33 @@ __vector_9                                        /usr/local/CrossPack-AVR-20131
 __vector_default                                  /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
 __vectors                                         /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
 _exit                                             /usr/local/CrossPack-AVR-20131216/lib/gcc/avr/4.8.1/avr5/libgcc.a(_exit.o)
+_uBattery                                         Builds/mower.o
+                                                  Builds/Initialisation.o
+                                                  Builds/I2c.o
+_uCharge                                          Builds/mower.o
+                                                  Builds/Initialisation.o
+                                                  Builds/I2c.o
+_uDock                                            Builds/mower.o
+                                                  Builds/Initialisation.o
+                                                  Builds/I2c.o
+_uTimeToMow                                       Builds/mower.o
+                                                  Builds/Initialisation.o
+                                                  Builds/I2c.o
+_uUnderTheRain                                    Builds/mower.o
+                                                  Builds/Initialisation.o
+                                                  Builds/I2c.o
+distanceSonarFC                                   Builds/mower.o
+                                                  Builds/Initialisation.o
+                                                  Builds/I2c.o
+distanceSonarFL                                   Builds/mower.o
+                                                  Builds/Initialisation.o
+                                                  Builds/I2c.o
+distanceSonarFR                                   Builds/mower.o
+                                                  Builds/Initialisation.o
+                                                  Builds/I2c.o
+distanceSonarRC                                   Builds/mower.o
+                                                  Builds/Initialisation.o
+                                                  Builds/I2c.o
 etatBlade                                         Builds/mower.o
                                                   Builds/Initialisation.o
                                                   Builds/I2c.o

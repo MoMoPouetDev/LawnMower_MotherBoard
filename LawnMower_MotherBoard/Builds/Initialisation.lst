@@ -29,7 +29,7 @@
   19:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_variable();
   20:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_pwm();
   21:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_i2c();
-  22:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_uart(MYUBRR);
+  22:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_uart();
   23:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_adc();
   24:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_interrupt();
   25:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** }
@@ -246,48 +246,49 @@
  297               	.LM34:
  298 008e 80E2      		ldi r24,lo8(32)
  299 0090 8093 B800 		sts 184,r24
- 100:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     TWCR = (1<<TWIE) | (1<<TWEN);
+ 100:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     TWCR = (1<<TWEN);
  301               	.LM35:
- 302 0094 85E0      		ldi r24,lo8(5)
+ 302 0094 84E0      		ldi r24,lo8(4)
  303 0096 8093 BC00 		sts 188,r24
  304 009a 0895      		ret
  306               	.Lscope4:
- 309               	.global	INIT_uart
- 311               	INIT_uart:
+ 308               	.global	INIT_uart
+ 310               	INIT_uart:
  101:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** }
  102:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** 
- 103:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** void INIT_uart(uint8_t ubrr)
+ 103:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** void INIT_uart()
  104:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
- 313               	.LM36:
- 314               	.LFBB5:
- 315               	/* prologue: function */
- 316               	/* frame size = 0 */
- 317               	/* stack size = 0 */
- 318               	.L__stack_usage = 0
+ 312               	.LM36:
+ 313               	.LFBB5:
+ 314               	/* prologue: function */
+ 315               	/* frame size = 0 */
+ 316               	/* stack size = 0 */
+ 317               	.L__stack_usage = 0
  105:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** /***** UART BaudRate *****/
- 106:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     UBRR0H = (unsigned char) (ubrr>>8);
- 320               	.LM37:
- 321 009c 1092 C500 		sts 197,__zero_reg__
- 107:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     UBRR0L = (unsigned char) ubrr;
- 323               	.LM38:
- 324 00a0 8093 C400 		sts 196,r24
+ 106:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     UBRR0H = ((BAUD_PRESCALE)>>8);
+ 319               	.LM37:
+ 320 009c 1092 C500 		sts 197,__zero_reg__
+ 107:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     UBRR0L = BAUD_PRESCALE;
+ 322               	.LM38:
+ 323 00a0 83E3      		ldi r24,lo8(51)
+ 324 00a2 8093 C400 		sts 196,r24
  108:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     
  109:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** /***** Autoriser Transmition et Reception *****/
  110:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     UCSR0B |= (1<<RXCIE0) | (1<<TXEN0) | (1<<RXEN0);
  326               	.LM39:
- 327 00a4 E1EC      		ldi r30,lo8(-63)
- 328 00a6 F0E0      		ldi r31,0
- 329 00a8 8081      		ld r24,Z
- 330 00aa 8869      		ori r24,lo8(-104)
- 331 00ac 8083      		st Z,r24
+ 327 00a6 E1EC      		ldi r30,lo8(-63)
+ 328 00a8 F0E0      		ldi r31,0
+ 329 00aa 8081      		ld r24,Z
+ 330 00ac 8869      		ori r24,lo8(-104)
+ 331 00ae 8083      		st Z,r24
  111:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     UCSR0C |= (1<<UCSZ01) | (1<<UCSZ00);
  333               	.LM40:
- 334 00ae E2EC      		ldi r30,lo8(-62)
- 335 00b0 F0E0      		ldi r31,0
- 336 00b2 8081      		ld r24,Z
- 337 00b4 8660      		ori r24,lo8(6)
- 338 00b6 8083      		st Z,r24
- 339 00b8 0895      		ret
+ 334 00b0 E2EC      		ldi r30,lo8(-62)
+ 335 00b2 F0E0      		ldi r31,0
+ 336 00b4 8081      		ld r24,Z
+ 337 00b6 8660      		ori r24,lo8(6)
+ 338 00b8 8083      		st Z,r24
+ 339 00ba 0895      		ret
  341               	.Lscope5:
  343               	.global	INIT_adc
  345               	INIT_adc:
@@ -304,99 +305,122 @@
  352               	.L__stack_usage = 0
  117:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     ADMUX |= (1<<REFS0);
  354               	.LM42:
- 355 00ba ECE7      		ldi r30,lo8(124)
- 356 00bc F0E0      		ldi r31,0
- 357 00be 8081      		ld r24,Z
- 358 00c0 8064      		ori r24,lo8(64)
- 359 00c2 8083      		st Z,r24
+ 355 00bc ECE7      		ldi r30,lo8(124)
+ 356 00be F0E0      		ldi r31,0
+ 357 00c0 8081      		ld r24,Z
+ 358 00c2 8064      		ori r24,lo8(64)
+ 359 00c4 8083      		st Z,r24
  118:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     ADCSRA |= (1<<ADEN) | (1<<ADPS2) | (1<<ADPS1); // Enable ADC, Interrup et 64 prescale
  361               	.LM43:
- 362 00c4 EAE7      		ldi r30,lo8(122)
- 363 00c6 F0E0      		ldi r31,0
- 364 00c8 8081      		ld r24,Z
- 365 00ca 8668      		ori r24,lo8(-122)
- 366 00cc 8083      		st Z,r24
- 367 00ce 0895      		ret
+ 362 00c6 EAE7      		ldi r30,lo8(122)
+ 363 00c8 F0E0      		ldi r31,0
+ 364 00ca 8081      		ld r24,Z
+ 365 00cc 8668      		ori r24,lo8(-122)
+ 366 00ce 8083      		st Z,r24
+ 367 00d0 0895      		ret
  369               	.Lscope6:
- 371               	.global	Initialisation
- 373               	Initialisation:
-  17:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
+ 371               	.global	INIT_variable
+ 373               	INIT_variable:
+ 119:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** }
+ 120:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** 
+ 121:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** void INIT_variable()
+ 122:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
  375               	.LM44:
  376               	.LFBB7:
  377               	/* prologue: function */
  378               	/* frame size = 0 */
  379               	/* stack size = 0 */
  380               	.L__stack_usage = 0
-  18:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_io();
- 382               	.LM45:
- 383 00d0 0E94 0000 		call INIT_io
- 384               	.LBB4:
- 385               	.LBB5:
- 119:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** }
- 120:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** 
- 121:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** void INIT_variable()
- 122:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
  123:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     etatBlade = OFF;
- 387               	.LM46:
- 388 00d4 81E0      		ldi r24,lo8(1)
- 389 00d6 90E0      		ldi r25,0
- 390 00d8 9093 0000 		sts etatBlade+1,r25
- 391 00dc 8093 0000 		sts etatBlade,r24
- 392               	.LBE5:
- 393               	.LBE4:
-  20:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_pwm();
- 395               	.LM47:
- 396 00e0 0E94 0000 		call INIT_pwm
-  21:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_i2c();
- 398               	.LM48:
- 399 00e4 0E94 0000 		call INIT_i2c
-  22:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_uart(MYUBRR);
- 401               	.LM49:
- 402 00e8 83E3      		ldi r24,lo8(51)
- 403 00ea 0E94 0000 		call INIT_uart
-  23:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_adc();
- 405               	.LM50:
- 406 00ee 0E94 0000 		call INIT_adc
-  24:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_interrupt();
+ 382               	.LM45:
+ 383 00d2 81E0      		ldi r24,lo8(1)
+ 384 00d4 8093 0000 		sts etatBlade,r24
+ 124:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     _uCharge = 0;
+ 386               	.LM46:
+ 387 00d8 1092 0000 		sts _uCharge,__zero_reg__
+ 125:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     _uBattery = 0;
+ 389               	.LM47:
+ 390 00dc 1092 0000 		sts _uBattery,__zero_reg__
+ 126:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     _uUnderTheRain = 0;
+ 392               	.LM48:
+ 393 00e0 1092 0000 		sts _uUnderTheRain,__zero_reg__
+ 127:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     _uTimeToMow = 0;
+ 395               	.LM49:
+ 396 00e4 1092 0000 		sts _uTimeToMow,__zero_reg__
+ 128:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     _uDock = 0;
+ 398               	.LM50:
+ 399 00e8 1092 0000 		sts _uDock,__zero_reg__
+ 400 00ec 0895      		ret
+ 402               	.Lscope7:
+ 404               	.global	Initialisation
+ 406               	Initialisation:
+  17:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
  408               	.LM51:
- 409 00f2 0C94 0000 		jmp INIT_interrupt
- 411               	.Lscope7:
- 413               	.global	INIT_variable
- 415               	INIT_variable:
- 122:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c **** {
- 417               	.LM52:
- 418               	.LFBB8:
- 419               	/* prologue: function */
- 420               	/* frame size = 0 */
- 421               	/* stack size = 0 */
- 422               	.L__stack_usage = 0
- 424               	.LM53:
- 425 00f6 81E0      		ldi r24,lo8(1)
- 426 00f8 90E0      		ldi r25,0
- 427 00fa 9093 0000 		sts etatBlade+1,r25
- 428 00fe 8093 0000 		sts etatBlade,r24
- 429 0102 0895      		ret
- 431               	.Lscope8:
- 432               		.comm	etatBlade,2,1
- 435               	.Letext0:
- 436               		.ident	"GCC: (GNU) 4.8.1"
- 437               	.global __do_clear_bss
+ 409               	.LFBB8:
+ 410               	/* prologue: function */
+ 411               	/* frame size = 0 */
+ 412               	/* stack size = 0 */
+ 413               	.L__stack_usage = 0
+  18:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_io();
+ 415               	.LM52:
+ 416 00ee 0E94 0000 		call INIT_io
+  19:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_variable();
+ 418               	.LM53:
+ 419 00f2 0E94 0000 		call INIT_variable
+  20:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_pwm();
+ 421               	.LM54:
+ 422 00f6 0E94 0000 		call INIT_pwm
+  21:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_i2c();
+ 424               	.LM55:
+ 425 00fa 0E94 0000 		call INIT_i2c
+  22:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_uart();
+ 427               	.LM56:
+ 428 00fe 0E94 0000 		call INIT_uart
+  23:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_adc();
+ 430               	.LM57:
+ 431 0102 0E94 0000 		call INIT_adc
+  24:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Initialisation.c ****     INIT_interrupt();
+ 433               	.LM58:
+ 434 0106 0C94 0000 		jmp INIT_interrupt
+ 436               	.Lscope8:
+ 437               		.comm	etatBlade,1,1
+ 438               		.comm	_uTimeToMow,1,1
+ 439               		.comm	_uDock,1,1
+ 440               		.comm	_uUnderTheRain,1,1
+ 441               		.comm	_uCharge,1,1
+ 442               		.comm	_uBattery,1,1
+ 443               		.comm	distanceSonarRC,1,1
+ 444               		.comm	distanceSonarFR,1,1
+ 445               		.comm	distanceSonarFL,1,1
+ 446               		.comm	distanceSonarFC,1,1
+ 458               	.Letext0:
+ 459               		.ident	"GCC: (GNU) 4.8.1"
+ 460               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:00000000 Initialisation.c
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:2      *ABS*:0000003e __SP_H__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:3      *ABS*:0000003d __SP_L__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:4      *ABS*:0000003f __SREG__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:5      *ABS*:00000000 __tmp_reg__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:6      *ABS*:00000001 __zero_reg__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:116    .text:00000000 INIT_io
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:196    .text:0000003e INIT_interrupt
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:238    .text:00000060 INIT_pwm
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:288    .text:0000008e INIT_i2c
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:311    .text:0000009c INIT_uart
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:345    .text:000000ba INIT_adc
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:373    .text:000000d0 Initialisation
-                            *COM*:00000002 etatBlade
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccr4KHBO.s:415    .text:000000f6 INIT_variable
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:2      *ABS*:0000003e __SP_H__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:3      *ABS*:0000003d __SP_L__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:4      *ABS*:0000003f __SREG__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:5      *ABS*:00000000 __tmp_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:6      *ABS*:00000001 __zero_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:116    .text:00000000 INIT_io
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:196    .text:0000003e INIT_interrupt
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:238    .text:00000060 INIT_pwm
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:288    .text:0000008e INIT_i2c
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:310    .text:0000009c INIT_uart
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:345    .text:000000bc INIT_adc
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:373    .text:000000d2 INIT_variable
+                            *COM*:00000001 etatBlade
+                            *COM*:00000001 _uCharge
+                            *COM*:00000001 _uBattery
+                            *COM*:00000001 _uUnderTheRain
+                            *COM*:00000001 _uTimeToMow
+                            *COM*:00000001 _uDock
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccF6N5MA.s:406    .text:000000ee Initialisation
+                            *COM*:00000001 distanceSonarRC
+                            *COM*:00000001 distanceSonarFR
+                            *COM*:00000001 distanceSonarFL
+                            *COM*:00000001 distanceSonarFC
 
 UNDEFINED SYMBOLS
 __do_clear_bss

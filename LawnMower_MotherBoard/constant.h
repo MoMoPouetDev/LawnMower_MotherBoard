@@ -23,35 +23,38 @@
 #define MIDDLE_SPEED 50
 #define LOW_SPEED 20
 
-#define ADDR_SLAVE_SENSOR 0x01
-#define ADDR_SLAVE_SONAR_GPS 0x02
+#define ADDR_MASTER 0x01
+#define ADDR_SLAVE_SENSOR 0x02
 #define ADDR_SLAVE_COMPASS 0x03
 #define I2C_WRITE   0
 #define I2C_READ    1
 
 #define BAUD 9600
-#define MYUBRR F_CPU/16/BAUD-1
+#define BAUD_PRESCALE (F_CPU/ (16UL*BAUD))-1
 
 #define SONAR_DOCKING 3
 #define SONAR_WARN 30
 #define SONAR_ERR 10
+
+#define SENSOR_V_FAIBLE_WARN 20
+#define SENSOR_V_FAIBLE_ERR 10
+#define SENSOR_V_EMPTY 1
+
 uint8_t distanceSonarFC;
 uint8_t distanceSonarFL;
 uint8_t distanceSonarFR;
 uint8_t distanceSonarRC;
 
-#define SENSOR_V_FAIBLE_WARN 20
-#define SENSOR_V_FAIBLE_ERR 10
-#define SENSOR_V_EMPTY 1
-uint8_t batteryLevel;
-uint8_t inCharge;
-uint8_t underTheRain;
+uint8_t _uBattery;
+uint8_t _uCharge;
+uint8_t _uUnderTheRain;
+uint8_t _uDock;
+uint8_t _uTimeToMow;
 
-typedef enum Etat Etat;
-enum Etat
+typedef enum
 {
     ON, OFF
-};
+}Etat;
 Etat etatBlade;
 
 #endif /* constant_h */

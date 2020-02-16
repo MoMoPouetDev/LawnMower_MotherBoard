@@ -19,7 +19,7 @@ void Initialisation()
     INIT_variable();
     INIT_pwm();
     INIT_i2c();
-    INIT_uart(MYUBRR);
+    INIT_uart();
     INIT_adc();
     INIT_interrupt();
 }
@@ -28,7 +28,7 @@ void INIT_io()
 {
 /***** PORT B *****/
     DDRB = 0x00;
-    //DDRB |= (0<<DDB0); // Bouton Poussoir
+    //DDRB |= (0<<DDB0); // Bouton Poussoir Stop
     DDRB |= (1<<DDB1) | (1<<DDB2) | (1<<DDB4); // LED d'état Vert - Orange - Rouge
     DDRB |= (1<<DDB3); // Commande PWM Avant Moteur 2
     DDRB |= (1<<DDB5); // Commande Relais Alim Moteur
@@ -60,7 +60,7 @@ void INIT_io()
     DDRD |= (1<<DDD1); //| (0<<DDD0); // UART - TXD - RXD
     DDRD |= (1<<DDD2) | (1<<DDD3); // Commande Enable - PWM Arriere Moteur 2
     DDRD |= (1<<DDD4) | (1<<DDD5) | (1<<DDD6); // Commande Enable - PWM Arriere - PWM Avant Moteur 1
-    //DDRD |= (0<<DDD7); // Bouton Poussoir
+    //DDRD |= (0<<DDD7); // Bouton Poussoir Start
     
     PORTD = 0x00;
     //PORTD |= (1<<PORTC0) | (1<<PORTC1); // UART - RX No Pull-Up - TX
@@ -100,11 +100,11 @@ void INIT_i2c()
     TWCR = (1<<TWEN);
 }
 
-void INIT_uart(uint8_t ubrr)
+void INIT_uart()
 {
 /***** UART BaudRate *****/
-    UBRR0H = (unsigned char) (ubrr>>8);
-    UBRR0L = (unsigned char) ubrr;
+    UBRR0H = ((BAUD_PRESCALE)>>8);
+    UBRR0L = BAUD_PRESCALE;
     
 /***** Autoriser Transmition et Reception *****/
     UCSR0B |= (1<<RXCIE0) | (1<<TXEN0) | (1<<RXEN0);
@@ -121,6 +121,10 @@ void INIT_adc()
 void INIT_variable()
 {
     etatBlade = OFF;
-    inCharge = 0;
+    _uCharge = 0;
+    _uBattery = 0;
+    _uUnderTheRain = 0;
+    _uTimeToMow = 0;
+    _uDock = 0;
 }
 

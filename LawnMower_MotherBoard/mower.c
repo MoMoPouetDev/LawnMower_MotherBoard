@@ -14,42 +14,6 @@
 #include "pwm.h"
 #include "adc.h"
 
-uint8_t isDocking()
-{
-    if ((distanceSonarFC <= SONAR_DOCKING) && (distanceSonarFL <= SONAR_DOCKING) && (distanceSonarFR <= SONAR_DOCKING))
-    {
-        return 1;
-    }
-
-    else
-        return 0;
-}
-
-uint8_t isCharging()
-{
-    return inCharge;
-}
-
-uint8_t isTimeToMow()
-{
-    
-    return 1;
-}
-
-uint8_t isEnoughCharged()
-{
-    if (batteryLevel <= SENSOR_V_FAIBLE_WARN) {
-        return 0;
-    }
-    else
-        return 1;
-}
-
-uint8_t isRaining()
-{
-    return underTheRain;
-}
-
 void startMower()
 {
     if( ADC_read(PIN_ADC0) > WIRE_DETECTION_LIMITE)
@@ -91,6 +55,35 @@ void startMower()
     }
     else
         PWM_forward(HIGH_SPEED);
+}
+
+uint8_t isDocking()
+{
+    return _uDock;
+}
+
+uint8_t isCharging()
+{
+    return _uCharge;
+}
+
+uint8_t isTimeToMow()
+{
+    return _uTimeToMow;
+}
+
+uint8_t isEnoughCharged()
+{
+    if (_uBattery <= SENSOR_V_FAIBLE_WARN) {
+        return 0;
+    }
+    else
+        return 1;
+}
+
+uint8_t isRaining()
+{
+    return _uUnderTheRain;
 }
 
 void goDockCharger()
