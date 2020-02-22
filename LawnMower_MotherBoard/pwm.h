@@ -10,6 +10,7 @@
 #define pwm_h
 
 void PWM_forward(uint8_t);
+void PWM_forward_turn(uint8_t, uint8_t);
 void PWM_reverse(uint8_t);
 void PWM_right(void);
 void PWM_left(void);
