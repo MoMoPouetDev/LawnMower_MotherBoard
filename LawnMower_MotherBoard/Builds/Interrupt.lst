@@ -6,8 +6,8 @@
    6               	__zero_reg__ = 1
    8               		.text
    9               	.Ltext0:
- 110               	.global	__vector_18
- 112               	__vector_18:
+ 122               	.global	__vector_18
+ 124               	__vector_18:
    1:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** //
    2:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** //  Interrupt.c
    3:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** //  LawnMower_MotherBoard
@@ -20,94 +20,263 @@
   10:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** #include <avr/io.h>
   11:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** #include <avr/interrupt.h>
   12:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 
-  13:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** #include "uart.h"
-  14:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 
-  15:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** ISR(USART_RX_vect)
-  16:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** {
- 114               	.LM0:
- 115               	.LFBB1:
- 116 0000 1F92      		push r1
- 117 0002 0F92      		push r0
- 118 0004 0FB6      		in r0,__SREG__
- 119 0006 0F92      		push r0
- 120 0008 1124      		clr __zero_reg__
- 121               	/* prologue: Signal */
- 122               	/* frame size = 0 */
- 123               	/* stack size = 3 */
- 124               	.L__stack_usage = 3
- 125               	/* epilogue start */
-  17:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c ****     
-  18:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** }
- 127               	.LM1:
- 128 000a 0F90      		pop r0
- 129 000c 0FBE      		out __SREG__,r0
- 130 000e 0F90      		pop r0
- 131 0010 1F90      		pop r1
- 132 0012 1895      		reti
- 134               	.Lscope1:
- 136               	.global	__vector_5
- 138               	__vector_5:
-  19:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 
-  20:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** ISR(PCINT2_vect)
-  21:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** {
- 140               	.LM2:
- 141               	.LFBB2:
- 142 0014 1F92      		push r1
- 143 0016 0F92      		push r0
- 144 0018 0FB6      		in r0,__SREG__
- 145 001a 0F92      		push r0
- 146 001c 1124      		clr __zero_reg__
- 147               	/* prologue: Signal */
- 148               	/* frame size = 0 */
- 149               	/* stack size = 3 */
- 150               	.L__stack_usage = 3
- 151               	/* epilogue start */
-  22:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c ****     
-  23:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** }
- 153               	.LM3:
- 154 001e 0F90      		pop r0
- 155 0020 0FBE      		out __SREG__,r0
- 156 0022 0F90      		pop r0
- 157 0024 1F90      		pop r1
- 158 0026 1895      		reti
- 160               	.Lscope2:
- 162               	.global	__vector_3
- 164               	__vector_3:
-  24:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 
-  25:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** ISR(PCINT0_vect)
-  26:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** {
- 166               	.LM4:
- 167               	.LFBB3:
- 168 0028 1F92      		push r1
- 169 002a 0F92      		push r0
- 170 002c 0FB6      		in r0,__SREG__
- 171 002e 0F92      		push r0
- 172 0030 1124      		clr __zero_reg__
- 173               	/* prologue: Signal */
- 174               	/* frame size = 0 */
- 175               	/* stack size = 3 */
- 176               	.L__stack_usage = 3
- 177               	/* epilogue start */
-  27:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c ****     
-  28:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** }...
- 179               	.LM5:
- 180 0032 0F90      		pop r0
- 181 0034 0FBE      		out __SREG__,r0
- 182 0036 0F90      		pop r0
- 183 0038 1F90      		pop r1
- 184 003a 1895      		reti
- 186               	.Lscope3:
- 188               	.Letext0:
- 189               		.ident	"GCC: (GNU) 4.8.1"
+  13:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** #include "constant.h"
+  14:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** #include "uart.h"
+  15:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** #include "status.h"
+  16:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** #include "mower.h"
+  17:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 
+  18:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** ISR(USART_RX_vect)
+  19:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** {
+ 126               	.LM0:
+ 127               	.LFBB1:
+ 128 0000 1F92      		push r1
+ 129 0002 0F92      		push r0
+ 130 0004 0FB6      		in r0,__SREG__
+ 131 0006 0F92      		push r0
+ 132 0008 1124      		clr __zero_reg__
+ 133 000a 2F93      		push r18
+ 134 000c 3F93      		push r19
+ 135 000e 4F93      		push r20
+ 136 0010 5F93      		push r21
+ 137 0012 6F93      		push r22
+ 138 0014 7F93      		push r23
+ 139 0016 8F93      		push r24
+ 140 0018 9F93      		push r25
+ 141 001a AF93      		push r26
+ 142 001c BF93      		push r27
+ 143 001e EF93      		push r30
+ 144 0020 FF93      		push r31
+ 145               	/* prologue: Signal */
+ 146               	/* frame size = 0 */
+ 147               	/* stack size = 15 */
+ 148               	.L__stack_usage = 15
+  20:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c ****     STATUS_receivedStatus();
+ 150               	.LM1:
+ 151 0022 0E94 0000 		call STATUS_receivedStatus
+ 152               	/* epilogue start */
+  21:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** }
+ 154               	.LM2:
+ 155 0026 FF91      		pop r31
+ 156 0028 EF91      		pop r30
+ 157 002a BF91      		pop r27
+ 158 002c AF91      		pop r26
+ 159 002e 9F91      		pop r25
+ 160 0030 8F91      		pop r24
+ 161 0032 7F91      		pop r23
+ 162 0034 6F91      		pop r22
+ 163 0036 5F91      		pop r21
+ 164 0038 4F91      		pop r20
+ 165 003a 3F91      		pop r19
+ 166 003c 2F91      		pop r18
+ 167 003e 0F90      		pop r0
+ 168 0040 0FBE      		out __SREG__,r0
+ 169 0042 0F90      		pop r0
+ 170 0044 1F90      		pop r1
+ 171 0046 1895      		reti
+ 173               	.Lscope1:
+ 175               	.global	__vector_5
+ 177               	__vector_5:
+  22:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 
+  23:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** ISR(PCINT2_vect)
+  24:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** {
+ 179               	.LM3:
+ 180               	.LFBB2:
+ 181 0048 1F92      		push r1
+ 182 004a 0F92      		push r0
+ 183 004c 0FB6      		in r0,__SREG__
+ 184 004e 0F92      		push r0
+ 185 0050 1124      		clr __zero_reg__
+ 186 0052 2F93      		push r18
+ 187 0054 3F93      		push r19
+ 188 0056 4F93      		push r20
+ 189 0058 5F93      		push r21
+ 190 005a 6F93      		push r22
+ 191 005c 7F93      		push r23
+ 192 005e 8F93      		push r24
+ 193 0060 9F93      		push r25
+ 194 0062 AF93      		push r26
+ 195 0064 BF93      		push r27
+ 196 0066 EF93      		push r30
+ 197 0068 FF93      		push r31
+ 198               	/* prologue: Signal */
+ 199               	/* frame size = 0 */
+ 200               	/* stack size = 15 */
+ 201               	.L__stack_usage = 15
+  25:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c ****     //BP Start
+  26:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 	if(PIND & (1<<PIND7)) {
+ 203               	.LM4:
+ 204 006a 4F9B      		sbis 0x9,7
+ 205 006c 00C0      		rjmp .L2
+  27:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 		if(!isDocking()) {
+ 207               	.LM5:
+ 208 006e 0E94 0000 		call isDocking
+ 209 0072 8111      		cpse r24,__zero_reg__
+ 210 0074 00C0      		rjmp .L4
+  28:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 			_uBpStop = 0;
+ 212               	.LM6:
+ 213 0076 1092 0000 		sts _uBpStop,__zero_reg__
+  29:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 			_uBpStart ^= (1<<1);
+ 215               	.LM7:
+ 216 007a 8091 0000 		lds r24,_uBpStart
+ 217 007e 92E0      		ldi r25,lo8(2)
+ 218 0080 8927      		eor r24,r25
+ 219 0082 8093 0000 		sts _uBpStart,r24
+ 220 0086 00C0      		rjmp .L2
+ 221               	.L4:
+  30:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 		}
+  31:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 		else
+  32:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 			_uBpForceStart = 1;
+ 223               	.LM8:
+ 224 0088 81E0      		ldi r24,lo8(1)
+ 225 008a 8093 0000 		sts _uBpForceStart,r24
+ 226               	.L2:
+ 227               	/* epilogue start */
+  33:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 		
+  34:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 	}
+  35:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** }
+ 229               	.LM9:
+ 230 008e FF91      		pop r31
+ 231 0090 EF91      		pop r30
+ 232 0092 BF91      		pop r27
+ 233 0094 AF91      		pop r26
+ 234 0096 9F91      		pop r25
+ 235 0098 8F91      		pop r24
+ 236 009a 7F91      		pop r23
+ 237 009c 6F91      		pop r22
+ 238 009e 5F91      		pop r21
+ 239 00a0 4F91      		pop r20
+ 240 00a2 3F91      		pop r19
+ 241 00a4 2F91      		pop r18
+ 242 00a6 0F90      		pop r0
+ 243 00a8 0FBE      		out __SREG__,r0
+ 244 00aa 0F90      		pop r0
+ 245 00ac 1F90      		pop r1
+ 246 00ae 1895      		reti
+ 248               	.Lscope2:
+ 250               	.global	__vector_3
+ 252               	__vector_3:
+  36:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 
+  37:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** ISR(PCINT0_vect)
+  38:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** {
+ 254               	.LM10:
+ 255               	.LFBB3:
+ 256 00b0 1F92      		push r1
+ 257 00b2 0F92      		push r0
+ 258 00b4 0FB6      		in r0,__SREG__
+ 259 00b6 0F92      		push r0
+ 260 00b8 1124      		clr __zero_reg__
+ 261 00ba 2F93      		push r18
+ 262 00bc 3F93      		push r19
+ 263 00be 4F93      		push r20
+ 264 00c0 5F93      		push r21
+ 265 00c2 6F93      		push r22
+ 266 00c4 7F93      		push r23
+ 267 00c6 8F93      		push r24
+ 268 00c8 9F93      		push r25
+ 269 00ca AF93      		push r26
+ 270 00cc BF93      		push r27
+ 271 00ce CF93      		push r28
+ 272 00d0 EF93      		push r30
+ 273 00d2 FF93      		push r31
+ 274               	/* prologue: Signal */
+ 275               	/* frame size = 0 */
+ 276               	/* stack size = 16 */
+ 277               	.L__stack_usage = 16
+  39:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c ****     //BP Stop
+  40:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 	if(PINB & (1<<PINB0)) {
+ 279               	.LM11:
+ 280 00d4 189B      		sbis 0x3,0
+ 281 00d6 00C0      		rjmp .L6
+  41:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 		_uBpStop = 1;
+ 283               	.LM12:
+ 284 00d8 C1E0      		ldi r28,lo8(1)
+ 285 00da C093 0000 		sts _uBpStop,r28
+  42:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 		if((_eEtatRain == ON) && (isDocking()))
+ 287               	.LM13:
+ 288 00de 8091 0000 		lds r24,_eEtatRain
+ 289 00e2 8111      		cpse r24,__zero_reg__
+ 290 00e4 00C0      		rjmp .L6
+ 292               	.LM14:
+ 293 00e6 0E94 0000 		call isDocking
+ 294 00ea 8111      		cpse r24,__zero_reg__
+  43:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 			_eEtatRain = OFF;
+ 296               	.LM15:
+ 297 00ec C093 0000 		sts _eEtatRain,r28
+ 298               	.L6:
+ 299               	/* epilogue start */
+  44:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** 	}
+  45:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/Interrupt.c **** }...
+ 301               	.LM16:
+ 302 00f0 FF91      		pop r31
+ 303 00f2 EF91      		pop r30
+ 304 00f4 CF91      		pop r28
+ 305 00f6 BF91      		pop r27
+ 306 00f8 AF91      		pop r26
+ 307 00fa 9F91      		pop r25
+ 308 00fc 8F91      		pop r24
+ 309 00fe 7F91      		pop r23
+ 310 0100 6F91      		pop r22
+ 311 0102 5F91      		pop r21
+ 312 0104 4F91      		pop r20
+ 313 0106 3F91      		pop r19
+ 314 0108 2F91      		pop r18
+ 315 010a 0F90      		pop r0
+ 316 010c 0FBE      		out __SREG__,r0
+ 317 010e 0F90      		pop r0
+ 318 0110 1F90      		pop r1
+ 319 0112 1895      		reti
+ 321               	.Lscope3:
+ 322               		.comm	_eCommandMower,1,1
+ 323               		.comm	_eErrorMower,1,1
+ 324               		.comm	_eEtatMower,1,1
+ 325               		.comm	_eEtatRain,1,1
+ 326               		.comm	_eEtatBlade,1,1
+ 327               		.comm	_uWireReached,1,1
+ 328               		.comm	_uBpStop,1,1
+ 329               		.comm	_uBpForceStart,1,1
+ 330               		.comm	_uBpStart,1,1
+ 331               		.comm	_uTimeToMow,1,1
+ 332               		.comm	_uDock,1,1
+ 333               		.comm	_uUnderTheRain,1,1
+ 334               		.comm	_uCharge,1,1
+ 335               		.comm	_uBattery,1,1
+ 336               		.comm	distanceSonarRC,1,1
+ 337               		.comm	distanceSonarFR,1,1
+ 338               		.comm	distanceSonarFL,1,1
+ 339               		.comm	distanceSonarFC,1,1
+ 359               	.Letext0:
+ 360               		.ident	"GCC: (GNU) 4.8.1"
+ 361               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:00000000 Interrupt.c
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccIvP832.s:2      *ABS*:0000003e __SP_H__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccIvP832.s:3      *ABS*:0000003d __SP_L__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccIvP832.s:4      *ABS*:0000003f __SREG__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccIvP832.s:5      *ABS*:00000000 __tmp_reg__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccIvP832.s:6      *ABS*:00000001 __zero_reg__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccIvP832.s:112    .text:00000000 __vector_18
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccIvP832.s:138    .text:00000014 __vector_5
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccIvP832.s:164    .text:00000028 __vector_3
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccBQpTlB.s:2      *ABS*:0000003e __SP_H__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccBQpTlB.s:3      *ABS*:0000003d __SP_L__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccBQpTlB.s:4      *ABS*:0000003f __SREG__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccBQpTlB.s:5      *ABS*:00000000 __tmp_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccBQpTlB.s:6      *ABS*:00000001 __zero_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccBQpTlB.s:124    .text:00000000 __vector_18
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccBQpTlB.s:177    .text:00000048 __vector_5
+                            *COM*:00000001 _uBpStop
+                            *COM*:00000001 _uBpStart
+                            *COM*:00000001 _uBpForceStart
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccBQpTlB.s:252    .text:000000b0 __vector_3
+                            *COM*:00000001 _eEtatRain
+                            *COM*:00000001 _eCommandMower
+                            *COM*:00000001 _eErrorMower
+                            *COM*:00000001 _eEtatMower
+                            *COM*:00000001 _eEtatBlade
+                            *COM*:00000001 _uWireReached
+                            *COM*:00000001 _uTimeToMow
+                            *COM*:00000001 _uDock
+                            *COM*:00000001 _uUnderTheRain
+                            *COM*:00000001 _uCharge
+                            *COM*:00000001 _uBattery
+                            *COM*:00000001 distanceSonarRC
+                            *COM*:00000001 distanceSonarFR
+                            *COM*:00000001 distanceSonarFL
+                            *COM*:00000001 distanceSonarFC
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+STATUS_receivedStatus
+isDocking
+__do_clear_bss

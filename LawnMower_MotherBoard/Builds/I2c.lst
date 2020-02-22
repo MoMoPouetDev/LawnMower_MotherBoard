@@ -177,33 +177,43 @@
  276 0064 8093 BC00 		sts 188,r24
  277 0068 0895      		ret
  279               	.Lscope6:
- 280               		.comm	etatBlade,1,1
- 281               		.comm	_uTimeToMow,1,1
- 282               		.comm	_uDock,1,1
- 283               		.comm	_uUnderTheRain,1,1
- 284               		.comm	_uCharge,1,1
- 285               		.comm	_uBattery,1,1
- 286               		.comm	distanceSonarRC,1,1
- 287               		.comm	distanceSonarFR,1,1
- 288               		.comm	distanceSonarFL,1,1
- 289               		.comm	distanceSonarFC,1,1
- 301               	.Letext0:
- 302               		.ident	"GCC: (GNU) 4.8.1"
- 303               	.global __do_clear_bss
+ 280               		.comm	_eEtatRain,1,1
+ 281               		.comm	_eEtatBlade,1,1
+ 282               		.comm	_uWireReached,1,1
+ 283               		.comm	_uBpStop,1,1
+ 284               		.comm	_uBpForceStart,1,1
+ 285               		.comm	_uBpStart,1,1
+ 286               		.comm	_uTimeToMow,1,1
+ 287               		.comm	_uDock,1,1
+ 288               		.comm	_uUnderTheRain,1,1
+ 289               		.comm	_uCharge,1,1
+ 290               		.comm	_uBattery,1,1
+ 291               		.comm	distanceSonarRC,1,1
+ 292               		.comm	distanceSonarFR,1,1
+ 293               		.comm	distanceSonarFL,1,1
+ 294               		.comm	distanceSonarFC,1,1
+ 311               	.Letext0:
+ 312               		.ident	"GCC: (GNU) 4.8.1"
+ 313               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:00000000 I2c.c
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccMfNZFP.s:2      *ABS*:0000003e __SP_H__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccMfNZFP.s:3      *ABS*:0000003d __SP_L__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccMfNZFP.s:4      *ABS*:0000003f __SREG__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccMfNZFP.s:5      *ABS*:00000000 __tmp_reg__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccMfNZFP.s:6      *ABS*:00000001 __zero_reg__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccMfNZFP.s:116    .text:00000000 I2C_start
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccMfNZFP.s:145    .text:00000010 I2C_write
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccMfNZFP.s:177    .text:00000026 I2C_write_data
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccMfNZFP.s:207    .text:0000003a I2C_readACK
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccMfNZFP.s:236    .text:0000004e I2C_readNACK
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccMfNZFP.s:265    .text:00000062 I2C_stop
-                            *COM*:00000001 etatBlade
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cctaJndU.s:2      *ABS*:0000003e __SP_H__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cctaJndU.s:3      *ABS*:0000003d __SP_L__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cctaJndU.s:4      *ABS*:0000003f __SREG__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cctaJndU.s:5      *ABS*:00000000 __tmp_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cctaJndU.s:6      *ABS*:00000001 __zero_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cctaJndU.s:116    .text:00000000 I2C_start
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cctaJndU.s:145    .text:00000010 I2C_write
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cctaJndU.s:177    .text:00000026 I2C_write_data
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cctaJndU.s:207    .text:0000003a I2C_readACK
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cctaJndU.s:236    .text:0000004e I2C_readNACK
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//cctaJndU.s:265    .text:00000062 I2C_stop
+                            *COM*:00000001 _eEtatRain
+                            *COM*:00000001 _eEtatBlade
+                            *COM*:00000001 _uWireReached
+                            *COM*:00000001 _uBpStop
+                            *COM*:00000001 _uBpForceStart
+                            *COM*:00000001 _uBpStart
                             *COM*:00000001 _uTimeToMow
                             *COM*:00000001 _uDock
                             *COM*:00000001 _uUnderTheRain

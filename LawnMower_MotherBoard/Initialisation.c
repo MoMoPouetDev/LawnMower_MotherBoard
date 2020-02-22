@@ -11,6 +11,8 @@
 #include <avr/interrupt.h>
 
 #include "constant.h"
+#include "status.h"
+#include "twi.h"
 #include "Initialisation.h"
 
 void Initialisation()
@@ -18,7 +20,7 @@ void Initialisation()
     INIT_io();
     INIT_variable();
     INIT_pwm();
-    INIT_i2c();
+    INIT_twi();
     INIT_uart();
     INIT_adc();
     INIT_interrupt();
@@ -94,10 +96,10 @@ void INIT_pwm()
     OCR2B = 0x00; // Marche Arrière
 }
 
-void INIT_i2c()
+void INIT_twi()
 {
-    TWBR = 32; //TWBR  = ((F_CPU / SCL_CLK) – 16) / 2
-    TWCR = (1<<TWEN);
+    TWBR = 2; //TWBR  = ((F_CPU / SCL_CLK) – 16) / 2 - 400kHz
+    TWCR = (1<<TWEA) | (1<<TWEN) | (1<<TWIE);
 }
 
 void INIT_uart()
@@ -126,5 +128,9 @@ void INIT_variable()
     _uUnderTheRain = 0;
     _uTimeToMow = 0;
     _uDock = 0;
+	_uBpStop = 0;
+	_uBpStart = 0;
+	_uBpForceStart = 0;
+	_uWireReached = 0;
 }
 

@@ -13,7 +13,7 @@ void Initialisation(void);
 void INIT_io(void);
 void INIT_pwm(void);
 void INIT_interrupt(void);
-void INIT_i2c(void);
+void INIT_twi(void);
 void INIT_uart(void);
 void INIT_adc(void);
 void INIT_variable(void);
