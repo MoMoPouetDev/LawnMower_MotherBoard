@@ -22,10 +22,24 @@ ISR(USART_RX_vect)
 
 ISR(PCINT2_vect)
 {
-    
+    //BP Start
+	if(PIND & (1<<PIND7)) {
+		if(!isDocking()) {
+			_uBpStop = 0;
+			_uBpStart ^= (1<<1);
+		}
+		else
+			_uBpForceStart = 1;
+		
+	}
 }
 
 ISR(PCINT0_vect)
 {
-    
+    //BP Stop
+	if(PINB & (1<<PINB0)) {
+		_uBpStop = 1;
+		if((_eEtatRain == ON) && (isDocking()))
+			_eEtatRain = OFF;
+	}
 }
