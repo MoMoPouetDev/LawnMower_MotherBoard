@@ -9,7 +9,7 @@
 #ifndef uart_h
 #define uart_h
 
-void UART_transmission(unsigned char);
-unsigned char UART_reception(void);
+void UART_transmission(uint8_t);
+uint8_t UART_reception(void);
 
 #endif /* uart_h */

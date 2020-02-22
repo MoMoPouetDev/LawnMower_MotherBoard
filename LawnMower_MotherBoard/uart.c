@@ -11,15 +11,15 @@
 
 #include "uart.h"
 
-void UART_transmission(unsigned char dataToSend)
+void UART_transmission(uint8_t statusToSend)
 {
 /***** Attente du buffer *****/
     while (!(UCSR0A & (1<<UDRE0)));
 /***** Stock la data dans le buffer *****/
-    UDR0 = dataToSend;
+    UDR0 = statusToSend;
 }
 
-unsigned char UART_reception()
+uint8_t UART_reception()
 {
 /***** Attente de reception *****/
     while (!(UCSR0A & (1<<RXC0)));

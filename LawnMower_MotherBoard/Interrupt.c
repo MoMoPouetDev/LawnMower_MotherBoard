@@ -10,11 +10,14 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+#include "constant.h"
 #include "uart.h"
+#include "status.h"
+#include "mower.h"
 
 ISR(USART_RX_vect)
 {
-    
+    STATUS_receivedStatus();
 }
 
 ISR(PCINT2_vect)
