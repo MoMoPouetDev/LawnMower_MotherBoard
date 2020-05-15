@@ -28,13 +28,18 @@
 #define ENABLE_MOTOR_2 PORTD4
 
 #define ADDR_MASTER 0x10
-#define ADDR_SLAVE_SENSOR 0x01
-#define ADDR_SLAVE_COMPASS 0x03
+#define ADDR_SLAVE_SENSOR 0x02
+#define ADDR_SLAVE_COMPASS 0x3C
+#define ADDR_SLAVE_ACC 0x53
+
+#define ERROR_DATA 0xFF
 
 #define BAUD 9600
 #define BAUD_PRESCALE ((F_CPU/ (16UL*BAUD))-1)
 
-#define SONAR_DOCKING 3
+#define COORDINATES_BASE_LAT 49.2315928
+#define COORDINATES_BASE_LONG 1.2470619
+
 #define SONAR_WARN 30
 #define SONAR_ERR 10
 
@@ -50,22 +55,19 @@
 #define LED_YELLOW_2 PORTC2
 #define LED_YELLOW_3 PORTC3
 
-uint8_t distanceSonarFC;
-uint8_t distanceSonarFL;
-uint8_t distanceSonarFR;
-uint8_t distanceSonarRC;
+uint8_t _uTime;
+uint8_t _uDate;
 
 uint8_t _uBattery;
-uint8_t _uCharge;
-uint8_t _uUnderTheRain;
-uint8_t _uDock;
-uint8_t _uTimeToMow;
 
 uint8_t _uBpStart;
 uint8_t _uBpForceStart;
 uint8_t _uBpStop;
 
 uint8_t _uWireReached;
+
+uint8_t _uFlagWatchdog;
+uint8_t _FlagError;
 
 typedef enum
 {
@@ -74,5 +76,7 @@ typedef enum
 }Etat;
 Etat _eEtatBlade;
 Etat _eEtatRain;
+
+
 
 #endif /* constant_h */

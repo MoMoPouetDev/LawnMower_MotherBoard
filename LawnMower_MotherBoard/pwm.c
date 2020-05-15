@@ -50,8 +50,8 @@ void PWM_right()
     OCR0B = 0x00;
     OCR2A = 0x00;
 
-    OCR0A = (( 0xFF / 100 ) * 20);
-    OCR2B = (( 0xFF / 100 ) * 20);
+    OCR0A = (( 0xFF / 100 ) * LOW_SPEED);
+    OCR2B = (( 0xFF / 100 ) * LOW_SPEED);
     
     PORTD |= (1<<ENABLE_MOTOR_1) | (1<<ENABLE_MOTOR_2);
 }
@@ -61,8 +61,8 @@ void PWM_left()
     OCR0A = 0x00;
     OCR2B = 0x00;
     
-    OCR0B = (( 0xFF / 100 ) * 20);
-    OCR2A = (( 0xFF / 100 ) * 20);
+    OCR0B = (( 0xFF / 100 ) * LOW_SPEED);
+    OCR2A = (( 0xFF / 100 ) * LOW_SPEED);
     
     PORTD |= (1<<ENABLE_MOTOR_1) | (1<<ENABLE_MOTOR_2);
 }

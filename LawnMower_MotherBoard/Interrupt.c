@@ -20,10 +20,14 @@ ISR(USART_RX_vect)
     STATUS_receivedStatus();
 }
 
+ISR(WDT_vect) {
+	_uFlagWatchdog = 1;
+}
+
 ISR(PCINT2_vect)
 {
     //BP Start
-	if(PIND & (1<<PIND7)) {
+	if(!(PIND & (1<<PIND7))) {
 		if(!isDocking()) {
 			_uBpStop = 0;
 			_uBpStart ^= (1<<1);
@@ -37,7 +41,7 @@ ISR(PCINT2_vect)
 ISR(PCINT0_vect)
 {
     //BP Stop
-	if(PINB & (1<<PINB0)) {
+	if(!(PINB & (1<<PINB0))) {
 		_uBpStop = 1;
 		if((_eEtatRain == ON) && (isDocking()))
 			_eEtatRain = OFF;

@@ -14,6 +14,7 @@
 #include "mower.h"
 #include "status.h"
 #include "uart.h"
+#include "twi.h"
 
 void STATUS_updateStatus() {
     STATUS_updateStatusLed();
@@ -115,6 +116,19 @@ void STATUS_sendStatus() {
     UART_transmission(_eEtatMower);
     UART_transmission(_eErrorMower);
     UART_transmission(_uBattery);
+    
+	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_LAT_DEG));
+	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_LAT_MIN));
+	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_LAT_DEC));
+	
+	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_LONG_DEG));
+	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_LONG_MIN));
+	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_LONG_DEC));
+	
+	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_TIME_HOURS));
+	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_TIME_MINUTES));
+	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_DATE_DAYS));
+	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_DATE_MONTHS));
 }
 
 void STATUS_receivedStatus() {

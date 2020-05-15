@@ -7,16 +7,29 @@
 //
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <util/delay.h>
+#include <math.h>
 
 #include "constant.h"
 #include "mower.h"
 #include "pwm.h"
 #include "adc.h"
 #include "status.h"
+#include "twi.h"
 
 void MOWER_startMower()
 {
+	uint8_t distanceSonarFC = TWI_getData(SLAVE_SENSOR, SONAR_FC);
+	if(distanceSonarFC == ERROR_DATA)
+		distanceSonarFC = TWI_getData(SLAVE_SENSOR, SONAR_FC);
+	uint8_t distanceSonarFL = TWI_getData(SLAVE_SENSOR, SONAR_FL);
+	if(distanceSonarFL == ERROR_DATA)
+		distanceSonarFL = TWI_getData(SLAVE_SENSOR, SONAR_FL);
+	uint8_t distanceSonarFR = TWI_getData(SLAVE_SENSOR, SONAR_FR);
+	if(distanceSonarFR == ERROR_DATA)
+		distanceSonarFR = TWI_getData(SLAVE_SENSOR, SONAR_FR);
+			
     if( ADC_read(PIN_ADC0) > WIRE_DETECTION_LIMITE)
     {
         PWM_stop();
@@ -40,9 +53,7 @@ void MOWER_startMower()
         myDelayLoop(1000);
     }
     else if ((distanceSonarFC < SONAR_WARN) || (distanceSonarFL < SONAR_WARN) || (distanceSonarFR < SONAR_WARN))
-    {
-        PWM_forward(MIDDLE_SPEED);
-        
+    {       
         if ((distanceSonarFC < SONAR_ERR) || (distanceSonarFL < SONAR_ERR) || (distanceSonarFR < SONAR_ERR)) {
             PWM_stop();
             myDelayLoop(1000);
@@ -53,6 +64,8 @@ void MOWER_startMower()
             PWM_forward(LOW_SPEED);
             myDelayLoop(1000);
         }
+		else
+			PWM_forward(MIDDLE_SPEED);
     }
     else
         PWM_forward(HIGH_SPEED);
@@ -60,71 +73,103 @@ void MOWER_startMower()
 
 uint8_t isDocking()
 {
-    return _uDock;
+	uint8_t dock = TWI_getData(SLAVE_SENSOR, SENSOR_DOCK);
+	if(dock == ERROR_DATA)
+		dock = TWI_getData(SLAVE_SENSOR, SENSOR_DOCK);
+	
+    return dock;
 }
 
 uint8_t isCharging()
 {
-    return _uCharge;
+	uint8_t charge = TWI_getData(SLAVE_SENSOR, SENSOR_A);
+	if(charge == ERROR_DATA)
+		charge = TWI_getData(SLAVE_SENSOR, SENSOR_A);
+	
+    return charge;
 }
 
 uint8_t isTimeToMow()
 {
-    return _uTimeToMow;
+	uint8_t timeToMow = TWI_getData(SLAVE_SENSOR, TIME_TO_MOW);
+	if(timeToMow == ERROR_DATA)
+		timeToMow = TWI_getData(SLAVE_SENSOR, TIME_TO_MOW);
+	
+    return timeToMow;
 }
 
-uint8_t isEnoughCharged(uint8_t dock)
+uint8_t isEnoughCharged()
 {
-	if(dock) {
-		if (_uBattery <= SENSOR_V_OK) {
-			return 0;
+	uint8_t battery = TWI_getData(SLAVE_SENSOR, SENSOR_V);
+	if(battery == ERROR_DATA)
+		battery = TWI_getData(SLAVE_SENSOR, SENSOR_V);
+	
+	_uBattery = battery;
+	
+	if (battery <= SENSOR_V_FAIBLE_WARN) {
+		if(battery <= SENSOR_V_FAIBLE_WARN)
+			_eErrorMower = LOW_BATTERY;
+		else if (battery <= SENSOR_V_FAIBLE_ERR)
+			_eErrorMower = VERY_LOW_BATTERY;
+		else if (battery <= SENSOR_V_EMPTY) {
+			_eErrorMower = EMPTY_BATTERY;
+			return -1;
 		}
 		else
-			return 1;
+			_eErrorMower = VERY_LOW_BATTERY;
+		
+		return 0;
 	}
-	else {
-		if (_uBattery <= SENSOR_V_FAIBLE_WARN) {
-			if(_uBattery <= SENSOR_V_FAIBLE_WARN)
-				_eErrorMower = LOW_BATTERY;
-			else if (_uBattery <= SENSOR_V_FAIBLE_ERR)
-				_eErrorMower = VERY_LOW_BATTERY;
-			else if (_uBattery <= SENSOR_V_EMPTY)
-				_eErrorMower = EMPTY_BATTERY;
-			else
-				_eErrorMower = VERY_LOW_BATTERY;
-			
-			return 0;
-		}
-		else
-			return 1;
-	}
+	else
+		return 1;
 }
 
 uint8_t isRaining()
 {
-	if(_uUnderTheRain) {
+	uint8_t underTheRain = TWI_getData(ADDR_SLAVE_SENSOR, SENSOR_RAIN);
+	if(underTheRain == ERROR_DATA)
+		underTheRain = TWI_getData(ADDR_SLAVE_SENSOR, SENSOR_RAIN);
+	
+	if(underTheRain) {
 		_eErrorMower = DETECTED_RAIN;
 		_eEtatRain = ON;
 	}
-    return _uUnderTheRain;
+	
+    return underTheRain;
 }
 
 void MOWER_goDockCharger()
 {
-	uint8_t _pLastError = 0;
-	uint8_t _uChargeStatus = 0;
+	uint8_t lastError = 0;
+	uint8_t wireReached = 0;
+	uint8_t distanceSonarFC,
+			distanceSonarFL,
+			distanceSonarFR;
 	
 	MOWER_directionFromBase();
 	
 	while(!isDocking()) {
-		_uChargeStatus = isEnoughCharged(isDocking());
+		STATUS_updateStatus();
 		STATUS_sendStatus();
 		
-		if(!_uWireReached) {
+		if(isEnoughCharged() == -1)
+			break;
+		
+		if(!wireReached) {
+			distanceSonarFC = TWI_getData(SLAVE_SENSOR, SONAR_FC);
+			if(distanceSonarFC == ERROR_DATA)
+				distanceSonarFC = TWI_getData(SLAVE_SENSOR, SONAR_FC);
+			distanceSonarFL = TWI_getData(SLAVE_SENSOR, SONAR_FL);
+			if(distanceSonarFL == ERROR_DATA)
+				distanceSonarFL = TWI_getData(SLAVE_SENSOR, SONAR_FL);
+			distanceSonarFR = TWI_getData(SLAVE_SENSOR, SONAR_FR);
+			if(distanceSonarFR == ERROR_DATA)
+				distanceSonarFR = TWI_getData(SLAVE_SENSOR, SONAR_FR);
+			
 			PWM_forward(HIGH_SPEED);
 			
 			if( ADC_read(PIN_ADC0) > WIRE_DETECTION_LIMITE) {
-				_uWireReached = 1;
+				wireReached = 1;
 			}
 			else if (ADC_read(PIN_ADC1) > WIRE_DETECTION_LIMITE) {
 				PWM_stop();
@@ -134,7 +179,7 @@ void MOWER_goDockCharger()
 				PWM_stop();
 				myDelayLoop(1000);
 				PWM_right();
-				while(!45 || (ADC_read(PIN_ADC1) > WIRE_DETECTION_LIMITE)); // Use Compass when implement, +45°
+				while(!45 || (ADC_read(PIN_ADC1) > WIRE_DETECTION_LIMITE) || (ADC_read(PIN_ADC0) > WIRE_DETECTION_LIMITE)); // Use Compass when implement, +45°
 			}
 			else if ((distanceSonarFC < SONAR_WARN) || (distanceSonarFL < SONAR_WARN) || (distanceSonarFR < SONAR_WARN)) {
 				PWM_forward(MIDDLE_SPEED);
@@ -154,28 +199,41 @@ void MOWER_goDockCharger()
 		}
 		else {
 			if( (WIRE_DETECTION_MIN < ADC_read(PIN_ADC0)) && (ADC_read(PIN_ADC0 < WIRE_DETECTION_MAX))) {
-				MOWER_pidController(&_pLastError);
+				MOWER_pidController(&lastError);
 			}
 			else {
 				MOWER_directionFromBase();
-				_uWireReached = 0;
+				wireReached = 0;
 			}
 		}
 	}
 }
 
 void MOWER_directionFromBase() {
+	float angleFromNorth,
+			angleFromBase;
+	
 	PWM_stop();
 	myDelayLoop(1000);
-/*	getAbsoluteAngle();
-	getAngleFromBase();
-	if(-) {
-		PWM_left();
+	angleFromNorth = MOWER_getAngleFromNorth();
+	angleFromBase = MOWER_getAzimut(angleFromNorth);
+	
+	if(angleFromBase < 0) {
+		while(angleFromBase >= 0 ) {
+			PWM_left();
+			angleFromNorth = MOWER_getAngleFromNorth();
+			angleFromBase = MOWER_getAzimut(angleFromNorth);
+		}
 	}
-	else if(+) {
-		PWM_right();
+	else if(angleFromBase > 0) {
+		while(angleFromBase <= 0) {
+			PWM_right();
+			angleFromNorth = MOWER_getAngleFromNorth();
+			angleFromBase = MOWER_getAzimut(angleFromNorth);
+		}
 	}
-*/
+
+	PWM_stop();
 }
 
 void MOWER_pidController(uint8_t* lastError) {
@@ -219,17 +277,27 @@ void MOWER_pidController(uint8_t* lastError) {
 	*lastError = errorPosition;
 }
 
-void MOWER_leaveDockCharger()
+uint8_t MOWER_leaveDockCharger()
 {
-    PWM_reverse(LOW_SPEED);
-    myDelayLoop(5000);
-    PWM_stop();
-    myDelayLoop(1000);
-    PWM_right();
-	myDelayLoop(2000); // Use Compass when implement, +45°
-    PWM_stop();
-    PWM_forward(MIDDLE_SPEED);
-    myDelayLoop(1000);
+	uint8_t distanceSonarRC = TWI_getData(SLAVE_SENSOR, SONAR_RC);
+	if(distanceSonarRC == ERROR_DATA)
+		distanceSonarRC = TWI_getData(SLAVE_SENSOR, SONAR_RC);
+	
+	if(distanceSonarRC < SONAR_WARN) {
+		return 0;
+	}
+	else {
+		PWM_reverse(LOW_SPEED);
+		myDelayLoop(5000);
+		PWM_stop();
+		myDelayLoop(1000);
+		PWM_right();
+		myDelayLoop(2000); // Use Compass when implement, +45°
+		PWM_stop();
+		
+		return 1;
+	}
+		
 }
 
 void MOWER_updateBladeState()
@@ -245,6 +313,69 @@ void MOWER_updateBladeState()
 			PORTB &= ~(1<<PORTB6) & ~(1<<PORTB7);
 			break;
 	}
+}
+
+void MOWER_getCoordinates(float* pLatitudeCoordinates, float* pLongitudeCoordinates) {
+    
+    Coordinates tLatitude;
+    Coordinates tLongitude;
+    
+    char tempLat[6] = {0};
+    char tempLong[6] = {0};
+		
+	tLatitude.degrees = TWI_getData(SLAVE_SENSOR, GPS_LAT_DEG);
+	tLatitude.minutes = TWI_getData(SLAVE_SENSOR, GPS_LAT_MIN);
+	tLatitude.decimal = TWI_getData(SLAVE_SENSOR, GPS_LAT_DEC);
+    sprintf(tempLat, "%d.%d",tLatitude.minutes, tLatitude.decimal);
+    *pLatitudeCoordinates = tLatitude.degrees + (atof(tempLat)/60.0);
+    
+	tLongitude.degrees = TWI_getData(SLAVE_SENSOR, GPS_LONG_DEG);
+	tLongitude.minutes = TWI_getData(SLAVE_SENSOR, GPS_LONG_MIN);
+	tLongitude.decimal = TWI_getData(SLAVE_SENSOR, GPS_LONG_DEC);
+    sprintf(tempLong, "%d.%d",tLongitude.minutes, tLongitude.decimal);
+    *pLongitudeCoordinates = tLongitude.degrees + (atof(tempLong)/60.0);
+}
+
+float MOWER_getAngleFromNorth() {
+	int8_t dataLsbX,
+			dataMsbX,
+			dataLsbY,
+			dataMsbY;
+	int16_t dataX,
+			dataY;
+	float angle;
+			
+			
+	dataLsbX = TWI_getData(SLAVE_COMPASS, DATA_COMPASS_X_LSB);
+	dataMsbX = TWI_getData(SLAVE_COMPASS, DATA_COMPASS_X_MSB);
+	dataX = (dataMsbX<<8) | dataLsbX;
+	
+	dataLsbY = TWI_getData(SLAVE_COMPASS, DATA_COMPASS_Y_LSB);
+	dataMsbY = TWI_getData(SLAVE_COMPASS, DATA_COMPASS_Y_MSB);
+	dataY = (dataMsbY<<8) | dataLsbY;
+	
+	angle = atan(dataX / dataY);
+	
+	return angle;
+}
+
+float MOWER_getAzimut(float angleFromNorth) {
+	float x,
+		y,
+		latitude,
+		longitude,
+        angle;
+
+	MOWER_getCoordinates(&latitude, &longitude);
+	
+	x = cos(latitude)*sin(COORDINATES_BASE_LAT) - sin(latitude)*cos(COORDINATES_BASE_LAT)*cos(COORDINATES_BASE_LONG-longitude);
+	y = sin(COORDINATES_BASE_LONG-longitude)*cos(COORDINATES_BASE_LAT);
+	
+	angle = 2*atan(y / (sqrt(x*x + y*y) + x));
+	
+	angle = angle - angleFromNorth;
+	
+	return angle;
 }
 
 void myDelayLoop(double delay)

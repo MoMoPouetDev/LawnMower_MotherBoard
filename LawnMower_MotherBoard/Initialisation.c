@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/wdt.h>
 
 #include "constant.h"
 #include "status.h"
@@ -23,6 +24,7 @@ void Initialisation()
     INIT_twi();
     INIT_uart();
     INIT_adc();
+	INIT_wdt();
     INIT_interrupt();
 }
 
@@ -100,6 +102,15 @@ void INIT_twi()
     TWCR = (1<<TWEA) | (1<<TWEN) | (1<<TWIE);
 }
 
+void INIT_wdt()
+{
+	cli();
+	wdt_reset();
+	WDTCSR |= (1<<WDCE) | (1<<WDE);
+	WDTCSR = (1<<WDIE) | (1<<WDP2) | (1<<WDP1);
+	sei();
+}
+
 void INIT_uart()
 {
 /***** UART BaudRate *****/
@@ -126,15 +137,10 @@ void INIT_variable()
 	_eErrorMower = NTR;
 	_eCommandMower = UNKNOWN_COMMAND;
     _eDataAdress = UNKNOWN_DATA;
-	
-    _uCharge = 0;
-    _uBattery = 0;
-    _uUnderTheRain = 0;
-    _uTimeToMow = 0;
-    _uDock = 0;
 	_uBpStop = 0;
 	_uBpStart = 0;
 	_uBpForceStart = 0;
 	_uWireReached = 0;
+	_uFlagWatchdog = 0;
 }
 

@@ -17,6 +17,6 @@ void INIT_twi(void);
 void INIT_uart(void);
 void INIT_adc(void);
 void INIT_variable(void);
-
+void INIT_wdt(void);
 
 #endif /* Initialisation_h */

@@ -140,11 +140,11 @@
  229               	.LM20:
  230 0046 1092 B300 		sts 179,__zero_reg__
   52:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/pwm.c **** 
-  53:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/pwm.c ****     OCR0A = (( 0xFF / 100 ) * 20);
+  53:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/pwm.c ****     OCR0A = (( 0xFF / 100 ) * LOW_SPEED);
  232               	.LM21:
  233 004a 88E2      		ldi r24,lo8(40)
  234 004c 87BD      		out 0x27,r24
-  54:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/pwm.c ****     OCR2B = (( 0xFF / 100 ) * 20);
+  54:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/pwm.c ****     OCR2B = (( 0xFF / 100 ) * LOW_SPEED);
  236               	.LM22:
  237 004e 8093 B400 		sts 180,r24
   55:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/pwm.c ****     
@@ -174,11 +174,11 @@
  261               	.LM26:
  262 005c 1092 B400 		sts 180,__zero_reg__
   63:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/pwm.c ****     
-  64:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/pwm.c ****     OCR0B = (( 0xFF / 100 ) * 20);
+  64:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/pwm.c ****     OCR0B = (( 0xFF / 100 ) * LOW_SPEED);
  264               	.LM27:
  265 0060 88E2      		ldi r24,lo8(40)
  266 0062 88BD      		out 0x28,r24
-  65:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/pwm.c ****     OCR2A = (( 0xFF / 100 ) * 20);
+  65:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/pwm.c ****     OCR2A = (( 0xFF / 100 ) * LOW_SPEED);
  268               	.LM28:
  269 0064 8093 B300 		sts 179,r24
   66:/Users/morgan/Documents/ProjetTondeuse/CarteMere/LawnMower_MotherBoard/LawnMower_MotherBoard/pwm.c ****     
@@ -224,50 +224,42 @@
  308               	.Lscope6:
  309               		.comm	_eEtatRain,1,1
  310               		.comm	_eEtatBlade,1,1
- 311               		.comm	_uWireReached,1,1
- 312               		.comm	_uBpStop,1,1
- 313               		.comm	_uBpForceStart,1,1
- 314               		.comm	_uBpStart,1,1
- 315               		.comm	_uTimeToMow,1,1
- 316               		.comm	_uDock,1,1
- 317               		.comm	_uUnderTheRain,1,1
- 318               		.comm	_uCharge,1,1
- 319               		.comm	_uBattery,1,1
- 320               		.comm	distanceSonarRC,1,1
- 321               		.comm	distanceSonarFR,1,1
- 322               		.comm	distanceSonarFL,1,1
- 323               		.comm	distanceSonarFC,1,1
- 340               	.Letext0:
- 341               		.ident	"GCC: (GNU) 4.8.1"
- 342               	.global __do_clear_bss
+ 311               		.comm	_FlagError,1,1
+ 312               		.comm	_uFlagWatchdog,1,1
+ 313               		.comm	_uWireReached,1,1
+ 314               		.comm	_uBpStop,1,1
+ 315               		.comm	_uBpForceStart,1,1
+ 316               		.comm	_uBpStart,1,1
+ 317               		.comm	_uBattery,1,1
+ 318               		.comm	_uDate,1,1
+ 319               		.comm	_uTime,1,1
+ 332               	.Letext0:
+ 333               		.ident	"GCC: (GNU) 4.8.1"
+ 334               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:00000000 pwm.c
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccqAtpbP.s:2      *ABS*:0000003e __SP_H__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccqAtpbP.s:3      *ABS*:0000003d __SP_L__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccqAtpbP.s:4      *ABS*:0000003f __SREG__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccqAtpbP.s:5      *ABS*:00000000 __tmp_reg__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccqAtpbP.s:6      *ABS*:00000001 __zero_reg__
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccqAtpbP.s:117    .text:00000000 PWM_forward
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccqAtpbP.s:151    .text:00000016 PWM_forward_turn
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccqAtpbP.s:185    .text:0000002e PWM_reverse
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccqAtpbP.s:217    .text:00000044 PWM_right
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccqAtpbP.s:249    .text:0000005a PWM_left
-/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccqAtpbP.s:281    .text:00000070 PWM_stop
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccdr0ovc.s:2      *ABS*:0000003e __SP_H__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccdr0ovc.s:3      *ABS*:0000003d __SP_L__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccdr0ovc.s:4      *ABS*:0000003f __SREG__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccdr0ovc.s:5      *ABS*:00000000 __tmp_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccdr0ovc.s:6      *ABS*:00000001 __zero_reg__
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccdr0ovc.s:117    .text:00000000 PWM_forward
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccdr0ovc.s:151    .text:00000016 PWM_forward_turn
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccdr0ovc.s:185    .text:0000002e PWM_reverse
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccdr0ovc.s:217    .text:00000044 PWM_right
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccdr0ovc.s:249    .text:0000005a PWM_left
+/var/folders/7v/8zggs6793555zz3yx7qh3tp40000gn/T//ccdr0ovc.s:281    .text:00000070 PWM_stop
                             *COM*:00000001 _eEtatRain
                             *COM*:00000001 _eEtatBlade
+                            *COM*:00000001 _FlagError
+                            *COM*:00000001 _uFlagWatchdog
                             *COM*:00000001 _uWireReached
                             *COM*:00000001 _uBpStop
                             *COM*:00000001 _uBpForceStart
                             *COM*:00000001 _uBpStart
-                            *COM*:00000001 _uTimeToMow
-                            *COM*:00000001 _uDock
-                            *COM*:00000001 _uUnderTheRain
-                            *COM*:00000001 _uCharge
                             *COM*:00000001 _uBattery
-                            *COM*:00000001 distanceSonarRC
-                            *COM*:00000001 distanceSonarFR
-                            *COM*:00000001 distanceSonarFL
-                            *COM*:00000001 distanceSonarFC
+                            *COM*:00000001 _uDate
+                            *COM*:00000001 _uTime
 
 UNDEFINED SYMBOLS
 __do_clear_bss
