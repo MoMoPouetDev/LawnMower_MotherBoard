@@ -35,21 +35,13 @@ int main(void) {
 					_eEtatMower = TACHE_EN_COURS;
 					_uBpStop = 0;
 					_uBpForceStart = 0;	
-					_eErrorMower = NTR;		
-					
-					if(!(MOWER_leaveDockCharger())) {
-						_eErrorMower = BLOCKED_MOWER;
-					}
+					_eErrorMower = NTR;
 				}
             }
             else if(isTimeToMow() && (_eEtatRain == OFF))
             {
 				_uBpStop = 0;
 				_eErrorMower = NTR;		
-				
-                if(!(MOWER_leaveDockCharger())) {
-					_eErrorMower = BLOCKED_MOWER;
-				}
             }
 			else
 				_eEtatMower = PAS_DE_TACHE_EN_COURS;

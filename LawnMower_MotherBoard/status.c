@@ -117,18 +117,22 @@ void STATUS_sendStatus() {
     UART_transmission(_eErrorMower);
     UART_transmission(_uBattery);
     
-	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_LAT_DEG));
-	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_LAT_MIN));
-	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_LAT_DEC));
+	UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_LAT_DEG));
+	UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_LAT_MIN));
+	UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_LAT_DEC_MSB));
+    UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_LAT_DEC_B));
+    UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_LAT_DEC_LSB));
 	
-	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_LONG_DEG));
-	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_LONG_MIN));
-	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_LONG_DEC));
+	UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_LONG_DEG));
+	UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_LONG_MIN));
+	UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_LONG_DEC_MSB));
+    UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_LONG_DEC_B));
+    UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_LONG_DEC_LSB));
 	
-	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_TIME_HOURS));
-	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_TIME_MINUTES));
-	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_DATE_DAYS));
-	UART_transmission(TWI_getData(SLAVE_SENSOR, GPS_DATE_MONTHS));
+	UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_TIME_HOURS));
+	UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_TIME_MINUTES));
+	UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_DATE_DAYS));
+	UART_transmission(TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_DATE_MONTHS));
 }
 
 void STATUS_receivedStatus() {

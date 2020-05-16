@@ -135,8 +135,6 @@ void INIT_variable()
 	_eEtatRain = OFF;
 	_eEtatMower = UNKNOWN_ETAT;
 	_eErrorMower = NTR;
-	_eCommandMower = UNKNOWN_COMMAND;
-    _eDataAdress = UNKNOWN_DATA;
 	_uBpStop = 0;
 	_uBpStart = 0;
 	_uBpForceStart = 0;

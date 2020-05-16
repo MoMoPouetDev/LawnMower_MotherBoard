@@ -12,7 +12,9 @@
 typedef struct {
     uint8_t degrees;
     uint8_t minutes;
-    uint8_t decimal;
+    uint8_t decimalMSB;
+    uint8_t decimalB;
+    uint8_t decimalLSB;
 }Coordinates;
 
 uint8_t isDocking(void);
@@ -24,7 +26,7 @@ void MOWER_startMower(void);
 void MOWER_goDockCharger(void);
 void MOWER_directionFromBase(void);
 void MOWER_pidController(uint8_t*);
-uint8_t MOWER_leaveDockCharger(void);
+void MOWER_leaveDockCharger(void);
 void MOWER_updateBladeState(void);
 void MOWER_getCoordinates(float*, float*);
 float MOWER_getAngleFromNorth(void);

@@ -32,7 +32,7 @@
 		90A726A523E37133003A90FA /* pwm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pwm.c; sourceTree = "<group>"; };
 		90B2451223EE0F76001EFC98 /* adc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = adc.h; sourceTree = "<group>"; };
 		90B2451323EE0F76001EFC98 /* adc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = adc.c; sourceTree = "<group>"; };
-		90B2451523EEBB16001EFC98 /* constant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constant.h; sourceTree = "<group>"; };
+		90B2451523EEBB16001EFC98 /* constant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constant.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		90BA9F3624004CAB00B1F72F /* status.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = status.h; sourceTree = "<group>"; };
 		90BA9F3724004CAB00B1F72F /* status.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = status.c; sourceTree = "<group>"; };
 		CCF93F5023DC2B8100D5604A /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
