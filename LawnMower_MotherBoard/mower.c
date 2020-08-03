@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <util/delay.h>
-#include <math.h>
 
 #include "constant.h"
 #include "mower.h"
@@ -335,26 +334,47 @@ void MOWER_getCoordinates(float* pLatitudeCoordinates, float* pLongitudeCoordina
 }
 
 float MOWER_getAngleFromNorth() {
-	int8_t dataLsbX,
+	uint8_t dataLsbX,
 			dataMsbX,
 			dataLsbY,
-			dataMsbY;
-	int16_t dataX,
-			dataY;
-	float angle;
+			dataMsbY,
+            dataLsbZ,
+            dataMsbZ,
+            dataLsbTemp,
+            dataMsbTemp,
+            data;
+	int dataX,
+        dataY,
+        dataZ,
+        dataTemp;
+	double angle;
 			
-			
-	dataLsbX = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_X_LSB);
-	dataMsbX = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_X_MSB);
-	dataX = (dataMsbX<<8) | dataLsbX;
+    dataLsbX = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_X_LSB);
+    dataMsbX = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_X_MSB);
+    if ( (dataLsbX != ERROR_DATA) && (dataMsbX != ERROR_DATA) )
+        dataX = (int)(int16_t)((dataMsbX<<8) | dataLsbX);
 	
 	dataLsbY = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_Y_LSB);
 	dataMsbY = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_Y_MSB);
-	dataY = (dataMsbY<<8) | dataLsbY;
+    if( (dataLsbY != ERROR_DATA) && (dataMsbY != ERROR_DATA) )
+        dataY = (int)(int16_t)((dataMsbY<<8) | dataLsbY);
+    
+    dataLsbZ = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_Z_LSB);
+    dataMsbZ = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_Z_MSB);
+    if( (dataLsbZ != ERROR_DATA) && (dataMsbZ != ERROR_DATA) )
+        dataZ = (int)(int16_t)((dataMsbZ<<8) | dataLsbZ);
 	
-	angle = atan(dataX / dataY);
+    dataLsbTemp = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_TEMP_LSB);
+    dataMsbTemp = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_TEMP_MSB);
+    
+    angle = (atan2((double)(dataY-((CALIBRATION_Y_MAX + CALIBRATION_Y_MIN)/2.0)),(double)(dataX - ((CALIBRATION_X_MAX + CALIBRATION_X_MIN)/2.0)))) + DECLINATION + OFFSET;
+    
+    if (angle > (2*M_PI))
+        angle = angle - (2*M_PI);
+    if (angle < 0)
+        angle = angle + (2*M_PI);
 	
-	return angle;
+	return (angle * (180/M_PI));
 }
 
 float MOWER_getAzimut(float angleFromNorth) {
@@ -376,6 +396,36 @@ float MOWER_getAzimut(float angleFromNorth) {
 	return angle;
 }
 
+void MOWER_getAnglePitchRoll(double* pPitch, double* pRoll) {
+    uint8_t dataLsbX,
+            dataMsbX,
+            dataLsbY,
+            dataMsbY,
+            dataLsbZ,
+            dataMsbZ;
+    float   dataX,
+            dataY,
+            dataZ;
+    
+    dataLsbX = TWI_getData(SLAVE_ACCELEROMETER, DATA_ACCELEROMETER_X_LSB);
+    dataMsbX = TWI_getData(SLAVE_ACCELEROMETER, DATA_ACCELEROMETER_X_MSB);
+    if( (dataLsbX != ERROR_DATA) && (dataMsbX != ERROR_DATA) )
+        dataX = ((float)(int16_t)((dataMsbX<<8) | dataLsbX))/256;
+    
+    dataLsbY = TWI_getData(SLAVE_ACCELEROMETER, DATA_ACCELEROMETER_Y_LSB);
+    dataMsbY = TWI_getData(SLAVE_ACCELEROMETER, DATA_ACCELEROMETER_Y_MSB);
+    if( (dataLsbY != ERROR_DATA) && (dataMsbY != ERROR_DATA) )
+        dataY = ((float)(int16_t)((dataMsbY<<8) | dataLsbY))/256;
+    
+    dataLsbZ = TWI_getData(SLAVE_ACCELEROMETER, DATA_ACCELEROMETER_Z_LSB);
+    dataMsbZ = TWI_getData(SLAVE_ACCELEROMETER, DATA_ACCELEROMETER_Z_MSB);
+    if( (dataLsbZ != ERROR_DATA) && (dataMsbZ != ERROR_DATA) )
+        dataZ = ((float)(int16_t)((dataMsbZ<<8) | dataLsbZ))/256;
+    
+    *pPitch = 180 * atan2(dataX, sqrt(dataY*dataY + dataZ*dataZ))/PI;
+    *pRoll = 180 * atan2(dataY, sqrt(dataX*dataX + dataZ*dataZ))/PI;
+}
+
 void myDelayLoop(double delay)
 {
     double i;
@@ -383,5 +433,4 @@ void myDelayLoop(double delay)
         _delay_ms(1);
     }
 }
-
 

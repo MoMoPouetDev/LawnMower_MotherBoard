@@ -10,9 +10,11 @@
 #define constant_h
 
 #include <stdio.h>
+#include <math.h>
 #include <avr/io.h>
 
 #define F_CPU 8000000UL
+#define SCL_CLOCK  400000L
 
 /*** Convertisseur Analogique Numerique ***/
 #define PIN_ADC0 0
@@ -20,6 +22,12 @@
 /*** END ***/
 
 /*** Adresses I2C ***/
+#define ADDR_MASTER 0x10
+#define ADDR_SLAVE_SENSOR 0x02
+#define ADDR_SLAVE_COMPASS (0x0D<<1)
+#define ADDR_SLAVE_ACCELEROMETER (0x53<<1)
+
+/*** Slave ***/
 #define ADDR_SENSOR_V 0x01
 #define ADDR_SENSOR_A 0x02
 #define ADDR_SENSOR_DOCK 0x03
@@ -44,12 +52,25 @@
 #define ADDR_TIME_TO_MOW 0x16
 #define ADDR_UNKNOWN_DATA 0x00
 
-#define ADDR_DATA_COMPASS_X_MSB 0x03
-#define ADDR_DATA_COMPASS_X_LSB 0x04
+/*** COMPASS ***/
+#define ADDR_DATA_COMPASS_X_LSB 0x00
+#define ADDR_DATA_COMPASS_X_MSB 0x01
+#define ADDR_DATA_COMPASS_Y_LSB 0x02
+#define ADDR_DATA_COMPASS_Y_MSB 0x03
+#define ADDR_DATA_COMPASS_Z_LSB 0x04
 #define ADDR_DATA_COMPASS_Z_MSB 0x05
-#define ADDR_DATA_COMPASS_Z_LSB 0x06
-#define ADDR_DATA_COMPASS_Y_MSB 0x07
-#define ADDR_DATA_COMPASS_Y_LSB 0x08
+#define ADDR_DATA_COMPASS_TEMP_LSB 0x07
+#define ADDR_DATA_COMPASS_TEMP_MSB 0x08
+
+#define DECLINATION ((0+(45.0))*(M_PI/180))
+#define OFFSET (-83*(M_PI/180))
+
+#define CALIBRATION_X_MAX 551
+#define CALIBRATION_X_MIN -1211
+#define CALIBRATION_Y_MAX 358
+#define CALIBRATION_Y_MIN -1417
+
+/*** ACCELEROMETER ***/
 #define ADDR_DATA_ACCELEROMETER_X_LSB 0x32
 #define ADDR_DATA_ACCELEROMETER_X_MSB 0x33
 #define ADDR_DATA_ACCELEROMETER_Y_LSB 0x34
@@ -57,10 +78,6 @@
 #define ADDR_DATA_ACCELEROMETER_Z_LSB 0x36
 #define ADDR_DATA_ACCELEROMETER_Z_MSB 0x37
 
-#define ADDR_MASTER 0x10
-#define ADDR_SLAVE_SENSOR 0x02
-#define ADDR_SLAVE_COMPASS 0x3C
-#define ADDR_SLAVE_ACCELEROMETER 0x53
 /*** END ***/
 
 /*** Périmeter Wire ***/
@@ -117,20 +134,19 @@ uint8_t _uBattery;
 #define LED_YELLOW_3 PORTC3
 /*** END ***/
 
-uint8_t _uBpStart;
-uint8_t _uBpForceStart;
-uint8_t _uBpStop;
+volatile uint8_t _uBpStart;
+volatile uint8_t _uBpForceStart;
+volatile uint8_t _uBpStop;
 
-uint8_t _uFlagWatchdog;
-uint8_t _FlagError;
+volatile uint8_t _uFlagWatchdog;
 
 typedef enum
 {
     ON, 
 	OFF
 }Etat;
-Etat _eEtatBlade;
-Etat _eEtatRain;
+volatile Etat _eEtatBlade;
+volatile Etat _eEtatRain;
 
 
 

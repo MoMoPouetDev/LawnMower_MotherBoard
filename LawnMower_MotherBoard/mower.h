@@ -31,6 +31,7 @@ void MOWER_updateBladeState(void);
 void MOWER_getCoordinates(float*, float*);
 float MOWER_getAngleFromNorth(void);
 float MOWER_getAzimut(float);
+void MOWER_getAnglePitchRoll(double*, double*);
 void myDelayLoop(double);
 
 #endif /* mower_h */

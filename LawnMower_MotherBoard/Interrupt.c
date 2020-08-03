@@ -22,6 +22,7 @@ ISR(USART_RX_vect)
 
 ISR(WDT_vect) {
 	_uFlagWatchdog = 1;
+    WDTCSR |= (1<<WDIE);
 }
 
 ISR(PCINT2_vect)

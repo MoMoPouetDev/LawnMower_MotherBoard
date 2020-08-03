@@ -26,6 +26,8 @@ void Initialisation()
     INIT_adc();
 	INIT_wdt();
     INIT_interrupt();
+    INIT_compass();
+    INIT_accel();
 }
 
 void INIT_io()
@@ -98,28 +100,27 @@ void INIT_pwm()
 
 void INIT_twi()
 {
-    TWBR = 2; //TWBR  = ((F_CPU / SCL_CLK) – 16) / 2 - 400kHz
-    TWCR = (1<<TWEA) | (1<<TWEN) | (1<<TWIE);
+    TWBR  = ((F_CPU / SCL_CL0CK) – 16) / 2; //- 400kHz
 }
 
 void INIT_wdt()
 {
 	cli();
 	wdt_reset();
-	WDTCSR |= (1<<WDCE) | (1<<WDE);
-	WDTCSR = (1<<WDIE) | (1<<WDP2) | (1<<WDP1);
+	WDTCSR = (1<<WDCE) | (1<<WDE);
+	WDTCSR = (1<<WDIE) | (1<<WDP2);
 	sei();
 }
 
 void INIT_uart()
 {
 /***** UART BaudRate *****/
-    UBRR0H = (BAUD_PRESCALE>>8);
-    UBRR0L = BAUD_PRESCALE;
+    UBRR0H = (unsigned char) (BAUD_PRESCALE>>8);
+    UBRR0L = (unsigned char) BAUD_PRESCALE;
     
 /***** Autoriser Transmition et Reception *****/
-    UCSR0B |= (1<<RXCIE0) | (1<<TXEN0) | (1<<RXEN0);
-    UCSR0C |= (1<<UCSZ01) | (1<<UCSZ00);
+    UCSR0B = (1<<RXCIE0) | (1<<TXEN0) | (1<<RXEN0);
+    UCSR0C = (1<<UCSZ01) | (1<<UCSZ00);
     
 }
 
@@ -127,6 +128,28 @@ void INIT_adc()
 {
     ADMUX |= (1<<REFS0);
     ADCSRA |= (1<<ADEN) | (1<<ADPS2) | (1<<ADPS1); // Enable ADC, Interrup et 64 prescale
+}
+
+void INIT_compass()
+{
+    TWI_start();
+    TWI_write(SLAVE_COMPASS, TW_WRITE);
+    TWI_write_data(0x0B);
+    TWI_write_data(0x01);
+    TWI_repeat_start();
+    TWI_write(SLAVE_COMPASS, TW_WRITE);
+    TWI_write_data(0x09);
+    TWI_write_data(0x11); // OSR 00; RNG 01; ODR 00; MODE 01
+    TWI_stop();
+}
+
+void INIT_accel()
+{
+    TWI_start();
+    TWI_write(SLAVE_ACCELEROMETER, TW_WRITE);
+    TWI_write_data(0x2D);
+    TWI_write_data(0x08);
+    TWI_stop();
 }
 
 void INIT_variable()
