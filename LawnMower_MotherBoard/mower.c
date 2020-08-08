@@ -29,39 +29,21 @@ void MOWER_startMower()
 	if(distanceSonarFR == ERROR_DATA)
 		distanceSonarFR = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR);
 			
-    if( ADC_read(PIN_ADC0) > WIRE_DETECTION_LIMITE)
+    if( ADC_read(PIN_ADC0_LS) > WIRE_DETECTION_LIMITE)
     {
-        PWM_stop();
-        myDelayLoop(1000);
-        PWM_right();
-        myDelayLoop(2000); // Use Compass when implement, +135°
-        PWM_stop();
-        myDelayLoop(1000);
+        MOWER_wireDetectOnLeft();
         PWM_forward(LOW_SPEED);
-        myDelayLoop(1000);
     }
-    else if (ADC_read(PIN_ADC1) > WIRE_DETECTION_LIMITE)
+    else if (ADC_read(PIN_ADC1_RS) > WIRE_DETECTION_LIMITE)
     {
-        PWM_stop();
-        myDelayLoop(1000);
-        PWM_left();
-        myDelayLoop(2000); // Use Compass when implement, -135°
-        PWM_stop();
-        myDelayLoop(1000);
+        MOWER_wireDetectOnRight();
         PWM_forward(LOW_SPEED);
-        myDelayLoop(1000);
     }
     else if ((distanceSonarFC < SONAR_WARN) || (distanceSonarFL < SONAR_WARN) || (distanceSonarFR < SONAR_WARN))
     {       
         if ((distanceSonarFC < SONAR_ERR) || (distanceSonarFL < SONAR_ERR) || (distanceSonarFR < SONAR_ERR)) {
-            PWM_stop();
-            myDelayLoop(1000);
-            PWM_right();
-            myDelayLoop(2000); // Use Compass when implement, +45°
-            PWM_stop();
-            myDelayLoop(1000);
+            MOWER_sonarDetect();
             PWM_forward(LOW_SPEED);
-            myDelayLoop(1000);
         }
 		else
 			PWM_forward(MIDDLE_SPEED);
@@ -167,37 +149,24 @@ void MOWER_goDockCharger()
 			
 			PWM_forward(HIGH_SPEED);
 			
-			if( ADC_read(PIN_ADC0) > WIRE_DETECTION_LIMITE) {
+			if( ADC_read(PIN_ADC0_LS) > WIRE_DETECTION_LIMITE) {
 				wireReached = 1;
 			}
-			else if (ADC_read(PIN_ADC1) > WIRE_DETECTION_LIMITE) {
-				PWM_stop();
-				myDelayLoop(1000);
-				PWM_reverse(LOW_SPEED);
-				myDelayLoop(2000); 
-				PWM_stop();
-				myDelayLoop(1000);
-				PWM_right();
-				while(!45 || (ADC_read(PIN_ADC1) > WIRE_DETECTION_LIMITE) || (ADC_read(PIN_ADC0) > WIRE_DETECTION_LIMITE)); // Use Compass when implement, +45°
+			else if (ADC_read(PIN_ADC1_RS) > WIRE_DETECTION_LIMITE) {
+                MOWER_wireDetectOnCharge();
+                PWM_forward(LOW_SPEED);
 			}
 			else if ((distanceSonarFC < SONAR_WARN) || (distanceSonarFL < SONAR_WARN) || (distanceSonarFR < SONAR_WARN)) {
 				PWM_forward(MIDDLE_SPEED);
         
 				if ((distanceSonarFC < SONAR_ERR) || (distanceSonarFL < SONAR_ERR) || (distanceSonarFR < SONAR_ERR)) {
-					PWM_stop();
-					myDelayLoop(1000);
-					PWM_right();
-					myDelayLoop(2000); // Use Compass when implement, +45°
-					PWM_stop();
-					myDelayLoop(1000);
-					PWM_forward(LOW_SPEED);
-					myDelayLoop(1000);
-					MOWER_directionFromBase();
+                    MOWER_sonarDetect();
+                    PWM_forward(LOW_SPEED);
 				}
 			}
 		}
 		else {
-			if( (WIRE_DETECTION_MIN < ADC_read(PIN_ADC0)) && (ADC_read(PIN_ADC0 < WIRE_DETECTION_MAX))) {
+			if( (WIRE_DETECTION_MIN < ADC_read(PIN_ADC0_LS)) && (ADC_read(PIN_ADC0_LS) < WIRE_DETECTION_MAX) ) {
 				MOWER_pidController(&lastError);
 			}
 			else {
@@ -244,7 +213,7 @@ void MOWER_pidController(uint8_t* lastError) {
 		derivativePosition = 0,
 		wirePwm = 0;
 	
-	currentPosition = ADC_read(PIN_ADC0);
+	currentPosition = ADC_read(PIN_ADC0_LS);
 	errorPosition = WIRE_DETECTION_MAX - currentPosition;
 	derivativePosition = errorPosition - *lastError;
 	wirePwm = ((((Kp*errorPosition) + (Kd*derivativePosition))/10)/2);
@@ -341,29 +310,30 @@ float MOWER_getAngleFromNorth() {
             dataLsbZ,
             dataMsbZ,
             dataLsbTemp,
-            dataMsbTemp,
-            data;
-	int dataX,
-        dataY,
-        dataZ,
-        dataTemp;
+            dataMsbTemp;
+	static int dataX = 0,
+        dataY = 0,
+        dataZ = 0;
 	double angle;
 			
     dataLsbX = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_X_LSB);
     dataMsbX = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_X_MSB);
-    if ( (dataLsbX != ERROR_DATA) && (dataMsbX != ERROR_DATA) )
+    if ( (dataLsbX != ERROR_DATA) && (dataMsbX != ERROR_DATA) ) {
         dataX = (int)(int16_t)((dataMsbX<<8) | dataLsbX);
+    }
 	
 	dataLsbY = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_Y_LSB);
 	dataMsbY = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_Y_MSB);
-    if( (dataLsbY != ERROR_DATA) && (dataMsbY != ERROR_DATA) )
+    if( (dataLsbY != ERROR_DATA) && (dataMsbY != ERROR_DATA) ){
         dataY = (int)(int16_t)((dataMsbY<<8) | dataLsbY);
+    }
     
     dataLsbZ = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_Z_LSB);
     dataMsbZ = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_Z_MSB);
-    if( (dataLsbZ != ERROR_DATA) && (dataMsbZ != ERROR_DATA) )
+    if( (dataLsbZ != ERROR_DATA) && (dataMsbZ != ERROR_DATA) ){
         dataZ = (int)(int16_t)((dataMsbZ<<8) | dataLsbZ);
-	
+    }
+        
     dataLsbTemp = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_TEMP_LSB);
     dataMsbTemp = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_TEMP_MSB);
     
@@ -403,27 +373,123 @@ void MOWER_getAnglePitchRoll(double* pPitch, double* pRoll) {
             dataMsbY,
             dataLsbZ,
             dataMsbZ;
-    float   dataX,
-            dataY,
-            dataZ;
+    static float   dataX = 0,
+                    dataY = 0,
+                    dataZ = 0;
     
-    dataLsbX = TWI_getData(SLAVE_ACCELEROMETER, DATA_ACCELEROMETER_X_LSB);
-    dataMsbX = TWI_getData(SLAVE_ACCELEROMETER, DATA_ACCELEROMETER_X_MSB);
+    dataLsbX = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_X_LSB);
+    dataMsbX = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_X_MSB);
     if( (dataLsbX != ERROR_DATA) && (dataMsbX != ERROR_DATA) )
         dataX = ((float)(int16_t)((dataMsbX<<8) | dataLsbX))/256;
     
-    dataLsbY = TWI_getData(SLAVE_ACCELEROMETER, DATA_ACCELEROMETER_Y_LSB);
-    dataMsbY = TWI_getData(SLAVE_ACCELEROMETER, DATA_ACCELEROMETER_Y_MSB);
+    dataLsbY = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Y_LSB);
+    dataMsbY = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Y_MSB);
     if( (dataLsbY != ERROR_DATA) && (dataMsbY != ERROR_DATA) )
         dataY = ((float)(int16_t)((dataMsbY<<8) | dataLsbY))/256;
     
-    dataLsbZ = TWI_getData(SLAVE_ACCELEROMETER, DATA_ACCELEROMETER_Z_LSB);
-    dataMsbZ = TWI_getData(SLAVE_ACCELEROMETER, DATA_ACCELEROMETER_Z_MSB);
+    dataLsbZ = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Z_LSB);
+    dataMsbZ = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Z_MSB);
     if( (dataLsbZ != ERROR_DATA) && (dataMsbZ != ERROR_DATA) )
         dataZ = ((float)(int16_t)((dataMsbZ<<8) | dataLsbZ))/256;
     
-    *pPitch = 180 * atan2(dataX, sqrt(dataY*dataY + dataZ*dataZ))/PI;
-    *pRoll = 180 * atan2(dataY, sqrt(dataX*dataX + dataZ*dataZ))/PI;
+    *pPitch = 180 * atan2(dataX, sqrt(dataY*dataY + dataZ*dataZ))/M_PI;
+    *pRoll = 180 * atan2(dataY, sqrt(dataX*dataX + dataZ*dataZ))/M_PI;
+}
+
+void MOWER_wireDetectOnLeft(){
+    uint8_t deltaAngle = 5;
+    uint8_t randAngle = MOWER_myRandDeg(360);
+    uint8_t startAngle = MOWER_getAngleFromNorth();
+    
+    uint8_t endAngle = (startAngle + randAngle)%360;
+    
+    PWM_stop();
+    myDelayLoop(1000);
+    
+    PWM_reverse(LOW_SPEED);
+    while(ADC_read(PIN_ADC0_LS) > WIRE_DETECTION_MIN);
+    
+    PWM_stop();
+    myDelayLoop(1000);
+    
+    PWM_right();
+    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) );
+    
+    PWM_stop();
+    myDelayLoop(1000);
+}
+
+void MOWER_wireDetectOnRight(){
+    uint8_t deltaAngle = 5;
+    uint8_t randAngle = MOWER_myRandDeg(360);
+    uint8_t startAngle = MOWER_getAngleFromNorth();
+    
+    uint8_t endAngle = (startAngle + randAngle)%360;
+    
+    PWM_stop();
+    myDelayLoop(1000);
+    
+    PWM_reverse(LOW_SPEED);
+    while(ADC_read(PIN_ADC1_RS) > WIRE_DETECTION_MIN);
+    
+    PWM_stop();
+    myDelayLoop(1000);
+    
+    PWM_left();
+    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) );
+    
+    PWM_stop();
+    myDelayLoop(1000);
+}
+
+void MOWER_wireDetectOnCharge(){
+    uint8_t deltaAngle = 5;
+    uint8_t nextAngle = 90;
+    uint8_t startAngle = MOWER_getAngleFromNorth();
+    
+    uint8_t endAngle = (startAngle + nextAngle)%360;
+    
+    PWM_stop();
+    myDelayLoop(1000);
+    
+    PWM_reverse(LOW_SPEED);
+    while(ADC_read(PIN_ADC1_RS) > WIRE_DETECTION_MIN);
+    
+    PWM_stop();
+    myDelayLoop(1000);
+    
+    PWM_right();
+    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) );
+    
+    PWM_stop();
+    myDelayLoop(1000);
+}
+
+void MOWER_sonarDetect() {
+    uint8_t deltaAngle = 5;
+    uint8_t randAngle = MOWER_myRandDeg(360);
+    uint8_t startAngle = MOWER_getAngleFromNorth();
+    
+    uint8_t endAngle = (startAngle + randAngle)%360;
+    
+    PWM_stop();
+    myDelayLoop(1000);
+    
+    PWM_reverse(LOW_SPEED);
+    while( (TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC) < SONAR_LIMITE) && (TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL) < SONAR_LIMITE) && (TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR) < SONAR_LIMITE) );
+    
+    PWM_stop();
+    myDelayLoop(1000);
+    
+    PWM_right();
+    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) );
+    
+    PWM_stop();
+    myDelayLoop(1000);
+}
+
+uint8_t MOWER_myRandDeg(int modulo) {
+    return (uint8_t)rand()%modulo;
 }
 
 void myDelayLoop(double delay)

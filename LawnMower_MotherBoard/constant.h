@@ -14,11 +14,11 @@
 #include <avr/io.h>
 
 #define F_CPU 8000000UL
-#define SCL_CLOCK  400000L
+#define SCL_CLOCK  400000UL
 
 /*** Convertisseur Analogique Numerique ***/
-#define PIN_ADC0 0
-#define PIN_ADC1 1
+#define PIN_ADC0_LS 0
+#define PIN_ADC1_RS 1
 /*** END ***/
 
 /*** Adresses I2C ***/
@@ -81,8 +81,8 @@
 /*** END ***/
 
 /*** Périmeter Wire ***/
-#define WIRE_DETECTION_LIMITE 820
-#define WIRE_DETECTION_MAX 1000
+#define WIRE_DETECTION_LIMITE 700
+#define WIRE_DETECTION_MAX 800
 #define WIRE_DETECTION_MIN 500
 
 uint8_t _uWireReached;
@@ -113,6 +113,7 @@ uint8_t _uDate;
 
 /*** SONAR ***/
 #define SONAR_WARN 30
+#define SONAR_LIMITE 20
 #define SONAR_ERR 10
 /*** END ***/
 

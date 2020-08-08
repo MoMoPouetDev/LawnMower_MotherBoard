@@ -10,6 +10,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
+#include <util/twi.h>
 
 #include "constant.h"
 #include "status.h"
@@ -100,7 +101,7 @@ void INIT_pwm()
 
 void INIT_twi()
 {
-    TWBR  = ((F_CPU / SCL_CL0CK) – 16) / 2; //- 400kHz
+    TWBR  = (uint8_t)(( F_CPU  / SCL_CLOCK ) - 16 ) / 2; //- 400kHz
 }
 
 void INIT_wdt()
@@ -133,11 +134,11 @@ void INIT_adc()
 void INIT_compass()
 {
     TWI_start();
-    TWI_write(SLAVE_COMPASS, TW_WRITE);
+    TWI_write(ADDR_SLAVE_COMPASS, TW_WRITE);
     TWI_write_data(0x0B);
     TWI_write_data(0x01);
     TWI_repeat_start();
-    TWI_write(SLAVE_COMPASS, TW_WRITE);
+    TWI_write(ADDR_SLAVE_COMPASS, TW_WRITE);
     TWI_write_data(0x09);
     TWI_write_data(0x11); // OSR 00; RNG 01; ODR 00; MODE 01
     TWI_stop();
@@ -146,7 +147,7 @@ void INIT_compass()
 void INIT_accel()
 {
     TWI_start();
-    TWI_write(SLAVE_ACCELEROMETER, TW_WRITE);
+    TWI_write(ADDR_SLAVE_ACCELEROMETER, TW_WRITE);
     TWI_write_data(0x2D);
     TWI_write_data(0x08);
     TWI_stop();

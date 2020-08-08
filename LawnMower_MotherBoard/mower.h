@@ -32,6 +32,11 @@ void MOWER_getCoordinates(float*, float*);
 float MOWER_getAngleFromNorth(void);
 float MOWER_getAzimut(float);
 void MOWER_getAnglePitchRoll(double*, double*);
+void MOWER_wireDetectOnLeft(void);
+void MOWER_wireDetectOnRight(void);
+void MOWER_wireDetectOnCharge(void);
+void MOWER_sonarDetect(void);
+uint8_t MOWER_myRandDeg(int);
 void myDelayLoop(double);
 
 #endif /* mower_h */
