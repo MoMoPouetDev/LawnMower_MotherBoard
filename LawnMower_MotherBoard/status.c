@@ -17,99 +17,22 @@
 #include "twi.h"
 
 void STATUS_updateStatus() {
-    STATUS_updateStatusLed();
-    STATUS_updateStatusError();
+    uint8_t uStatus = 0x00;
+    
+    STATUS_updateStatusLed(&uStatus);
+    STATUS_updateStatusError(&uStatus);
+    
+    TWI_setData(ADDR_SLAVE_SENSOR, ADDR_LED_STATUS, uStatus);
 }
 
-void STATUS_updateStatusLed() {
+void STATUS_updateStatusLed(uint8_t* status) {
     /*** LED VERT: PB4, ORANGE: PB2, ROUGE: PB1 ***/
-    switch(_eEtatMower) {
-        case UNKNOWN_ETAT:
-            PORTB &= ~(1<<LED_GREEN) & ~(1<<LED_ORANGE) & ~(1<<LED_RED);
-            break;
-            
-        case TACHE_EN_COURS:
-            PORTB &= ~(1<<LED_ORANGE) & ~(1<<LED_RED);
-            PORTB |= (1<<LED_GREEN);
-            break;
-            
-        case RETOUR_STATION:
-            PORTB &= ~(1<<LED_GREEN) & ~(1<<LED_RED);
-            PORTB |= (1<<LED_ORANGE);
-            break;
-            
-        case EN_CHARGE:
-            PORTB &= ~(1<<LED_GREEN) & ~(1<<LED_ORANGE) & ~(1<<LED_RED);
-            _delay_ms(500);
-            PORTB |= (1<<PORT4) | (1<<LED_ORANGE) | (1<<LED_RED);
-            _delay_ms(500);
-            break;
-            
-        case PAS_DE_TACHE_EN_COURS:
-            PORTB &= ~(1<<LED_GREEN) & ~(1<<LED_ORANGE);
-            PORTB |= (1<<LED_RED);
-            break;
-            
-        case PAUSE:
-            PORTB &= ~(1<<LED_GREEN) & ~(1<<LED_ORANGE) & ~(1<<LED_RED);
-            _delay_ms(500);
-            PORTB |= (1<<LED_GREEN);
-            _delay_ms(500);
-            break;
-            
-        default:
-            PORTB &= ~(1<<LED_GREEN) & ~(1<<LED_ORANGE) & ~(1<<LED_RED);
-            break;
-    }
+    *status |= _eEtatMower;
 }
 
-void STATUS_updateStatusError() {
+void STATUS_updateStatusError(uint8_t* status) {
     /*** LED JAUNE1: PB5, JAUNE2: PC2, JAUNE3: PC3 ***/
-    switch(_eErrorMower) {
-        case NTR:
-            PORTB &= ~(1<<LED_YELLOW_1);
-            PORTC &= ~(1<<LED_YELLOW_3) & ~(1<<LED_YELLOW_2);
-            break;
-            
-        case BLOCKED_MOWER:
-            PORTB &= ~(1<<LED_YELLOW_1);
-            PORTC &= ~(1<<LED_YELLOW_2);
-            PORTC |= (1<<LED_YELLOW_3);
-            break;
-            
-        case DETECTED_RAIN:
-            PORTB &= ~(1<<LED_YELLOW_1);
-            PORTC &= ~(1<<LED_YELLOW_3);
-            PORTC |= (1<<LED_YELLOW_2);
-            break;
-            
-        case WIRE_NOT_DETECTED:
-            PORTB &= ~(1<<LED_YELLOW_1);
-            PORTC |= (1<<LED_YELLOW_2) | (1<<LED_YELLOW_3);
-            break;
-            
-        case LOW_BATTERY:
-            PORTC &= ~(1<<LED_YELLOW_3) & ~(1<<LED_YELLOW_2);
-            PORTB |= (1<<LED_YELLOW_1);
-            break;
-            
-        case VERY_LOW_BATTERY:
-            PORTC &= ~(1<<LED_YELLOW_2);
-            PORTB |= (1<<LED_YELLOW_1);
-            PORTC |= (1<<LED_YELLOW_3);
-            break;
-            
-        case EMPTY_BATTERY:
-            PORTC &= ~(1<<LED_YELLOW_3);
-            PORTB |= (1<<LED_YELLOW_1);
-            PORTC |= (1<<LED_YELLOW_2);
-            break;
-            
-        default:
-            PORTB &= ~(1<<LED_YELLOW_1);
-            PORTC &= ~(1<<LED_YELLOW_3) & ~(1<<LED_YELLOW_2);
-            break;
-    }
+    *status |= _eErrorMower;
 }
 
 void STATUS_sendStatus() {

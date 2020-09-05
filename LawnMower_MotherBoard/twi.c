@@ -36,6 +36,18 @@ uint8_t TWI_getData(uint8_t addrSlave, uint8_t addrData) {
     return receivedData;
 }
 
+void TWI_setData(uint8_t addrSlave, uint8_t addrData, uint8_t data) {
+    wdt_reset();
+    _uFlagWatchdog = 0;
+    
+    TWI_start();
+    TWI_write(addrSlave, TW_WRITE);
+    TWI_write_data(addrData);
+    TWI_write_data(data);
+    
+    TWI_stop();
+}
+
 void TWI_start()
 {
     TWCR = (1<<TWEN) | (1<<TWINT) | (1<<TWSTA);

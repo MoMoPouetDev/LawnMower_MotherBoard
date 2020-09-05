@@ -20,13 +20,13 @@ typedef enum {
 EtatMower _eEtatMower;
 
 typedef enum {
-    NTR = 0x08,
-    BLOCKED_MOWER = 0x09,
-    DETECTED_RAIN = 0x0A,
-    WIRE_NOT_DETECTED = 0x0B,
-    LOW_BATTERY = 0x0C,
-    VERY_LOW_BATTERY = 0x0D,
-    EMPTY_BATTERY = 0x0E
+    NTR = 0x10,
+    BLOCKED_MOWER = 0x20,
+    DETECTED_RAIN = 0x30,
+    WIRE_NOT_DETECTED = 0x40,
+    LOW_BATTERY = 0x50,
+    VERY_LOW_BATTERY = 0x60,
+    EMPTY_BATTERY = 0x70
 }ErrorMower;
 ErrorMower _eErrorMower;
 
@@ -39,8 +39,8 @@ typedef enum {
 CommandMower _eCommandMower;
 
 void STATUS_updateStatus(void);
-void STATUS_updateStatusLed(void);
-void STATUS_updateStatusError(void);
+void STATUS_updateStatusLed(uint8_t*);
+void STATUS_updateStatusError(uint8_t*);
 void STATUS_sendStatus(void);
 void STATUS_receivedStatus(void);
 

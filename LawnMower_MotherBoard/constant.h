@@ -50,6 +50,7 @@
 #define ADDR_GPS_LAT_DEC_B 0x14
 #define ADDR_GPS_LAT_DEC_LSB 0x15
 #define ADDR_TIME_TO_MOW 0x16
+#define ADDR_LED_STATUS 0x17
 #define ADDR_UNKNOWN_DATA 0x00
 
 /*** COMPASS ***/
@@ -124,15 +125,6 @@ uint8_t _uDate;
 #define SENSOR_V_EMPTY 1
 
 uint8_t _uBattery;
-/*** END ***/
-
-/*** LED ***/
-#define LED_GREEN PORTB4
-#define LED_ORANGE PORTB2
-#define LED_RED PORTB1
-#define LED_YELLOW_1 PORTB5
-#define LED_YELLOW_2 PORTC2
-#define LED_YELLOW_3 PORTC3
 /*** END ***/
 
 volatile uint8_t _uBpStart;
