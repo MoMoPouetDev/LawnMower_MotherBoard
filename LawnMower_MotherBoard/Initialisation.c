@@ -36,13 +36,15 @@ void INIT_io()
 /***** PORT B *****/
     DDRB = 0x00;
     //DDRB |= (0<<DDB0); // Bouton Poussoir Stop
-    DDRB |= (1<<DDB1) | (1<<DDB2) | (1<<DDB4) | (1<<DDB5); // LED d'état Vert - Orange - Rouge - Jaune
-    DDRB |= (1<<DDB3); // Commande PWM Avant Moteur 2
+    //DDRB |= (1<<DDB1) | (1<<DDB2) | (1<<DDB4); // Bumper Left - Center - Right
+	//DDRB |= (1<<DDB5); // TBD
+    DDRB |= (1<<DDB3); // PWM Moteur 2
     DDRB |= (1<<DDB6) | (1<<DDB7); // Commande Moteur Lame Enable - ON
     
     PORTB = 0x00;
     PORTB |= (1<<PORTB0); // Pull-Up Bouton Poussoir
-    // PORTB &= ~(1<<PORTB1) & ~(1<<PORTB2) & ~(1<<PORTB4) & ~(1<<PORTB5); // Force à 0 LED
+    PORTB |= (1<<PORTB1) | (1<<PORTB2) | (1<<PORTB4); // Bumper Left - Center - Right Pull Up
+	PORTB |= (1<<PORTB5); // TBD Pull Up
     // PORTB |= (1<<PORTB3); // Moteur 2 Avant
     // PORTB |= (1<<PORTB6); // Enable Moteur Lame
     // PORTB |= (1<<PORTB7); // Moteur Lame
@@ -50,13 +52,13 @@ void INIT_io()
 /***** PORT C *****/
     DDRC = 0x00;
     //DDRC |= (1<<DDC0) | (1<<DDC1); // ADC - Detection cable droite et gauche
-    DDRC |= (1<<DDC2) | (1<<DDC3); // LED d'état Jaune
+    //DDRC |= (1<<DDC2) | (1<<DDC3); // TBD
     DDRC |= (1<<DDC4) | (1<<DDC5); // Config I2C SDA - SCL
     //DDRC |= (1<<DDC6); // TBD
     
     PORTC = 0x00;
     //PORTC &= ~(1<<PORTC0) & ~(1<<PORTC1); // ADC - No Pull-Up
-    //PORTC |= (1<<PORTC2) | (1<<PORTC3); // LED d'état Jaune
+    PORTC |= (1<<PORTC2) | (1<<PORTC3); // TBD Pull Up
     //PORTC &= ~(1<<PORTC4) & ~(1<<PORTC5); // I2C - Force à 0
     PORTC |= (1<<PORTC6); // TBD - Pull-Up
     

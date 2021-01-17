@@ -121,6 +121,12 @@ uint8_t _uDate;
 #define SONAR_ERR 10
 /*** END ***/
 
+/*** Bumper ***/
+#define BUMPER_LEFT PORTB1
+#define BUMPER_CENTER PORTB2
+#define BUMPER_RIGHT PORTB4
+/*** END ***/
+
 /*** Capteur de tension ***/
 #define SENSOR_V_OK 80
 #define SENSOR_V_FAIBLE_WARN 20
