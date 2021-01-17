@@ -63,14 +63,14 @@ void INIT_io()
 /***** PORT D *****/
     DDRD = 0x00;
     DDRD |= (1<<DDD1); //| (0<<DDD0); // UART - TXD - RXD
-    DDRD |= (1<<DDD2) | (1<<DDD3); // Commande Enable - PWM Arriere Moteur 2
-    DDRD |= (1<<DDD4) | (1<<DDD5) | (1<<DDD6); // Commande Enable - PWM Arriere - PWM Avant Moteur 1
+    DDRD |= (1<<DDD2) | (1<<DDD3); // Commande Avant Moteur 2 - Commande Arriere Moteur 2
+    DDRD |= (1<<DDD4) | (1<<DDD5) | (1<<DDD6); // Commande Avant Moteur 1 - Commande Arriere Moteur 1 - PWM Moteur 1
     //DDRD |= (0<<DDD7); // Bouton Poussoir Start
     
     PORTD = 0x00;
-    PORTD |= (1<<PORTC0); //| (1<<PORTC1); // UART - RX Pull-Up - TX
-    //PORTD |= (1<<PORTD2) | (1<<PORTD3); // Commande Enable - PWM Arriere Moteur 2 - Force à 0
-    //PORTD |= (1<<PORTD4) | (1<<PORTD5) | (1<<PORTD6); // Commande Enable - PWM Arriere - PWM Avant Moteur 1
+    PORTD |= (1<<PORTD0); //| (1<<PORTD1); // UART - RX Pull-Up - TX
+    //PORTD |= (1<<PORTD2) | (1<<PORTD3); // Commande Avant Moteur 2 - Commande Arriere Moteur 2 - Force à 0
+    //PORTD |= (1<<PORTD4) | (1<<PORTD5) | (1<<PORTD6); // Commande Avant Moteur 1 - Commande Arriere Moteur 1 - PWM Moteur 1
     PORTD |= (1<<PORTD7); // Pull-Up Bouton Poussoir
 }
 
@@ -85,18 +85,16 @@ void INIT_interrupt()
 void INIT_pwm()
 {
 /***** Moteur 1 - Gauche *****/
-    TCCR0A |= (1<<COM0A1) | (1<<COM0B1) | (1<<WGM01) | (1<<WGM00); // Fast PWM
+    TCCR0A |= (1<<COM0A1) | (1<<WGM01) | (1<<WGM00); // Fast PWM
     TCCR0B |= (1<<CS00); // No Prescale
     
-    OCR0A = 0x00; // Marche Avant
-    OCR0B = 0x00; // Marche Arrière
+    OCR0A = 0x00;
     
 /***** Moteur 2 - Droit *****/
-    TCCR2A |= (1<<COM2A1) | (1<<COM2B1) | (1<<WGM21) | (1<<WGM20); // Fast PWM
+    TCCR2A |= (1<<COM2A1) | (1<<WGM21) | (1<<WGM20); // Fast PWM
     TCCR2B |= (1<<CS20); // No Prescale
     
-    OCR2A = 0x00; // Marche Avant
-    OCR2B = 0x00; // Marche Arrière
+    OCR2A = 0x00;
 }
 
 void INIT_twi()
