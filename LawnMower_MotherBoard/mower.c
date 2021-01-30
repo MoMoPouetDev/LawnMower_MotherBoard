@@ -19,15 +19,19 @@
 
 void MOWER_startMower()
 {
-	uint8_t distanceSonarFC = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC);
-	if(distanceSonarFC == ERROR_DATA)
-		distanceSonarFC = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC);
-	uint8_t distanceSonarFL = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL);
-	if(distanceSonarFL == ERROR_DATA)
-		distanceSonarFL = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL);
-	uint8_t distanceSonarFR = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR);
-	if(distanceSonarFR == ERROR_DATA)
-		distanceSonarFR = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR);
+	uint8_t tempFC,
+			tempFL,
+			tempFR;
+	static uint8_t distanceSonarFC = 255,
+					distanceSonarFL = 255,
+					distanceSonarFR = 255;
+	
+	if((tempFC = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC)) != ERROR_DATA)
+		distanceSonarFC = tempFC;
+	if((tempFL = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL)) != ERROR_DATA)
+		distanceSonarFL = tempFL;
+	if((tempFR = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR)) != ERROR_DATA)
+		distanceSonarFR = tempFR;
 			
     if( ADC_read(PIN_ADC0_LS) > WIRE_DETECTION_LIMITE)
     {
@@ -123,9 +127,12 @@ void MOWER_goDockCharger()
 {
 	uint8_t lastError = 0;
 	uint8_t wireReached = 0;
-	uint8_t distanceSonarFC,
-			distanceSonarFL,
-			distanceSonarFR;
+	uint8_t tempFC,
+			tempFL,
+			tempFR;
+	static uint8_t distanceSonarFC = 255,
+					distanceSonarFL = 255,
+					distanceSonarFR = 255;
 	
 	MOWER_directionFromBase();
 	
@@ -137,15 +144,12 @@ void MOWER_goDockCharger()
 			break;
 		
 		if(!wireReached) {
-			distanceSonarFC = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC);
-			if(distanceSonarFC == ERROR_DATA)
-				distanceSonarFC = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC);
-			distanceSonarFL = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL);
-			if(distanceSonarFL == ERROR_DATA)
-				distanceSonarFL = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL);
-			distanceSonarFR = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR);
-			if(distanceSonarFR == ERROR_DATA)
-				distanceSonarFR = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR);
+			if((tempFC = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC)) != ERROR_DATA)
+				distanceSonarFC = tempFC;
+			if((tempFL = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL)) != ERROR_DATA)
+				distanceSonarFL = tempFL;
+			if((tempFR = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR)) != ERROR_DATA)
+				distanceSonarFR = tempFR;
 			
 			PWM_forward(HIGH_SPEED);
 			
