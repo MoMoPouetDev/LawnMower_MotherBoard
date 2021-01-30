@@ -314,7 +314,13 @@ float MOWER_getAngleFromNorth() {
 	static int dataX = 0,
         dataY = 0,
         dataZ = 0;
-	double angle;
+	double angle,
+			xh,
+			yh,
+			dPitch,
+			dRoll,
+			rPitch,
+			rRoll;
 			
     dataLsbX = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_X_LSB);
     dataMsbX = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_X_MSB);
@@ -337,14 +343,30 @@ float MOWER_getAngleFromNorth() {
     dataLsbTemp = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_TEMP_LSB);
     dataMsbTemp = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_TEMP_MSB);
     
-    angle = (atan2((double)(dataY-((CALIBRATION_Y_MAX + CALIBRATION_Y_MIN)/2.0)),(double)(dataX - ((CALIBRATION_X_MAX + CALIBRATION_X_MIN)/2.0)))) + DECLINATION + OFFSET;
+	/*** Without Tilt Compensation ***
+    angle = (atan2(-(dataY-((CALIBRATION_Y_MAX + CALIBRATION_Y_MIN)/2.0)),(dataX - ((CALIBRATION_X_MAX + CALIBRATION_X_MIN)/2.0)))) + DECLINATION + OFFSET;
     
-    if (angle > (2*M_PI))
-        angle = angle - (2*M_PI);
-    if (angle < 0)
-        angle = angle + (2*M_PI);
+	if (angle > (2*M_PI))
+	angle = angle - (2*M_PI);
+	if (angle < 0)
+	angle = angle + (2*M_PI);
 	
-	return (angle * (180/M_PI));
+	return (angle * (180/M_PI));	
+	/*** END ***/
+	
+	/*** With Tilt Compensation ***/
+	MOWER_getAnglePitchRoll(&dPitch, &dRoll);
+	
+	rPitch = (M_PI/180)*dPitch;
+	rRoll = (M_PI/180)*dRoll;
+  
+	xh = ((dataX - OFFSET_X) * cos(rPitch)) + ((dataY - OFFSET_Y) * sin(rRoll) * sin(rPitch)) - ((dataZ - OFFSET_Z) * cos(rRoll) * sin(rPitch));
+	yh = ((dataY - OFFSET_Y) * cos(rRoll)) + ((dataZ - OFFSET_Z) * sin(rRoll));
+  
+	angle = (180/M_PI) * (atan2(-yh,xh)+ DECLINATION + OFFSET);
+  
+	return (int)(-angle + 360) % 360;
+	/*** END ***/
 }
 
 float MOWER_getAzimut(float angleFromNorth) {
@@ -392,7 +414,7 @@ void MOWER_getAnglePitchRoll(double* pPitch, double* pRoll) {
     if( (dataLsbZ != ERROR_DATA) && (dataMsbZ != ERROR_DATA) )
         dataZ = ((float)(int16_t)((dataMsbZ<<8) | dataLsbZ))/256;
     
-    *pPitch = 180 * atan2(dataX, sqrt(dataY*dataY + dataZ*dataZ))/M_PI;
+    *pPitch = 180 * atan2(-dataX, sqrt(dataY*dataY + dataZ*dataZ))/M_PI;
     *pRoll = 180 * atan2(dataY, sqrt(dataX*dataX + dataZ*dataZ))/M_PI;
 }
 
