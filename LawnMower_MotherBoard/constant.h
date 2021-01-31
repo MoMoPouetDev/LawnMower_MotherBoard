@@ -77,6 +77,8 @@
 #define OFFSET_Y ((CALIBRATION_Y_MAX + CALIBRATION_Y_MIN)/2)
 #define OFFSET_Z ((CALIBRATION_Z_MAX + CALIBRATION_Z_MIN)/2)
 
+#define DELTA_ANGLE 5
+
 /*** ACCELEROMETER ***/
 #define ADDR_DATA_ACCELEROMETER_X_LSB 0x32
 #define ADDR_DATA_ACCELEROMETER_X_MSB 0x33
@@ -131,6 +133,13 @@ uint8_t _uDate;
 #define BUMPER_LEFT PORTB1
 #define BUMPER_CENTER PORTB2
 #define BUMPER_RIGHT PORTB4
+
+typedef enum
+{
+	FL,
+	FC,
+	FR
+}Bumper;
 /*** END ***/
 
 /*** Capteur de tension ***/

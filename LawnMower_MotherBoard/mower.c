@@ -423,7 +423,7 @@ void MOWER_getAnglePitchRoll(double* pPitch, double* pRoll) {
 }
 
 void MOWER_wireDetectOnLeft(){
-    uint8_t deltaAngle = 5;
+    uint8_t deltaAngle = DELTA_ANGLE;
     uint8_t randAngle = MOWER_myRandDeg(360);
     uint8_t startAngle = MOWER_getAngleFromNorth();
     
@@ -446,7 +446,7 @@ void MOWER_wireDetectOnLeft(){
 }
 
 void MOWER_wireDetectOnRight(){
-    uint8_t deltaAngle = 5;
+    uint8_t deltaAngle = DELTA_ANGLE;
     uint8_t randAngle = MOWER_myRandDeg(360);
     uint8_t startAngle = MOWER_getAngleFromNorth();
     
@@ -469,7 +469,7 @@ void MOWER_wireDetectOnRight(){
 }
 
 void MOWER_wireDetectOnCharge(){
-    uint8_t deltaAngle = 5;
+    uint8_t deltaAngle = DELTA_ANGLE;
     uint8_t nextAngle = 90;
     uint8_t startAngle = MOWER_getAngleFromNorth();
     
@@ -492,7 +492,7 @@ void MOWER_wireDetectOnCharge(){
 }
 
 void MOWER_sonarDetect() {
-    uint8_t deltaAngle = 5;
+    uint8_t deltaAngle = DELTA_ANGLE;
     uint8_t randAngle = MOWER_myRandDeg(360);
     uint8_t startAngle = MOWER_getAngleFromNorth();
     
@@ -512,6 +512,37 @@ void MOWER_sonarDetect() {
     
     PWM_stop();
     myDelayLoop(1000);
+}
+
+void MOWER_bumperDetect(Bumper _bumper) {
+	
+	uint8_t deltaAngle = DELTA_ANGLE;
+	uint8_t randAngle = MOWER_myRandDeg(360);
+	uint8_t startAngle = MOWER_getAngleFromNorth();
+	 
+	uint8_t endAngle = (startAngle + randAngle)%360;
+	 
+	PWM_stop();
+	myDelayLoop(1000);
+	 
+	PWM_reverse(LOW_SPEED);
+	myDelayLoop(1000);
+	if(_bumper == FL)
+		while( !(PINB & (1<<PINB1)) );
+	if(_bumper == FC)
+		while( !(PINB & (1<<PINB2)) );
+	if(_bumper == FR)
+		while( !(PINB & (1<<PINB4)) );
+	 
+	 PWM_stop();
+	 myDelayLoop(1000);
+	 
+	 PWM_right();
+	 while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) );
+	 
+	 PWM_stop();
+	 myDelayLoop(1000);
+	
 }
 
 uint8_t MOWER_myRandDeg(int modulo) {

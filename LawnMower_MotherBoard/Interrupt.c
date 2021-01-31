@@ -35,7 +35,6 @@ ISR(PCINT2_vect)
 		}
 		else
 			_uBpForceStart = 1;
-		
 	}
 }
 
@@ -47,4 +46,21 @@ ISR(PCINT0_vect)
 		if((_eEtatRain == ON) && (isDocking()))
 			_eEtatRain = OFF;
 	}
+	
+	//BP Left
+	if(!(PINB & (1<<PINB1))) {
+		MOWER_bumperDetect(FL);
+	}
+	
+	//BP Center
+	if(!(PINB & (1<<PINB2))) {
+		MOWER_bumperDetect(FC);
+	}
+	
+	//BP Right
+	if(!(PINB & (1<<PINB4))) {
+		MOWER_bumperDetect(FR);
+	}
+	
 }
+
