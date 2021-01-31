@@ -262,9 +262,9 @@ void MOWER_leaveDockCharger()
     PWM_stop();
 }
 
-void MOWER_updateBladeState()
+void MOWER_updateBladeState(Etat eEtatBlade)
 {
-	switch(_eEtatBlade) {
+	switch(eEtatBlade) {
 		case ON:
 			PORTB |= (1<<PORTB6) | (1<<PORTB7);
 			break;

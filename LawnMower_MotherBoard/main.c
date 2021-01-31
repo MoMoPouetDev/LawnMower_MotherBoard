@@ -19,11 +19,10 @@ int main(void) {
 		wdt_reset();
 		STATUS_updateStatus();
 		STATUS_sendStatus();
-		MOWER_updateBladeState();
 		
         if(isDocking())
         {
-			_eEtatBlade = OFF;
+			MOWER_updateBladeState(OFF);
 			
 			PWM_stop();
 			
@@ -48,13 +47,13 @@ int main(void) {
         }
 		else if(_uBpStart && (!_uBpStop)) {
 			_eEtatMower = PAUSE;
-			_eEtatBlade = OFF;
+			MOWER_updateBladeState(OFF);
 			_eErrorMower = NTR;
 			
 			PWM_stop();
 		}
 		else if(isEnoughCharged() == -1) {
-			_eEtatBlade = OFF;
+			MOWER_updateBladeState(OFF);
 			_eEtatMower = RETOUR_STATION;
 			
 			PWM_stop();
@@ -62,14 +61,14 @@ int main(void) {
         else if(isEnoughCharged() && (!isRaining()) && isTimeToMow() && (!(_uBpStart && _uBpStop)))
         {
 			_eEtatMower = TACHE_EN_COURS;
-			_eEtatBlade = ON;
+			MOWER_updateBladeState(ON);
 						
             MOWER_startMower();
         }
         else
         {
 			_eEtatMower = RETOUR_STATION;
-			_eEtatBlade = OFF;
+			MOWER_updateBladeState(OFF);
 			
             MOWER_goDockCharger();
 			

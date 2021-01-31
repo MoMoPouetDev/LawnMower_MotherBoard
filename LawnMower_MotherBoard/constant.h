@@ -167,7 +167,6 @@ typedef enum
     ON, 
 	OFF
 }Etat;
-volatile Etat _eEtatBlade;
 volatile Etat _eEtatRain;
 
 

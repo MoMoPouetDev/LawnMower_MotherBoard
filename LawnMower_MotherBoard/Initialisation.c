@@ -155,7 +155,6 @@ void INIT_accel()
 
 void INIT_variable()
 {
-    _eEtatBlade = OFF;
 	_eEtatRain = OFF;
 	_eEtatMower = UNKNOWN_ETAT;
 	_eErrorMower = NTR;
