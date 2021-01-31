@@ -87,6 +87,11 @@
 #define ADDR_DATA_ACCELEROMETER_Z_LSB 0x36
 #define ADDR_DATA_ACCELEROMETER_Z_MSB 0x37
 
+#define PITCH_MIN -30
+#define PITCH_MAX 30
+#define ROLL_MIN -30
+#define ROLL_MAX 30
+
 /*** END ***/
 
 /*** Périmeter Wire ***/

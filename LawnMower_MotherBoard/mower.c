@@ -33,6 +33,8 @@ void MOWER_startMower()
 	if((tempFR = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR)) != ERROR_DATA)
 		distanceSonarFR = tempFR;
 			
+	MOWER_tiltProtection();
+			
     if( ADC_read(PIN_ADC0_LS) > WIRE_DETECTION_LIMITE)
     {
         MOWER_wireDetectOnLeft();
@@ -543,6 +545,20 @@ void MOWER_bumperDetect(Bumper _bumper) {
 	 PWM_stop();
 	 myDelayLoop(1000);
 	
+}
+
+void MOWER_tiltProtection() {
+	double dPitch,
+			dRoll;
+			
+	MOWER_getAnglePitchRoll(&dPitch, &dRoll);
+	
+	if((dPitch <= PITCH_MIN) || (dPitch >= PITCH_MAX) || (dRoll <= ROLL_MIN) || (dRoll >= ROLL_MAX)) { 
+		MOWER_updateBladeState(OFF);
+	}
+	else {
+		MOWER_updateBladeState(ON);
+	}
 }
 
 uint8_t MOWER_myRandDeg(int modulo) {

@@ -37,6 +37,7 @@ void MOWER_wireDetectOnRight(void);
 void MOWER_wireDetectOnCharge(void);
 void MOWER_sonarDetect(void);
 void MOWER_bumperDetect(Bumper);
+void MOWER_tiltProtection(void);
 uint8_t MOWER_myRandDeg(int);
 void myDelayLoop(double);
 
