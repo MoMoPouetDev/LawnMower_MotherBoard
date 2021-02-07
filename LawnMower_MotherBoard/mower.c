@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <util/delay.h>
+#include <avr/wdt.h>
 
 #include "constant.h"
 #include "mower.h"
@@ -139,6 +140,7 @@ void MOWER_goDockCharger()
 	MOWER_directionFromBase();
 	
 	while(!isDocking()) {
+		wdt_reset();
 		STATUS_updateStatus();
 		STATUS_sendStatus();
 		
@@ -194,6 +196,7 @@ void MOWER_directionFromBase() {
 	
 	if(angleFromBase < 0) {
 		while(angleFromBase >= 0 ) {
+			wdt_reset();
 			PWM_left();
 			angleFromNorth = MOWER_getAngleFromNorth();
 			angleFromBase = MOWER_getAzimut(angleFromNorth);
@@ -201,6 +204,7 @@ void MOWER_directionFromBase() {
 	}
 	else if(angleFromBase > 0) {
 		while(angleFromBase <= 0) {
+			wdt_reset();
 			PWM_right();
 			angleFromNorth = MOWER_getAngleFromNorth();
 			angleFromBase = MOWER_getAzimut(angleFromNorth);
@@ -441,7 +445,9 @@ void MOWER_wireDetectOnLeft(){
     myDelayLoop(1000);
     
     PWM_right();
-    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) );
+    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) ) {
+		wdt_reset();
+	}
     
     PWM_stop();
     myDelayLoop(1000);
@@ -464,7 +470,9 @@ void MOWER_wireDetectOnRight(){
     myDelayLoop(1000);
     
     PWM_left();
-    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) );
+    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) ) {
+		wdt_reset();
+	}
     
     PWM_stop();
     myDelayLoop(1000);
@@ -487,7 +495,9 @@ void MOWER_wireDetectOnCharge(){
     myDelayLoop(1000);
     
     PWM_right();
-    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) );
+    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) ) {
+		wdt_reset();
+	}
     
     PWM_stop();
     myDelayLoop(1000);
@@ -504,13 +514,17 @@ void MOWER_sonarDetect() {
     myDelayLoop(1000);
     
     PWM_reverse(LOW_SPEED);
-    while( (TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC) < SONAR_LIMITE) && (TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL) < SONAR_LIMITE) && (TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR) < SONAR_LIMITE) );
+    while( (TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC) < SONAR_LIMITE) && (TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL) < SONAR_LIMITE) && (TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR) < SONAR_LIMITE) ) {
+		wdt_reset();
+	}
     
     PWM_stop();
     myDelayLoop(1000);
     
     PWM_right();
-    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) );
+    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) ) {
+		wdt_reset();
+	}
     
     PWM_stop();
     myDelayLoop(1000);
@@ -540,7 +554,9 @@ void MOWER_bumperDetect(Bumper _bumper) {
 	 myDelayLoop(1000);
 	 
 	 PWM_right();
-	 while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) );
+	 while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) ) {
+		 wdt_reset();
+	 }
 	 
 	 PWM_stop();
 	 myDelayLoop(1000);
