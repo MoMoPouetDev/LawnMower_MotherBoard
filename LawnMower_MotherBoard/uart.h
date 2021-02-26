@@ -11,5 +11,6 @@
 
 void UART_transmission(uint8_t);
 uint8_t UART_reception(void);
+void UART_sendCommand(char*);
 
 #endif /* uart_h */

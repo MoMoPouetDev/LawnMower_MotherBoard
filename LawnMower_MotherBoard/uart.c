@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <avr/io.h>
+#include <util/delay.h>
 
 #include "uart.h"
 
@@ -25,4 +26,15 @@ uint8_t UART_reception()
     while (!(UCSR0A & (1<<RXC0)));
 /***** Return received data *****/
     return UDR0;
+}
+
+void UART_sendCommand(char *command)
+{
+	int i=0;
+	
+	while(i <= strlen(command)) {
+		UART_transmission((uint8_t)command[i]);
+		i++;
+	}
+	_delay_ms(100);
 }

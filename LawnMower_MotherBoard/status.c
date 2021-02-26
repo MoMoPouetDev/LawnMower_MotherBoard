@@ -42,6 +42,9 @@ void STATUS_sendStatus() {
 	uint8_t uMinutesGPS;
 	uint8_t uDaysGPS;
 	uint8_t uMonthsGPS;
+	uint8_t angleLSB, angleMSB;
+	uint16_t angleW;
+	float angle;
 	
 	tLatitude.degrees = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_LAT_DEG);
 	tLatitude.minutes = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_LAT_MIN);
@@ -59,6 +62,11 @@ void STATUS_sendStatus() {
 	uMinutesGPS = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_TIME_MINUTES);
 	uDaysGPS = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_DATE_DAYS);
 	uMonthsGPS = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_GPS_DATE_MONTHS);
+	
+	angle = MOWER_getAngleFromNorth();
+	angleW = (uint16_t) angle;
+	angleLSB = angleW & 0xFF;
+	angleMSB = (angleW >> 8) & 0xFF;
 	
     UART_transmission(_eEtatMower);
     UART_transmission(_eErrorMower);
@@ -80,6 +88,9 @@ void STATUS_sendStatus() {
 	UART_transmission(uMinutesGPS);
 	UART_transmission(uDaysGPS);
 	UART_transmission(uMonthsGPS);
+	
+	UART_transmission(angleMSB);
+	UART_transmission(angleLSB);
 }
 
 void STATUS_receivedStatus() {

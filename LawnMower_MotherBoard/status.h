@@ -31,10 +31,10 @@ typedef enum {
 ErrorMower _eErrorMower;
 
 typedef enum {
-    UNKNOWN_COMMAND = 0x10,
-    START = 0x11,
-    STOP = 0x12,
-    FORCE_START = 0x13
+    UNKNOWN_COMMAND = 0x30,
+    START = 0x31,
+    STOP = 0x32,
+    FORCE_START = 0x33
 }CommandMower;
 CommandMower _eCommandMower;
 

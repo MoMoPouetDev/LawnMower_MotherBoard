@@ -13,9 +13,10 @@
 #include <util/twi.h>
 
 #include "constant.h"
+#include "Initialisation.h"
 #include "status.h"
 #include "twi.h"
-#include "Initialisation.h"
+#include "uart.h"
 
 void Initialisation()
 {
@@ -29,6 +30,8 @@ void Initialisation()
     INIT_interrupt();
     INIT_compass();
     INIT_accel();
+	INIT_ble();
+	
 }
 
 void INIT_io()
@@ -151,6 +154,21 @@ void INIT_accel()
     TWI_write_data(0x2D);
     TWI_write_data(0x08);
     TWI_stop();
+}
+
+void INIT_ble()
+{
+	char commandAT[] = "AT",
+		commandRole[] = "AT+ROLE0",
+		commandUuid[] = "AT+UUID0xFFE0",
+		commandChar[] = "AT+CHAR0xFFE1",
+		commandName[] = "AT+NAMEMower";
+		
+	UART_sendCommand(commandAT);
+	UART_sendCommand(commandRole);
+	UART_sendCommand(commandUuid);
+	UART_sendCommand(commandChar);
+	UART_sendCommand(commandName);
 }
 
 void INIT_variable()
