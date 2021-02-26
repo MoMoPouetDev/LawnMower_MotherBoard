@@ -40,17 +40,17 @@ void INIT_io()
     DDRB = 0x00;
     //DDRB |= (0<<DDB0); // Bouton Poussoir Stop
     //DDRB |= (1<<DDB1) | (1<<DDB2) | (1<<DDB4); // Bumper Left - Center - Right
-	//DDRB |= (1<<DDB5); // TBD
-    DDRB |= (1<<DDB3); // PWM Moteur 2
-    DDRB |= (1<<DDB6) | (1<<DDB7); // Commande Moteur Lame Enable - ON
+	DDRB |= (1<<DDB3); // PWM Moteur 2
+	DDRB |= (1<<DDB5); // Commande Moteur Lame Enable 
+    //DDRB |= (1<<DDB6) | (1<<DDB7); // XTAL
     
     PORTB = 0x00;
     PORTB |= (1<<PORTB0); // Pull-Up Bouton Poussoir
     PORTB |= (1<<PORTB1) | (1<<PORTB2) | (1<<PORTB4); // Bumper Left - Center - Right Pull Up
-	PORTB |= (1<<PORTB5); // TBD Pull Up
-    // PORTB |= (1<<PORTB3); // Moteur 2 Avant
-    // PORTB |= (1<<PORTB6); // Enable Moteur Lame
-    // PORTB |= (1<<PORTB7); // Moteur Lame
+    //PORTB |= (1<<PORTB3); // Moteur 2 Avant
+	//PORTB |= (1<<PORTB5); // Moteur Lame Enable
+    //PORTB |= (1<<PORTB6); // XTAL
+    //PORTB |= (1<<PORTB7); // XTAL
     
 /***** PORT C *****/
     DDRC = 0x00;

@@ -270,13 +270,13 @@ void MOWER_updateBladeState(Etat eEtatBlade)
 {
 	switch(eEtatBlade) {
 		case ON:
-			PORTB |= (1<<PORTB6) | (1<<PORTB7);
+			PORTB |= (1<<PORTB5);
 			break;
 		case OFF:
-			PORTB &= ~(1<<PORTB6) & ~(1<<PORTB7);
+			PORTB &= ~(1<<PORTB5);
 			break;
 		default:
-			PORTB &= ~(1<<PORTB6) & ~(1<<PORTB7);
+			PORTB &= ~(1<<PORTB5);
 			break;
 	}
 }
