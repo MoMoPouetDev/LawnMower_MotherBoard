@@ -13,8 +13,8 @@
 
 uint16_t ADC_read(uint8_t adcChannel)
 {
-    adcChannel &= 0x07;
-    ADMUX = ( ADMUX & 0xF8 ) | adcChannel; // Mask pour selection de l'adc
+    adcChannel &= 0x03;
+    ADMUX = ( ADMUX & 0xFC ) | adcChannel; // Mask pour selection de l'adc
     
     ADCSRA |= (1<<ADSC); // Start Conversion
     
