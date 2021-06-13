@@ -32,12 +32,15 @@ void MOWER_getCoordinates(float*, float*);
 int MOWER_getAngleFromNorth(void);
 float MOWER_getAzimut(float);
 void MOWER_getAnglePitchRoll(double*, double*);
-void MOWER_wireDetectOnLeft(void);
-void MOWER_wireDetectOnRight(void);
+void MOWER_wireDetectOnLeft(uint16_t*);
+void MOWER_wireDetectOnRight(uint16_t*);
 void MOWER_wireDetectOnCharge(void);
 void MOWER_sonarDetect(void);
 void MOWER_bumperDetect(Bumper);
 void MOWER_tiltProtection(void);
+void MOWER_getSonarDistance(uint8_t*, uint8_t*, uint8_t*);
+void MOWER_getWireDistanceLeft(uint16_t*);
+void MOWER_getWireDistanceRight(uint16_t*);
 uint8_t MOWER_myRandDeg(int);
 void myDelayLoop(double);
 

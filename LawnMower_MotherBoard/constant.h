@@ -93,9 +93,10 @@
 /*** END ***/
 
 /*** Périmeter Wire ***/
-#define WIRE_DETECTION_LIMITE 700
-#define WIRE_DETECTION_MAX 800
-#define WIRE_DETECTION_MIN 500
+/*** 800 ; 450 ***/
+#define WIRE_DETECTION_LIMITE 600
+#define WIRE_DETECTION_LOAD 750
+#define WIRE_DETECTION_UNLOAD 450
 
 uint8_t _uWireReached;
 /*** END ***/
