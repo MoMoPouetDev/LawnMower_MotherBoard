@@ -35,7 +35,7 @@ void MOWER_getAnglePitchRoll(double*, double*);
 void MOWER_wireDetectOnLeft(uint16_t*);
 void MOWER_wireDetectOnRight(uint16_t*);
 void MOWER_wireDetectOnCharge(void);
-void MOWER_sonarDetect(void);
+void MOWER_sonarDetect(uint8_t*, uint8_t*, uint8_t*);
 void MOWER_bumperDetect(Bumper);
 void MOWER_tiltProtection(void);
 void MOWER_getSonarDistance(uint8_t*, uint8_t*, uint8_t*);

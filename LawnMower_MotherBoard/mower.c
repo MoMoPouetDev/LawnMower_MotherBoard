@@ -165,7 +165,7 @@ void MOWER_goDockCharger()
 				PWM_forward(MIDDLE_SPEED);
         
 				if ((distanceSonarFC < SONAR_ERR) || (distanceSonarFL < SONAR_ERR) || (distanceSonarFR < SONAR_ERR)) {
-                    MOWER_sonarDetect();
+                    //MOWER_sonarDetect();
                     PWM_forward(LOW_SPEED);
 				}
 			}
@@ -514,31 +514,45 @@ void MOWER_wireDetectOnCharge(){
     myDelayLoop(1000);
 }
 
-void MOWER_sonarDetect() {
-    uint8_t deltaAngle = DELTA_ANGLE;
-    uint8_t randAngle = MOWER_myRandDeg(360);
-    uint8_t startAngle = MOWER_getAngleFromNorth();
-    
-    uint8_t endAngle = (startAngle + randAngle)%360;
-    
-    PWM_stop();
-    myDelayLoop(1000);
-    
-    PWM_reverse(LOW_SPEED);
-    while( (TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC) < SONAR_LIMITE) && (TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL) < SONAR_LIMITE) && (TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR) < SONAR_LIMITE) ) {
+void MOWER_sonarDetect(uint8_t* pDistanceSonarFC, uint8_t* pDistanceSonarFL, uint8_t* pDistanceSonarFR) {
+	uint8_t deltaAngle = DELTA_ANGLE;
+	//volatile uint8_t randAngle = MOWER_myRandDeg(5);
+	uint8_t randAngle = MOWER_myRandDeg(360);
+	uint8_t startAngle = MOWER_getAngleFromNorth();
+	uint8_t currentAngle;
+	uint8_t endAngle = (startAngle + randAngle)%360;
+	
+	PWM_stop();
+	myDelayLoop(1);
+	
+	PWM_reverse(HIGH_SPEED);
+	MOWER_getSonarDistance(pDistanceSonarFC, pDistanceSonarFL, pDistanceSonarFR);
+	while( (*pDistanceSonarFC < SONAR_LIMITE) || (*pDistanceSonarFL < SONAR_LIMITE) || (*pDistanceSonarFR < SONAR_LIMITE) ) {
 		wdt_reset();
+		MOWER_getSonarDistance(pDistanceSonarFC, pDistanceSonarFL, pDistanceSonarFR);
+		MOWER_tiltProtection();
 	}
-    
-    PWM_stop();
-    myDelayLoop(1000);
-    
-    PWM_right();
-    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) ) {
+	
+	PWM_stop();
+	myDelayLoop(1);
+	
+	PWM_right();
+	
+	/* ************* UnComment until new Compass ********** 
+	
+	myDelayLoop(randAngle);
+	/* ****************************************************** */
+	/* ************* Comment until new Compass **********
+	*/
+	currentAngle = MOWER_getAngleFromNorth();
+	while( !((currentAngle > ((endAngle - deltaAngle)%360)) && (currentAngle < ((endAngle + deltaAngle)%360))) ) {
 		wdt_reset();
+		currentAngle = MOWER_getAngleFromNorth();
+		MOWER_tiltProtection();
 	}
-    
-    PWM_stop();
-    myDelayLoop(1000);
+	/* ****************************************************** */
+	PWM_stop();
+	myDelayLoop(1);
 }
 
 void MOWER_bumperDetect(Bumper _bumper) {
@@ -603,7 +617,7 @@ void MOWER_getWireDistanceRight(uint16_t* pDistanceWireRight) {
 }
 
 uint8_t MOWER_myRandDeg(int modulo) {
-    return (uint8_t)rand()%modulo;
+    return (uint8_t)((rand()%modulo) + 1);
 }
 
 void myDelayLoop(uint16_t delay)
