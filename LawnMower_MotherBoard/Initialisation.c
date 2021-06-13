@@ -11,6 +11,7 @@
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
 #include <util/twi.h>
+#include <util/delay.h>
 
 #include "constant.h"
 #include "Initialisation.h"
@@ -23,6 +24,7 @@ void Initialisation()
     INIT_io();
     INIT_variable();
     INIT_pwm();
+	INIT_timer();
     INIT_twi();
     INIT_uart();
     INIT_adc();
@@ -56,7 +58,7 @@ void INIT_io()
     DDRC = 0x00;
     //DDRC |= (1<<DDC0) | (1<<DDC1); // ADC - Detection cable droite et gauche
     //DDRC |= (1<<DDC2) | (1<<DDC3); // TBD
-    DDRC |= (1<<DDC4) | (1<<DDC5); // Config I2C SDA - SCL
+    //DDRC |= (1<<DDC4) | (1<<DDC5); // Config I2C SDA - SCL
     //DDRC |= (1<<DDC6); // TBD
     
     PORTC = 0x00;
@@ -100,6 +102,11 @@ void INIT_pwm()
     TCCR2B |= (1<<CS20); // No Prescale
     
     OCR2A = 0x00;
+}
+
+void INIT_timer()
+{
+	//TCCR1B |= (1<<CS10); // No Prescale
 }
 
 void INIT_twi()

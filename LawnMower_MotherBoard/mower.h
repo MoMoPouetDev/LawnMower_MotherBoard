@@ -42,6 +42,6 @@ void MOWER_getSonarDistance(uint8_t*, uint8_t*, uint8_t*);
 void MOWER_getWireDistanceLeft(uint16_t*);
 void MOWER_getWireDistanceRight(uint16_t*);
 uint8_t MOWER_myRandDeg(int);
-void myDelayLoop(double);
+void myDelayLoop(uint16_t);
 
 #endif /* mower_h */

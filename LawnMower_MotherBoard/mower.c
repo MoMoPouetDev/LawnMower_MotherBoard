@@ -609,11 +609,20 @@ uint8_t MOWER_myRandDeg(int modulo) {
     return (uint8_t)rand()%modulo;
 }
 
-void myDelayLoop(double delay)
+void myDelayLoop(uint16_t delay)
 {
-    double i;
-    for (i=0; i<delay; i++) {
-        _delay_ms(1);
-    }
+	uint16_t myMillSec = 1000 * delay;
+	uint16_t i;
+	
+	TCNT1 = 0x00;
+	TCCR1B |= (1<<CS10);
+	
+	for (i = 0; i<= myMillSec; i++)
+	{
+		while (TCNT1 <= 0x1F40);
+		TCNT1 = 0x00;
+	}
+	
+	TCCR1B &= ~(1<<CS10);
 }
 
