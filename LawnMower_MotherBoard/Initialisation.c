@@ -120,7 +120,7 @@ void INIT_wdt()
 	cli();
 	wdt_reset();
 	WDTCSR = (1<<WDCE) | (1<<WDE);
-	WDTCSR = (1<<WDIE) | (1<<WDP2);
+	WDTCSR = (1<<WDIE) | (1<<WDP2)| (1<<WDP1) ; //1s
 	sei();
 }
 
