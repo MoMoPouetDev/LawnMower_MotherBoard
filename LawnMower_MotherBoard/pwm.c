@@ -43,8 +43,8 @@ void PWM_reverse(uint8_t speed)
 
 void PWM_right()
 {
-    OCR0A = (( 0xFF / 100 ) * LOW_SPEED);
-    OCR2A = (( 0xFF / 100 ) * LOW_SPEED);
+    OCR0A = (( 0xFF / 100 ) * HIGH_SPEED);
+    OCR2A = (( 0xFF / 100 ) * HIGH_SPEED);
     
     PORTD &= ~(1<<ENABLE_REVERSE_MOTOR_1) & ~(1<<ENABLE_FORWARD_MOTOR_2);
     PORTD |= (1<<ENABLE_FORWARD_MOTOR_1) | (1<<ENABLE_REVERSE_MOTOR_2);
@@ -52,8 +52,8 @@ void PWM_right()
 
 void PWM_left()
 {
-    OCR0B = (( 0xFF / 100 ) * LOW_SPEED);
-    OCR2A = (( 0xFF / 100 ) * LOW_SPEED);
+    OCR0B = (( 0xFF / 100 ) * HIGH_SPEED);
+    OCR2A = (( 0xFF / 100 ) * HIGH_SPEED);
     
     PORTD &= ~(1<<ENABLE_FORWARD_MOTOR_1) & ~(1<<ENABLE_REVERSE_MOTOR_2);
     PORTD |= (1<<ENABLE_REVERSE_MOTOR_1) | (1<<ENABLE_FORWARD_MOTOR_2);
