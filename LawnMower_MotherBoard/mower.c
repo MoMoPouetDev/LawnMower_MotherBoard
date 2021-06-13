@@ -20,43 +20,40 @@
 
 void MOWER_startMower()
 {
-	uint8_t tempFC,
-			tempFL,
-			tempFR;
-	static uint8_t distanceSonarFC = 255,
-					distanceSonarFL = 255,
-					distanceSonarFR = 255;
+
+	static uint8_t uDistanceSonarFC = 255,
+					uDistanceSonarFL = 255,
+					uDistanceSonarFR = 255;
+	static uint16_t uDistanceWireLeft = WIRE_DETECTION_UNLOAD,
+					uDistanceWireRight = WIRE_DETECTION_UNLOAD;
 	
-	if((tempFC = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC)) != ERROR_DATA)
-		distanceSonarFC = tempFC;
-	if((tempFL = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL)) != ERROR_DATA)
-		distanceSonarFL = tempFL;
-	if((tempFR = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR)) != ERROR_DATA)
-		distanceSonarFR = tempFR;
-			
+	MOWER_getSonarDistance(&uDistanceSonarFC, &uDistanceSonarFL, &uDistanceSonarFR);
+	MOWER_getWireDistanceLeft(&uDistanceWireLeft);
+	MOWER_getWireDistanceRight(&uDistanceWireRight);
+	
 	MOWER_tiltProtection();
-			
-    if( ADC_read(PIN_ADC0_LS) > WIRE_DETECTION_LIMITE)
-    {
-        MOWER_wireDetectOnLeft();
-        PWM_forward(LOW_SPEED);
-    }
-    else if (ADC_read(PIN_ADC1_RS) > WIRE_DETECTION_LIMITE)
-    {
-        MOWER_wireDetectOnRight();
-        PWM_forward(LOW_SPEED);
-    }
-    else if ((distanceSonarFC < SONAR_WARN) || (distanceSonarFL < SONAR_WARN) || (distanceSonarFR < SONAR_WARN))
-    {       
-        if ((distanceSonarFC < SONAR_ERR) || (distanceSonarFL < SONAR_ERR) || (distanceSonarFR < SONAR_ERR)) {
-            MOWER_sonarDetect();
-            PWM_forward(LOW_SPEED);
-        }
-		else
+	
+	if (uDistanceWireLeft > WIRE_DETECTION_LIMITE) {
+		MOWER_wireDetectOnLeft(&uDistanceWireLeft);
+		PWM_forward(MIDDLE_SPEED);
+	}
+	else if (uDistanceWireRight > WIRE_DETECTION_LIMITE) {
+		MOWER_wireDetectOnRight(&uDistanceWireRight);
+		PWM_forward(MIDDLE_SPEED);
+	}
+	else if ((uDistanceSonarFC < SONAR_WARN) || (uDistanceSonarFL < SONAR_WARN) || (uDistanceSonarFR < SONAR_WARN))
+	{
+		if ((uDistanceSonarFC < SONAR_ERR) || (uDistanceSonarFL < SONAR_ERR) || (uDistanceSonarFR < SONAR_ERR)) {
+			MOWER_sonarDetect(&uDistanceSonarFC, &uDistanceSonarFL, &uDistanceSonarFR);
 			PWM_forward(MIDDLE_SPEED);
-    }
-    else
-        PWM_forward(HIGH_SPEED);
+		}
+		else {
+			PWM_forward(MIDDLE_SPEED);
+		}
+	}
+	else {
+		PWM_forward(HIGH_SPEED);
+	}
 }
 
 uint8_t isDocking()
