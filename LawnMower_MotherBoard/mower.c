@@ -312,47 +312,36 @@ void MOWER_getCoordinates(float* pLatitudeCoordinates, float* pLongitudeCoordina
     *pLongitudeCoordinates = (float)tLongitude.degrees + (atof(tempLong)/60.0);
 }
 
-float MOWER_getAngleFromNorth() {
+int MOWER_getAngleFromNorth() {
 	uint8_t dataLsbX,
 			dataMsbX,
 			dataLsbY,
 			dataMsbY,
             dataLsbZ,
-            dataMsbZ,
-            dataLsbTemp,
-            dataMsbTemp;
+            dataMsbZ;
 	static int dataX = 0,
         dataY = 0,
-        dataZ = 0;
-	double angle,
-			xh,
-			yh,
-			dPitch,
-			dRoll,
-			rPitch,
-			rRoll;
+        dataZ = 0,
+		angle = 0;
+	double dPitch,
+			dRoll;
+	float xh,
+		yh,
+		rPitch,
+		rRoll;
 			
     dataLsbX = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_X_LSB);
     dataMsbX = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_X_MSB);
-    if ( (dataLsbX != ERROR_DATA) && (dataMsbX != ERROR_DATA) ) {
-        dataX = (int)(int16_t)((dataMsbX<<8) | dataLsbX);
-    }
+    dataX = (int)(int16_t)((dataMsbX<<8) | dataLsbX);
 	
 	dataLsbY = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_Y_LSB);
 	dataMsbY = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_Y_MSB);
-    if( (dataLsbY != ERROR_DATA) && (dataMsbY != ERROR_DATA) ){
-        dataY = (int)(int16_t)((dataMsbY<<8) | dataLsbY);
-    }
+    dataY = (int)(int16_t)((dataMsbY<<8) | dataLsbY);
     
     dataLsbZ = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_Z_LSB);
     dataMsbZ = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_Z_MSB);
-    if( (dataLsbZ != ERROR_DATA) && (dataMsbZ != ERROR_DATA) ){
-        dataZ = (int)(int16_t)((dataMsbZ<<8) | dataLsbZ);
-    }
+    dataZ = (int)(int16_t)((dataMsbZ<<8) | dataLsbZ);
         
-    dataLsbTemp = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_TEMP_LSB);
-    dataMsbTemp = TWI_getData(ADDR_SLAVE_COMPASS, ADDR_DATA_COMPASS_TEMP_MSB);
-    
 	/*** Without Tilt Compensation ***
     angle = (atan2(-(dataY-((CALIBRATION_Y_MAX + CALIBRATION_Y_MIN)/2.0)),(dataX - ((CALIBRATION_X_MAX + CALIBRATION_X_MIN)/2.0)))) + DECLINATION + OFFSET;
     
@@ -370,8 +359,8 @@ float MOWER_getAngleFromNorth() {
 	rPitch = (M_PI/180)*dPitch;
 	rRoll = (M_PI/180)*dRoll;
   
-	xh = ((dataX - OFFSET_X) * cos(rPitch)) + ((dataY - OFFSET_Y) * sin(rRoll) * sin(rPitch)) - ((dataZ - OFFSET_Z) * cos(rRoll) * sin(rPitch));
-	yh = ((dataY - OFFSET_Y) * cos(rRoll)) + ((dataZ - OFFSET_Z) * sin(rRoll));
+	xh = ((float)(dataX - OFFSET_X) * cos(rPitch)) + ((float)(dataY - OFFSET_Y) * sin(rRoll) * sin(rPitch)) - ((float)(dataZ - OFFSET_Z) * cos(rRoll) * sin(rPitch));
+	yh = ((float)(dataY - OFFSET_Y) * cos(rRoll)) + ((float)(dataZ - OFFSET_Z) * sin(rRoll));
   
 	angle = (180/M_PI) * (atan2(-yh,xh)+ DECLINATION + OFFSET);
   
@@ -399,33 +388,30 @@ float MOWER_getAzimut(float angleFromNorth) {
 }
 
 void MOWER_getAnglePitchRoll(double* pPitch, double* pRoll) {
-    uint8_t dataLsbX,
-            dataMsbX,
-            dataLsbY,
-            dataMsbY,
-            dataLsbZ,
-            dataMsbZ;
-    static float   dataX = 0,
-                    dataY = 0,
-                    dataZ = 0;
-    
-    dataLsbX = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_X_LSB);
-    dataMsbX = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_X_MSB);
-    if( (dataLsbX != ERROR_DATA) && (dataMsbX != ERROR_DATA) )
-        dataX = ((float)(int16_t)((dataMsbX<<8) | dataLsbX))/256;
-    
-    dataLsbY = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Y_LSB);
-    dataMsbY = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Y_MSB);
-    if( (dataLsbY != ERROR_DATA) && (dataMsbY != ERROR_DATA) )
-        dataY = ((float)(int16_t)((dataMsbY<<8) | dataLsbY))/256;
-    
-    dataLsbZ = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Z_LSB);
-    dataMsbZ = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Z_MSB);
-    if( (dataLsbZ != ERROR_DATA) && (dataMsbZ != ERROR_DATA) )
-        dataZ = ((float)(int16_t)((dataMsbZ<<8) | dataLsbZ))/256;
-    
-    *pPitch = 180 * atan2(-dataX, sqrt(dataY*dataY + dataZ*dataZ))/M_PI;
-    *pRoll = 180 * atan2(dataY, sqrt(dataX*dataX + dataZ*dataZ))/M_PI;
+	uint8_t dataLsbX,
+		dataMsbX,
+		dataLsbY,
+		dataMsbY,
+		dataLsbZ,
+		dataMsbZ;
+	float dataX = 0,
+		dataY = 0,
+		dataZ = 0;
+	
+	dataLsbX = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_X_LSB);
+	dataMsbX = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_X_MSB);
+	dataX = ((float)(int16_t)((dataMsbX<<8) | dataLsbX))/256;
+	
+	dataLsbY = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Y_LSB);
+	dataMsbY = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Y_MSB);
+	dataY = ((float)(int16_t)((dataMsbY<<8) | dataLsbY))/256;
+	
+	dataLsbZ = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Z_LSB);
+	dataMsbZ = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Z_MSB);
+	dataZ = ((float)(int16_t)((dataMsbZ<<8) | dataLsbZ))/256;
+	
+	*pPitch = 180 * atan2(-dataX, sqrt(dataY*dataY + dataZ*dataZ))/M_PI;
+	*pRoll = 180 * atan2(dataY, sqrt(dataX*dataX + dataZ*dataZ))/M_PI;
 }
 
 void MOWER_wireDetectOnLeft(){

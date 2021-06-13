@@ -10,6 +10,7 @@
 #include <avr/io.h>
 #include <util/twi.h>
 #include <avr/wdt.h>
+#include <util/delay.h>
 
 #include "constant.h"
 #include "twi.h"
@@ -30,83 +31,85 @@ uint8_t TWI_getData(uint8_t addrSlave, uint8_t addrData) {
     
     TWI_stop();
     
-	if(_uFlagWatchdog)
-		receivedData = ERROR_DATA;
+	_delay_ms(20);
     
     return receivedData;
 }
 
 void TWI_setData(uint8_t addrSlave, uint8_t addrData, uint8_t data) {
-    wdt_reset();
-    _uFlagWatchdog = 0;
-    
+
     TWI_start();
     TWI_write(addrSlave, TW_WRITE);
     TWI_write_data(addrData);
     TWI_write_data(data);
-    
     TWI_stop();
+	_delay_ms(20);
 }
 
 void TWI_start()
 {
     TWCR = (1<<TWEN) | (1<<TWINT) | (1<<TWSTA);
-    while (!(TWCR & (1<<TWINT)) && !(_uFlagWatchdog));
-    while(!((TWSR & 0xF8) == TW_START) && !(_uFlagWatchdog));
+
+    while (!(TWCR & (1<<TWINT)));
+    while((TWSR & 0xF8) != TW_START);
 }
 
 void TWI_repeat_start()
 {
-    TWCR = (1<<TWEN) | (1<<TWINT) | (1<<TWSTA);
-    while (!(TWCR & (1<<TWINT)) && !(_uFlagWatchdog));
-    while(!((TWSR & 0xF8) == TW_REP_START) && !(_uFlagWatchdog));
+	TWCR = (1<<TWEN) | (1<<TWINT) | (1<<TWSTA);
+
+	while (!(TWCR & (1<<TWINT)));
+	while((TWSR & 0xF8) != TW_REP_START);
 }
 
 void TWI_write(uint8_t addrSlave, uint8_t twi_read_write)
 {
-    TWDR = addrSlave + twi_read_write;
-    TWCR = (1<<TWEN) | (1<<TWINT);
-    while (!(TWCR & (1<<TWINT)) && !(_uFlagWatchdog));
-    if (twi_read_write)
-        while (!((TWSR & 0xF8) == TW_MR_SLA_ACK) && !(_uFlagWatchdog));
-    else
-        while (!((TWSR & 0xF8) == TW_MT_SLA_ACK) && !(_uFlagWatchdog));
+	TWDR = addrSlave + twi_read_write;
+	TWCR = (1<<TWEN) | (1<<TWINT);
+
+	while (!(TWCR & (1<<TWINT)));
+	if (twi_read_write) {
+		while ((TWSR & 0xF8) != TW_MR_SLA_ACK);
+	}
+	else {
+		while ((TWSR & 0xF8) != TW_MT_SLA_ACK);
+	}
 }
 
 void TWI_write_data(uint8_t dataToSend)
 {
-    TWDR = dataToSend;
-    TWCR = (1<<TWEN) | (1<<TWINT) | (1<<TWEA);
-    while (!(TWCR & (1<<TWINT)) && !(_uFlagWatchdog));
-    while (!((TWSR & 0xF8) == TW_MT_DATA_ACK) && !(_uFlagWatchdog));
+	TWDR = dataToSend;
+	TWCR = (1<<TWEN) | (1<<TWINT);
+
+	while (!(TWCR & (1<<TWINT)));
+	while ((TWSR & 0xF8) != TW_MT_DATA_ACK);
 }
 
 uint8_t TWI_readACK()
 {
-    TWCR = (1<<TWEN) | (1<<TWINT) | (1<<TWEA);
-    while (!(TWCR & (1<<TWINT)) && !(_uFlagWatchdog));
-    while (!((TWSR & 0xF8) == TW_MR_DATA_ACK) && !(_uFlagWatchdog));
-    
-    if (_uFlagWatchdog)
-        return 0;
-    else
-        return TWDR;
+	TWCR = (1<<TWEN) | (1<<TWINT) | (1<<TWEA);
+
+	while (!(TWCR & (1<<TWINT)));
+	while ((TWSR & 0xF8) != TW_MR_DATA_ACK);
+
+	return TWDR;
 }
 
 uint8_t TWI_readNACK()
 {
-    TWCR = (1<<TWEN) | (1<<TWINT);
-    while (!(TWCR & (1<<TWINT)) && !(_uFlagWatchdog));
-    while (!((TWSR & 0xF8) == TW_MR_DATA_NACK) && !(_uFlagWatchdog));
+	TWCR = (1<<TWEN) | (1<<TWINT);
 
-    if (_uFlagWatchdog)
-        return 0;
-    else
-        return TWDR;
+	while (!(TWCR & (1<<TWINT)));
+	while ((TWSR & 0xF8) != TW_MR_DATA_NACK);
+
+	return TWDR;
 }
 
 void TWI_stop()
 {
-    TWCR = (1<<TWINT) | (1<<TWSTO) | (1<<TWEN);
+	TWCR = (1<<TWINT) | (1<<TWSTO) | (1<<TWEN);
+
+	while(TWCR & (1<<TWSTO));
 }
+
 

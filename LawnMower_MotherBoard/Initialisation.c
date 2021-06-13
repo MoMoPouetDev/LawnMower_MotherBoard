@@ -104,7 +104,8 @@ void INIT_pwm()
 
 void INIT_twi()
 {
-    TWBR  = (uint8_t)(( F_CPU  / SCL_CLOCK ) - 16 ) / 2; //- 400kHz
+	TWSR = 0;
+    TWBR  = (( F_CPU  / SCL_CLOCK ) - 16 ) / 2; //- 400kHz
 }
 
 void INIT_wdt()
@@ -136,24 +137,26 @@ void INIT_adc()
 
 void INIT_compass()
 {
-    TWI_start();
-    TWI_write(ADDR_SLAVE_COMPASS, TW_WRITE);
-    TWI_write_data(0x0B);
-    TWI_write_data(0x01);
-    TWI_repeat_start();
-    TWI_write(ADDR_SLAVE_COMPASS, TW_WRITE);
-    TWI_write_data(0x09);
-    TWI_write_data(0x11); // OSR 00; RNG 01; ODR 00; MODE 01
-    TWI_stop();
+	TWI_start();
+	TWI_write(ADDR_SLAVE_COMPASS, TW_WRITE);
+	TWI_write_data(0x00);
+	TWI_write_data(0x70);
+	TWI_write_data(0xA0);
+	TWI_write_data(0x00);
+	_delay_ms(20);
+	TWI_stop();
+	_delay_ms(20);
 }
 
 void INIT_accel()
 {
-    TWI_start();
-    TWI_write(ADDR_SLAVE_ACCELEROMETER, TW_WRITE);
-    TWI_write_data(0x2D);
-    TWI_write_data(0x08);
-    TWI_stop();
+	TWI_start();
+	TWI_write(ADDR_SLAVE_ACCELEROMETER, TW_WRITE);
+	TWI_write_data(0x2D);
+	TWI_write_data(0x08);
+	_delay_ms(20);
+	TWI_stop();
+	_delay_ms(20);
 }
 
 void INIT_ble()

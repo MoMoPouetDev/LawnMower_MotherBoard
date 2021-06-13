@@ -29,7 +29,7 @@ void MOWER_pidController(uint8_t*);
 void MOWER_leaveDockCharger(void);
 void MOWER_updateBladeState(Etat);
 void MOWER_getCoordinates(float*, float*);
-float MOWER_getAngleFromNorth(void);
+int MOWER_getAngleFromNorth(void);
 float MOWER_getAzimut(float);
 void MOWER_getAnglePitchRoll(double*, double*);
 void MOWER_wireDetectOnLeft(void);
