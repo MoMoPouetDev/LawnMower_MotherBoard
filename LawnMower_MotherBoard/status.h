@@ -34,7 +34,9 @@ typedef enum {
     UNKNOWN_COMMAND = 0x30,
     START = 0x31,
     STOP = 0x32,
-    FORCE_START = 0x33
+    FORCE_START = 0x33,
+	DOCK_ON = 0x34,
+	DOCK_OFF = 0x35
 }CommandMower;
 CommandMower _eCommandMower;
 

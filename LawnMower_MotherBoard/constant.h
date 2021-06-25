@@ -98,7 +98,6 @@
 #define WIRE_DETECTION_LOAD 750
 #define WIRE_DETECTION_UNLOAD 450
 
-uint8_t _uWireReached;
 /*** END ***/
 
 /*** MOTOR ***/
@@ -123,8 +122,6 @@ uint8_t _uWireReached;
 #define COORDINATES_BASE_LAT 49.2315928
 #define COORDINATES_BASE_LONG 1.2470619
 
-uint8_t _uTime;
-uint8_t _uDate;
 /*** END ***/
 
 /*** SONAR ***/
@@ -158,6 +155,7 @@ uint8_t _uBattery;
 volatile uint8_t _uBpStart;
 volatile uint8_t _uBpForceStart;
 volatile uint8_t _uBpStop;
+volatile uint8_t _uDock;
 
 volatile uint8_t _uFlagWatchdog;
 

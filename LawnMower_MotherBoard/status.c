@@ -111,6 +111,14 @@ void STATUS_receivedStatus() {
         case FORCE_START:
             _uBpForceStart = 1;
             break;
+			
+		case DOCK_ON:
+			_uDock = 1;
+			break;
+			
+		case DOCK_OFF:
+			_uDock = 0;
+			break;
             
         default:
             break;

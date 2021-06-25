@@ -189,7 +189,6 @@ void INIT_variable()
 	_uBpStop = 0;
 	_uBpStart = 0;
 	_uBpForceStart = 0;
-	_uWireReached = 0;
-	_uFlagWatchdog = 0;
+	_uDock = 1;
 }
 
