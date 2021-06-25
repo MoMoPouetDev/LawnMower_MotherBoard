@@ -43,6 +43,8 @@ void MOWER_startMower()
 	}
 	else if ((uDistanceSonarFC < SONAR_WARN) || (uDistanceSonarFL < SONAR_WARN) || (uDistanceSonarFR < SONAR_WARN))
 	{
+		PWM_forward(MIDDLE_SPEED);
+		/***** 
 		if ((uDistanceSonarFC < SONAR_ERR) || (uDistanceSonarFL < SONAR_ERR) || (uDistanceSonarFR < SONAR_ERR)) {
 			MOWER_sonarDetect(&uDistanceSonarFC, &uDistanceSonarFL, &uDistanceSonarFR);
 			PWM_forward(MIDDLE_SPEED);
@@ -50,6 +52,7 @@ void MOWER_startMower()
 		else {
 			PWM_forward(MIDDLE_SPEED);
 		}
+		*****/
 	}
 	else {
 		PWM_forward(HIGH_SPEED);
@@ -57,12 +60,8 @@ void MOWER_startMower()
 }
 
 uint8_t isDocking()
-{
-	uint8_t dock = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SENSOR_DOCK);
-	if(dock == ERROR_DATA)
-		dock = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SENSOR_DOCK);
-	
-    return dock;
+{	
+    return _uDock;
 }
 
 uint8_t isCharging()
@@ -125,142 +124,137 @@ uint8_t isRaining()
 
 void MOWER_goDockCharger()
 {
-	uint8_t lastError = 0;
-	uint8_t wireReached = 0;
-	uint8_t tempFC,
-			tempFL,
-			tempFR;
-	static uint8_t distanceSonarFC = 255,
-					distanceSonarFL = 255,
-					distanceSonarFR = 255;
+	static uint8_t uWireReached = 0,
+					uFlagDirectionFromBase = 0;
 	
-	MOWER_directionFromBase();
+	static uint8_t uDistanceSonarFC = 255,
+					uDistanceSonarFL = 255,
+					uDistanceSonarFR = 255;
+					
+	static uint16_t uDistanceWireLeft = WIRE_DETECTION_UNLOAD,
+					uDistanceWireRight = WIRE_DETECTION_UNLOAD;
 	
-	while(!isDocking()) {
-		wdt_reset();
-		STATUS_updateStatus();
-		STATUS_sendStatus();
+	MOWER_getSonarDistance(&uDistanceSonarFC, &uDistanceSonarFL, &uDistanceSonarFR);
+	MOWER_getWireDistanceLeft(&uDistanceWireLeft);
+	MOWER_getWireDistanceRight(&uDistanceWireRight);
+	
+	if (!uFlagDirectionFromBase) {
+		MOWER_directionFromBase();
+		uFlagDirectionFromBase = 1;
+	}
+	
+	MOWER_tiltProtection();
 		
-		if(isEnoughCharged() == -1)
-			break;
-		
-		if(!wireReached) {
-			if((tempFC = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC)) != ERROR_DATA)
-				distanceSonarFC = tempFC;
-			if((tempFL = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL)) != ERROR_DATA)
-				distanceSonarFL = tempFL;
-			if((tempFR = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR)) != ERROR_DATA)
-				distanceSonarFR = tempFR;
-			
-			PWM_forward(HIGH_SPEED);
-			
-			if( ADC_read(PIN_ADC0_LS) > WIRE_DETECTION_LIMITE) {
-				wireReached = 1;
-			}
-			else if (ADC_read(PIN_ADC1_RS) > WIRE_DETECTION_LIMITE) {
-                MOWER_wireDetectOnCharge();
-                PWM_forward(LOW_SPEED);
-			}
-			else if ((distanceSonarFC < SONAR_WARN) || (distanceSonarFL < SONAR_WARN) || (distanceSonarFR < SONAR_WARN)) {
-				PWM_forward(MIDDLE_SPEED);
-        
-				if ((distanceSonarFC < SONAR_ERR) || (distanceSonarFL < SONAR_ERR) || (distanceSonarFR < SONAR_ERR)) {
-                    //MOWER_sonarDetect();
-                    PWM_forward(LOW_SPEED);
-				}
-			}
+	if(!uWireReached) {		
+		if (uDistanceWireLeft > WIRE_DETECTION_LIMITE) {
+			uWireReached = 1;
+		}
+		else if (uDistanceWireRight > WIRE_DETECTION_LIMITE) {
+			MOWER_wireDetectOnCharge();
+			PWM_forward(MIDDLE_SPEED);
+		}
+		else if ((uDistanceSonarFC < SONAR_WARN) || (uDistanceSonarFL < SONAR_WARN) || (uDistanceSonarFR < SONAR_WARN)) {
+			PWM_forward(MIDDLE_SPEED);
 		}
 		else {
-			if( (WIRE_DETECTION_UNLOAD < ADC_read(PIN_ADC0_LS)) && (ADC_read(PIN_ADC0_LS) < WIRE_DETECTION_LIMITE) ) {
-				MOWER_pidController(&lastError);
-			}
-			else {
-				MOWER_directionFromBase();
-				wireReached = 0;
-			}
+			PWM_forward(HIGH_SPEED);
+		}
+	}
+	else {
+		if ((WIRE_DETECTION_UNLOAD < uDistanceWireLeft) && (uDistanceWireLeft < WIRE_DETECTION_LOAD)) {
+			MOWER_pidController();
+		}
+		else {
+			uFlagDirectionFromBase = 0;
+			uWireReached = 0;
 		}
 	}
 }
 
 void MOWER_directionFromBase() {
-	float angleFromNorth,
-			angleFromBase;
+	uint8_t deltaAngle = DELTA_ANGLE;
+	uint16_t angleFromNorth = MOWER_getAngleFromNorth();
+	uint16_t currentAngle;
+	uint16_t angleFromBase = MOWER_getAzimut(angleFromNorth);
 	
-	PWM_stop();
-	myDelayLoop(1000);
-	angleFromNorth = MOWER_getAngleFromNorth();
-	angleFromBase = MOWER_getAzimut(angleFromNorth);
-	
-	if(angleFromBase < 0) {
-		while(angleFromBase >= 0 ) {
-			wdt_reset();
-			PWM_left();
-			angleFromNorth = MOWER_getAngleFromNorth();
-			angleFromBase = MOWER_getAzimut(angleFromNorth);
-		}
-	}
-	else if(angleFromBase > 0) {
-		while(angleFromBase <= 0) {
-			wdt_reset();
-			PWM_right();
-			angleFromNorth = MOWER_getAngleFromNorth();
-			angleFromBase = MOWER_getAzimut(angleFromNorth);
-		}
-	}
+	uint16_t uDistanceWireLeft = WIRE_DETECTION_UNLOAD;
+	uint16_t uDistanceWireRight = WIRE_DETECTION_UNLOAD;
 
+	PWM_stop();
+	myDelayLoop(1);
+	PWM_right();
+	
+	while (!((currentAngle > ((angleFromBase - deltaAngle)%360)) && (currentAngle < ((angleFromBase + deltaAngle)%360)))) {
+		wdt_reset();
+		MOWER_tiltProtection();
+		
+		MOWER_getWireDistanceLeft(&uDistanceWireLeft);
+		MOWER_getWireDistanceRight(&uDistanceWireRight);
+		if ((uDistanceWireLeft > WIRE_DETECTION_LIMITE) || (uDistanceWireRight > WIRE_DETECTION_LIMITE)) {
+			break;
+		}
+	}
 	PWM_stop();
 }
 
-void MOWER_pidController(uint8_t* lastError) {
-	uint8_t Kp = 2,
-			Kd = 1,
-			currentPosition = 0;
+void MOWER_pidController() {
+	uint8_t Kp = 0.2;
+	uint16_t currentPosition = 0;
 			
 	int errorPosition = 0,
-		derivativePosition = 0,
 		wirePwm = 0;
 	
-	currentPosition = ADC_read(PIN_ADC0_LS);
+	MOWER_wireDetectOnLeft(&currentPosition);
 	errorPosition = WIRE_DETECTION_LOAD - currentPosition;
-	derivativePosition = errorPosition - *lastError;
-	wirePwm = ((((Kp*errorPosition) + (Kd*derivativePosition))/10)/2);
+	wirePwm = (Kp*errorPosition);
 	
-	if(wirePwm > 50) {
-		wirePwm = 50;
+	if(wirePwm > MIDDLE_SPEED) {
+		wirePwm = MIDDLE_SPEED;
 	}
-	else if(wirePwm < -50) {
-		wirePwm = -50;
+	else if(wirePwm < -MIDDLE_SPEED) {
+		wirePwm = -MIDDLE_SPEED;
 	}
 	
 	if(wirePwm > 0) {
-		wirePwm = (50-wirePwm);
-		if(wirePwm < 10)
-			wirePwm = LOW_SPEED;
-		PWM_forward_turn(wirePwm, MIDDLE_SPEED);
+		PWM_forward_turn(MIDDLE_SPEED - wirePwm, MIDDLE_SPEED);
 	}
 	else if(wirePwm < 0) {
-		wirePwm = (wirePwm-50);
-		if(wirePwm > -10)
-			wirePwm = LOW_SPEED;
-		else
-			wirePwm = -wirePwm;
-		PWM_forward_turn(MIDDLE_SPEED, wirePwm);
+		PWM_forward_turn(MIDDLE_SPEED, MIDDLE_SPEED - wirePwm);
 	}
-	else
+	else {
 		PWM_forward(MIDDLE_SPEED);
-	
-	*lastError = errorPosition;
+	}	
 }
 
 void MOWER_leaveDockCharger()
 {
-    PWM_reverse(LOW_SPEED);
-    myDelayLoop(5000);
+	uint8_t deltaAngle = DELTA_ANGLE;
+	//volatile uint8_t randAngle = MOWER_myRandDeg(8);
+	uint16_t randAngle = MOWER_myRandDeg(180);
+	uint16_t startAngle = MOWER_getAngleFromNorth();
+	uint16_t currentAngle;
+	uint16_t endAngle = (startAngle + randAngle)%180;
+	
+	uint16_t uDistanceWireRight = WIRE_DETECTION_UNLOAD;
+	
+	PWM_reverse(MIDDLE_SPEED);
+    myDelayLoop(5);
     PWM_stop();
-    myDelayLoop(1000);
+    myDelayLoop(1);
     PWM_right();
-    myDelayLoop(2000); // Use Compass when implement, +45°
-    PWM_stop();
+	
+    while( !((currentAngle > ((endAngle - deltaAngle)%180)) && (currentAngle < ((endAngle + deltaAngle)%180))) ) {
+	    wdt_reset();
+	    currentAngle = MOWER_getAngleFromNorth();
+	    MOWER_tiltProtection();
+		
+		MOWER_wireDetectOnRight(&uDistanceWireRight);
+		if (uDistanceWireRight > WIRE_DETECTION_LIMITE) {
+			break;
+		}
+    }
+    
+	PWM_stop();
 }
 
 void MOWER_updateBladeState(Etat eEtatBlade)
@@ -365,7 +359,7 @@ int MOWER_getAngleFromNorth() {
 	/*** END ***/
 }
 
-float MOWER_getAzimut(float angleFromNorth) {
+int MOWER_getAzimut(float angleFromNorth) {
 	float x,
 		y,
 		latitude,
@@ -379,9 +373,9 @@ float MOWER_getAzimut(float angleFromNorth) {
 	
 	angle = 2*atan(y / (sqrt(x*x + y*y) + x));
 	
-	angle = angle - angleFromNorth;
+	//angle = angle - angleFromNorth;
 	
-	return angle;
+	return (int)angle;
 }
 
 void MOWER_getAnglePitchRoll(double* pPitch, double* pRoll) {
@@ -414,16 +408,18 @@ void MOWER_getAnglePitchRoll(double* pPitch, double* pRoll) {
 void MOWER_wireDetectOnLeft(uint16_t* pDistanceWireLeft){
 	uint8_t deltaAngle = DELTA_ANGLE;
 	//volatile uint8_t randAngle = MOWER_myRandDeg(8);
-	uint8_t randAngle = MOWER_myRandDeg(360);
-	uint8_t startAngle = MOWER_getAngleFromNorth();
-	uint8_t currentAngle;
-	uint8_t endAngle = (startAngle + randAngle)%360;
+	uint16_t randAngle = MOWER_myRandDeg(360);
+	uint16_t startAngle = MOWER_getAngleFromNorth();
+	uint16_t currentAngle;
+	uint16_t endAngle = (startAngle + randAngle)%360;
+	
+	uint16_t uDistanceWireRight = WIRE_DETECTION_UNLOAD;
 	
 	PWM_stop();
 	myDelayLoop(1);
 	
 	PWM_reverse(MIDDLE_SPEED);
-	MOWER_getWireDistanceLeft(pDistanceWireLeft);
+	
 	while(*pDistanceWireLeft > WIRE_DETECTION_LIMITE) {
 		wdt_reset();
 		MOWER_getWireDistanceLeft(pDistanceWireLeft);
@@ -444,6 +440,11 @@ void MOWER_wireDetectOnLeft(uint16_t* pDistanceWireLeft){
 		wdt_reset();
 		currentAngle = MOWER_getAngleFromNorth();
 		MOWER_tiltProtection();
+		
+		MOWER_getWireDistanceRight(&uDistanceWireRight);
+		if (uDistanceWireRight > WIRE_DETECTION_LIMITE) {
+			break;
+		}
 	}
 	/* ****************************************************** */
 	PWM_stop();
@@ -453,16 +454,17 @@ void MOWER_wireDetectOnLeft(uint16_t* pDistanceWireLeft){
 void MOWER_wireDetectOnRight(uint16_t* pDistanceWireRight){
 	uint8_t deltaAngle = DELTA_ANGLE;
 	//volatile uint8_t randAngle = MOWER_myRandDeg(8);
-	uint8_t randAngle = MOWER_myRandDeg(360);
-	uint8_t startAngle = MOWER_getAngleFromNorth();
-	uint8_t currentAngle;
-	uint8_t endAngle = (startAngle + randAngle)%360;
+	uint16_t randAngle = MOWER_myRandDeg(360);
+	uint16_t startAngle = MOWER_getAngleFromNorth();
+	uint16_t currentAngle;
+	uint16_t endAngle = (startAngle + randAngle)%360;
+	
+	uint16_t uDistanceWireLeft = WIRE_DETECTION_UNLOAD;
 	
 	PWM_stop();
 	myDelayLoop(1);
 	
 	PWM_reverse(MIDDLE_SPEED);
-	MOWER_getWireDistanceRight(pDistanceWireRight);
 	while(*pDistanceWireRight > WIRE_DETECTION_LIMITE) {
 		wdt_reset();
 		MOWER_getWireDistanceRight(pDistanceWireRight);
@@ -483,6 +485,11 @@ void MOWER_wireDetectOnRight(uint16_t* pDistanceWireRight){
 		wdt_reset();
 		currentAngle = MOWER_getAngleFromNorth();
 		MOWER_tiltProtection();
+		
+		MOWER_wireDetectOnLeft(&uDistanceWireLeft);
+		if (uDistanceWireLeft > WIRE_DETECTION_LIMITE) {
+			break;
+		}
 	}
 	/* ****************************************************** */
 	PWM_stop();
@@ -492,35 +499,33 @@ void MOWER_wireDetectOnRight(uint16_t* pDistanceWireRight){
 void MOWER_wireDetectOnCharge(){
     uint8_t deltaAngle = DELTA_ANGLE;
     uint8_t nextAngle = 90;
-    uint8_t startAngle = MOWER_getAngleFromNorth();
-    
-    uint8_t endAngle = (startAngle + nextAngle)%360;
-    
-    PWM_stop();
-    myDelayLoop(1000);
-    
-    PWM_reverse(LOW_SPEED);
-    while(ADC_read(PIN_ADC1_RS) > WIRE_DETECTION_UNLOAD);
+    uint16_t startAngle = MOWER_getAngleFromNorth();
+    uint16_t endAngle = (startAngle + nextAngle)%360;
+	
+	uint16_t uDistanceWireLeft = WIRE_DETECTION_UNLOAD;
     
     PWM_stop();
-    myDelayLoop(1000);
-    
-    PWM_right();
-    while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) ) {
+    myDelayLoop(1);
+	
+	PWM_left();
+	
+    MOWER_getWireDistanceLeft(&uDistanceWireLeft);
+	while(uDistanceWireLeft > WIRE_DETECTION_LIMITE) {
 		wdt_reset();
+		MOWER_getWireDistanceLeft(&uDistanceWireLeft);
+		MOWER_tiltProtection();
 	}
-    
+	
     PWM_stop();
-    myDelayLoop(1000);
 }
 
 void MOWER_sonarDetect(uint8_t* pDistanceSonarFC, uint8_t* pDistanceSonarFL, uint8_t* pDistanceSonarFR) {
 	uint8_t deltaAngle = DELTA_ANGLE;
 	//volatile uint8_t randAngle = MOWER_myRandDeg(5);
-	uint8_t randAngle = MOWER_myRandDeg(360);
-	uint8_t startAngle = MOWER_getAngleFromNorth();
-	uint8_t currentAngle;
-	uint8_t endAngle = (startAngle + randAngle)%360;
+	uint16_t randAngle = MOWER_myRandDeg(360);
+	uint16_t startAngle = MOWER_getAngleFromNorth();
+	uint16_t currentAngle;
+	uint16_t endAngle = (startAngle + randAngle)%360;
 	
 	PWM_stop();
 	myDelayLoop(1);
@@ -558,16 +563,16 @@ void MOWER_sonarDetect(uint8_t* pDistanceSonarFC, uint8_t* pDistanceSonarFL, uin
 void MOWER_bumperDetect(Bumper _bumper) {
 	
 	uint8_t deltaAngle = DELTA_ANGLE;
-	uint8_t randAngle = MOWER_myRandDeg(360);
-	uint8_t startAngle = MOWER_getAngleFromNorth();
-	 
-	uint8_t endAngle = (startAngle + randAngle)%360;
+	uint16_t randAngle = MOWER_myRandDeg(360);
+	uint16_t startAngle = MOWER_getAngleFromNorth();
+	uint16_t currentAngle;
+	uint16_t endAngle = (startAngle + randAngle)%360;
 	 
 	PWM_stop();
-	myDelayLoop(1000);
+	myDelayLoop(1);
 	 
-	PWM_reverse(LOW_SPEED);
-	myDelayLoop(1000);
+	PWM_reverse(MIDDLE_SPEED);
+	myDelayLoop(1);
 	if(_bumper == FL)
 		while( !(PINB & (1<<PINB1)) );
 	if(_bumper == FC)
@@ -576,15 +581,18 @@ void MOWER_bumperDetect(Bumper _bumper) {
 		while( !(PINB & (1<<PINB4)) );
 	 
 	 PWM_stop();
-	 myDelayLoop(1000);
+	 myDelayLoop(1);
 	 
 	 PWM_right();
-	 while( (MOWER_getAngleFromNorth() > (endAngle - deltaAngle)) && (MOWER_getAngleFromNorth() < (endAngle + deltaAngle)) ) {
+	 currentAngle = MOWER_getAngleFromNorth();
+	 while( !((currentAngle > ((endAngle - deltaAngle)%360)) && (currentAngle < ((endAngle + deltaAngle)%360))) ) {
 		 wdt_reset();
+		 currentAngle = MOWER_getAngleFromNorth();
+		 MOWER_tiltProtection();
 	 }
 	 
 	 PWM_stop();
-	 myDelayLoop(1000);
+	 myDelayLoop(1);
 	
 }
 
