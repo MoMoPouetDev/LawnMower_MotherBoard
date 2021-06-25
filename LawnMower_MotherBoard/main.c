@@ -35,12 +35,15 @@ int main(void) {
 					_uBpStop = 0;
 					_uBpForceStart = 0;	
 					_eErrorMower = NTR;
+					MOWER_leaveDockCharger();
 				}
             }
             else if(isTimeToMow() && (_eEtatRain == OFF))
             {
+				_eEtatMower = TACHE_EN_COURS;
 				_uBpStop = 0;
-				_eErrorMower = NTR;		
+				_eErrorMower = NTR;	
+				MOWER_leaveDockCharger();	
             }
 			else
 				_eEtatMower = PAS_DE_TACHE_EN_COURS;
@@ -61,7 +64,6 @@ int main(void) {
         else if(isEnoughCharged() && (!isRaining()) && isTimeToMow() && (!(_uBpStart && _uBpStop)))
         {
 			_eEtatMower = TACHE_EN_COURS;
-			MOWER_updateBladeState(ON);
 						
             MOWER_startMower();
         }
