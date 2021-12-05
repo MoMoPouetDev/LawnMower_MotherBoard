@@ -1,17 +1,18 @@
-#include <stdio.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
+/*
+ * LawnMower_MotherBoard.c
+ *
+ * Created: 19/10/2021 23:59:04
+ * Author : morga
+ */ 
 
-void initIO(void) {
-	
-}
 
-int main(void) {
-	initIO();
+#include "sam.h"
 
-    printf("helloWorld");
-	while (1) {
-	}
-	return 0; // never reached
+
+int main(void)
+{
+    /* Replace with your application code */
+    while (1) 
+    {
+    }
 }
