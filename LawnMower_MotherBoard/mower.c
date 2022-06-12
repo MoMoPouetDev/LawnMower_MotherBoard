@@ -17,6 +17,7 @@
 #include "pwm.h"
 #include "status.h"
 #include "twi.h"
+#include "fifo.h"
 
 void MOWER_startMower()
 {
@@ -385,29 +386,33 @@ void MOWER_getAnglePitchRoll(double* pPitch, double* pRoll) {
 		dataMsbY,
 		dataLsbZ,
 		dataMsbZ;
-	float dataX = 0,
-		dataY = 0,
-		dataZ = 0;
+	static float   dataX = 0,
+                    dataY = 0,
+                    dataZ = 0;
+	double valuePitch,
+			valueRoll;
+    
+    dataLsbX = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_X_LSB);
+    dataMsbX = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_X_MSB);
+    dataX = ((float)(int16_t)((dataMsbX<<8) | dataLsbX))/256;
+    
+    dataLsbY = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Y_LSB);
+    dataMsbY = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Y_MSB);
+    dataY = ((float)(int16_t)((dataMsbY<<8) | dataLsbY))/256;
+    
+    dataLsbZ = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Z_LSB);
+    dataMsbZ = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Z_MSB);
+    dataZ = ((float)(int16_t)((dataMsbZ<<8) | dataLsbZ))/256;
 	
-	dataLsbX = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_X_LSB);
-	dataMsbX = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_X_MSB);
-	dataX = ((float)(int16_t)((dataMsbX<<8) | dataLsbX))/256;
+    valuePitch = 180 * atan2(-dataX, sqrt(dataY*dataY + dataZ*dataZ))/M_PI;
+    valueRoll = 180 * atan2(dataY, sqrt(dataX*dataX + dataZ*dataZ))/M_PI;
 	
-	dataLsbY = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Y_LSB);
-	dataMsbY = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Y_MSB);
-	dataY = ((float)(int16_t)((dataMsbY<<8) | dataLsbY))/256;
-	
-	dataLsbZ = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Z_LSB);
-	dataMsbZ = TWI_getData(ADDR_SLAVE_ACCELEROMETER, ADDR_DATA_ACCELEROMETER_Z_MSB);
-	dataZ = ((float)(int16_t)((dataMsbZ<<8) | dataLsbZ))/256;
-	
-	*pPitch = 180 * atan2(-dataX, sqrt(dataY*dataY + dataZ*dataZ))/M_PI;
-	*pRoll = 180 * atan2(dataY, sqrt(dataX*dataX + dataZ*dataZ))/M_PI;
+	*pPitch = (double)FIFO_getAverage(&fifoPitch, (int)valuePitch);
+	*pRoll = (double)FIFO_getAverage(&fifoRoll, (int)valueRoll);
 }
 
 void MOWER_wireDetectOnLeft(uint16_t* pDistanceWireLeft){
 	uint8_t deltaAngle = DELTA_ANGLE;
-	//volatile uint8_t randAngle = MOWER_myRandDeg(8);
 	uint16_t randAngle = MOWER_myRandDeg(360);
 	uint16_t startAngle = MOWER_getAngleFromNorth();
 	uint16_t currentAngle;
@@ -430,12 +435,7 @@ void MOWER_wireDetectOnLeft(uint16_t* pDistanceWireLeft){
 	myDelayLoop(1);
 	
 	PWM_right();
-	/* ************* UnComment until new Compass ********** 
-	
-	myDelayLoop(randAngle);
-	/* ****************************************************** */
-	/* ************* Comment until new Compass **********
-	*/
+
 	while( !((currentAngle > ((endAngle - deltaAngle)%360)) && (currentAngle < ((endAngle + deltaAngle)%360))) ) {
 		wdt_reset();
 		currentAngle = MOWER_getAngleFromNorth();
@@ -446,14 +446,13 @@ void MOWER_wireDetectOnLeft(uint16_t* pDistanceWireLeft){
 			break;
 		}
 	}
-	/* ****************************************************** */
+	
 	PWM_stop();
 	myDelayLoop(1);
 }
 
 void MOWER_wireDetectOnRight(uint16_t* pDistanceWireRight){
 	uint8_t deltaAngle = DELTA_ANGLE;
-	//volatile uint8_t randAngle = MOWER_myRandDeg(8);
 	uint16_t randAngle = MOWER_myRandDeg(360);
 	uint16_t startAngle = MOWER_getAngleFromNorth();
 	uint16_t currentAngle;
@@ -475,12 +474,7 @@ void MOWER_wireDetectOnRight(uint16_t* pDistanceWireRight){
 	myDelayLoop(1);
 	
 	PWM_left();
-	/* ************* UnComment until change Vis ********** 
-	
-	myDelayLoop(randAngle);
-	/* ****************************************************** */
-	/* ************* Comment until change Vis **********
-	*/
+
 	while( !((currentAngle > ((endAngle - deltaAngle)%360)) && (currentAngle < ((endAngle + deltaAngle)%360))) ) {
 		wdt_reset();
 		currentAngle = MOWER_getAngleFromNorth();
@@ -491,7 +485,7 @@ void MOWER_wireDetectOnRight(uint16_t* pDistanceWireRight){
 			break;
 		}
 	}
-	/* ****************************************************** */
+
 	PWM_stop();
 	myDelayLoop(1);
 }
@@ -521,7 +515,6 @@ void MOWER_wireDetectOnCharge(){
 
 void MOWER_sonarDetect(uint8_t* pDistanceSonarFC, uint8_t* pDistanceSonarFL, uint8_t* pDistanceSonarFR) {
 	uint8_t deltaAngle = DELTA_ANGLE;
-	//volatile uint8_t randAngle = MOWER_myRandDeg(5);
 	uint16_t randAngle = MOWER_myRandDeg(360);
 	uint16_t startAngle = MOWER_getAngleFromNorth();
 	uint16_t currentAngle;
@@ -543,19 +536,13 @@ void MOWER_sonarDetect(uint8_t* pDistanceSonarFC, uint8_t* pDistanceSonarFL, uin
 	
 	PWM_right();
 	
-	/* ************* UnComment until new Compass ********** 
-	
-	myDelayLoop(randAngle);
-	/* ****************************************************** */
-	/* ************* Comment until new Compass **********
-	*/
 	currentAngle = MOWER_getAngleFromNorth();
 	while( !((currentAngle > ((endAngle - deltaAngle)%360)) && (currentAngle < ((endAngle + deltaAngle)%360))) ) {
 		wdt_reset();
 		currentAngle = MOWER_getAngleFromNorth();
 		MOWER_tiltProtection();
 	}
-	/* ****************************************************** */
+
 	PWM_stop();
 	myDelayLoop(1);
 }
@@ -611,17 +598,24 @@ void MOWER_tiltProtection() {
 }
 
 void MOWER_getSonarDistance(uint8_t* pDistanceSonarFC, uint8_t* pDistanceSonarFL, uint8_t* pDistanceSonarFR) {
-	*pDistanceSonarFC = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC);
-	*pDistanceSonarFL = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL);
-	*pDistanceSonarFR = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR);
+	uint8_t valueFC = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FC);
+	*pDistanceSonarFC = (uint8_t)FIFO_getAverage(&fifoSonarFC, (int)valueFC);
+	
+	uint8_t valueFL = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FL);
+	*pDistanceSonarFL = (uint8_t)FIFO_getAverage(&fifoSonarFL, (int)valueFL);
+	
+	uint8_t valueFR = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SONAR_FR);
+	*pDistanceSonarFR = (uint8_t)FIFO_getAverage(&fifoSonarFR, (int)valueFR);
 }
 
 void MOWER_getWireDistanceLeft(uint16_t* pDistanceWireLeft) {
-	*pDistanceWireLeft = ADC_read(PIN_ADC0_LS);
+	uint16_t value = ADC_read(PIN_ADC0_LS);
+	*pDistanceWireLeft = (uint16_t)FIFO_getAverage(&fifoLeftWire, (int)value);
 }
 
 void MOWER_getWireDistanceRight(uint16_t* pDistanceWireRight) {
-	*pDistanceWireRight = ADC_read(PIN_ADC1_RS);
+	uint16_t value = ADC_read(PIN_ADC1_RS);
+	*pDistanceWireRight = (uint16_t)FIFO_getAverage(&fifoRightWire, (int)value);
 }
 
 uint8_t MOWER_myRandDeg(int modulo) {

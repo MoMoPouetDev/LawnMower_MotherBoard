@@ -62,7 +62,7 @@
 #define ADDR_DATA_COMPASS_Z_MSB 0x05
 
 #define DECLINATION ((54)*(M_PI/(60*180))) //0.015
-#define OFFSET M_PI/2
+#define OFFSET (19*M_PI)/16
 
 #define CALIBRATION_X_MAX 646
 #define CALIBRATION_X_MIN 192
@@ -150,6 +150,10 @@ typedef enum
 #define SENSOR_V_EMPTY 1
 
 uint8_t _uBattery;
+/*** END ***/
+
+/*** FIFO ***/
+#define FIFO_SIZE 10
 /*** END ***/
 
 volatile uint8_t _uBpStart;

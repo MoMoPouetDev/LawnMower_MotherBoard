@@ -18,6 +18,7 @@
 #include "status.h"
 #include "twi.h"
 #include "uart.h"
+#include "fifo.h"
 
 void Initialisation()
 {
@@ -33,7 +34,7 @@ void Initialisation()
     INIT_compass();
     INIT_accel();
 	INIT_ble();
-	
+	INIT_list();
 }
 
 void INIT_io()
@@ -192,3 +193,13 @@ void INIT_variable()
 	_uDock = 1;
 }
 
+void INIT_list()
+{
+	FIFO_initList(&fifoSonarFC, 255);
+	FIFO_initList(&fifoSonarFL, 255);
+	FIFO_initList(&fifoSonarFR, 255);
+	FIFO_initList(&fifoLeftWire, 0);
+	FIFO_initList(&fifoRightWire, 0);
+	FIFO_initList(&fifoPitch, 0);
+	FIFO_initList(&fifoRoll, 0);
+}

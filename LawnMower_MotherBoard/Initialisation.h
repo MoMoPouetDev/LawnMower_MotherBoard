@@ -22,5 +22,6 @@ void INIT_wdt(void);
 void INIT_compass(void);
 void INIT_accel(void);
 void INIT_ble(void);
+void INIT_list(void);
 
 #endif /* Initialisation_h */
