@@ -58,15 +58,15 @@ void INIT_io()
 /***** PORT C *****/
     DDRC = 0x00;
     //DDRC |= (1<<DDC0) | (1<<DDC1); // ADC - Detection cable droite et gauche
-    //DDRC |= (1<<DDC2) | (1<<DDC3); // TBD
+    //DDRC |= (1<<DDC2) | (1<<DDC3); // No use - current sensor both
     //DDRC |= (1<<DDC4) | (1<<DDC5); // Config I2C SDA - SCL
-    //DDRC |= (1<<DDC6); // TBD
+    //DDRC |= (1<<DDC6); // reset
     
     PORTC = 0x00;
     //PORTC &= ~(1<<PORTC0) & ~(1<<PORTC1); // ADC - No Pull-Up
     PORTC |= (1<<PORTC2) | (1<<PORTC3); // TBD Pull Up
     //PORTC &= ~(1<<PORTC4) & ~(1<<PORTC5); // I2C - Force à 0
-    PORTC |= (1<<PORTC6); // TBD - Pull-Up
+    PORTC |= (1<<PORTC6); // reset
     
 /***** PORT D *****/
     DDRD = 0x00;
