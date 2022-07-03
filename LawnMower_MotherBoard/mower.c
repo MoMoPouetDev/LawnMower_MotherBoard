@@ -111,9 +111,7 @@ uint8_t isEnoughCharged()
 
 uint8_t isRaining()
 {
-	uint8_t underTheRain = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SENSOR_RAIN);
-	if(underTheRain == ERROR_DATA)
-		underTheRain = TWI_getData(ADDR_SLAVE_SENSOR, ADDR_SENSOR_RAIN);
+	uint8_t underTheRain = 0;
 	
 	if(underTheRain) {
 		_eErrorMower = DETECTED_RAIN;
