@@ -1,0 +1,47 @@
+//
+//  mower.h
+//  LawnMower_MotherBoard
+//
+//  Created by morgan on 06/02/2020.
+//  Copyright © 2020 morgan venandy. All rights reserved.
+//
+
+#ifndef mower_h
+#define mower_h
+
+typedef struct {
+    uint8_t degrees;
+    uint8_t minutes;
+    uint8_t decimalMSB;
+    uint8_t decimalB;
+    uint8_t decimalLSB;
+}Coordinates;
+
+uint8_t isDocking(void);
+uint8_t isCharging(void);
+uint8_t isTimeToMow(void);
+uint8_t isEnoughCharged(void);
+uint8_t isRaining(void);
+void MOWER_startMower(void);
+void MOWER_goDockCharger(void);
+void MOWER_directionFromBase(void);
+void MOWER_pidController();
+void MOWER_leaveDockCharger(void);
+void MOWER_updateBladeState(Etat);
+void MOWER_getCoordinates(float*, float*);
+int MOWER_getAngleFromNorth(void);
+int MOWER_getAzimut(float);
+void MOWER_getAnglePitchRoll(double*, double*);
+void MOWER_wireDetectOnLeft(uint16_t*);
+void MOWER_wireDetectOnRight(uint16_t*);
+void MOWER_wireDetectOnCharge(void);
+void MOWER_sonarDetect(uint8_t*, uint8_t*, uint8_t*);
+void MOWER_bumperDetect(Bumper);
+void MOWER_tiltProtection(void);
+void MOWER_getSonarDistance(uint8_t*, uint8_t*, uint8_t*);
+void MOWER_getWireDistanceLeft(uint16_t*);
+void MOWER_getWireDistanceRight(uint16_t*);
+uint8_t MOWER_myRandDeg(int);
+void myDelayLoop(uint16_t);
+
+#endif /* mower_h */
