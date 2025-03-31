@@ -12,6 +12,11 @@ int main(void) {
 
     Initialisation();
 
+	FSM_Main_Init();
+    FSM_Main();
+    return 0 ;
+}
+/*
 	while(!_uBpStart);
 	_uBpStart = 0;
 	
@@ -80,3 +85,4 @@ int main(void) {
 	}
 	return 0; // never reached
 }
+*/
