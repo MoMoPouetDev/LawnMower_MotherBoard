@@ -17,25 +17,6 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
-typedef enum {
-    UNKNOWN_ETAT = 0x00,
-    TACHE_EN_COURS = 0x01,
-    RETOUR_STATION = 0x02,
-    EN_CHARGE = 0x03,
-    PAS_DE_TACHE_EN_COURS = 0x04,
-    PAUSE = 0x05
-}EtatMower;
-
-typedef enum {
-    NTR = 0x10,
-    BLOCKED_MOWER = 0x20,
-    DETECTED_RAIN = 0x30,
-    WIRE_NOT_DETECTED = 0x40,
-    LOW_BATTERY = 0x50,
-    VERY_LOW_BATTERY = 0x60,
-    EMPTY_BATTERY = 0x70
-}ErrorMower;
-
 typedef enum
 {
     ON, 
@@ -55,10 +36,6 @@ typedef enum
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
 void HAL_GPIO_Init(void);
-void HAL_GPIO_SetEtatMower(EtatMower);
-void HAL_GPIO_SetErrorMower(ErrorMower);
-EtatMower HAL_GPIO_GetEtatMower(void);
-ErrorMower HAL_GPIO_GetErrorMower(void);
 void HAL_GPIO_UpdateBladeState(Etat e_bladeState);
 void HAL_GPIO_BladeState(Etat e_bladeState);
 void HAL_GPIO_UpdateWheelState(MotorState e_wheelState);

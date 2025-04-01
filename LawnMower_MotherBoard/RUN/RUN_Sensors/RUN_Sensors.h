@@ -16,10 +16,6 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
-/*** Time to Mow ***/
-#define THRESHOLD_HOUR_MIN 9
-#define THRESHOLD_HOUR_MAX 18
-
 /*** Capteur Tension ***/
 #define CHARGING_THRESHOLD 3225
 #define SENSOR_V_OK 80

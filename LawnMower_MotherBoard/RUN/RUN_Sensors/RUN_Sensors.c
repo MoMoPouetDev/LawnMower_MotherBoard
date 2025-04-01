@@ -12,6 +12,7 @@
 #include "HAL_Sonar.h"
 #include "HAL_GPIO.h"
 #include "HAL_ADC.h"
+#include "RUN_Mower.h"
 #include "RUN_Sensors.h"
 
 /*--------------------------------------------------------------------------*/
@@ -23,7 +24,7 @@ static Etat ge_dock;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
-uint8_t RUN_Sensors_GetBatteryPercent(void);
+static uint8_t _RUN_Sensors_GetBatteryPercent(void);
 /*--------------------------------------------------------------------------*/
 /*! ... FUNCTIONS DEFINITIONS    ...                                        */
 /*--------------------------------------------------------------------------*/
@@ -35,27 +36,12 @@ void RUN_Sensors_Init()
 	HAL_Sonar_Init();
 }
 
-uint8_t RUN_Sensors_IsTimeToMow()
-{
-	uint8_t u8_returnValue = 0;
-	uint8_t u8_hours;
-
-	u8_hours = HAL_GPS_GetHours();
-
-	if ((THRESHOLD_HOUR_MIN <= u8_hours) && (u8_hours < THRESHOLD_HOUR_MAX))
-	{
-		u8_returnValue = 1;
-	}
-
-	return u8_returnValue;
-}
-
 uint8_t RUN_Sensors_IsCharging()
 {
 	uint8_t u8_returnValue = 0;
 	uint32_t u8_chargeValue;
 
-	u8_chargeValue = HAL_ADC_GetChargeValue();
+	u8_chargeValue = RUN_Sensors_GetChargeValue();
 
 	if (u8_chargeValue <= CHARGING_THRESHOLD)
 	{
@@ -74,23 +60,23 @@ int8_t RUN_Sensors_IsEnoughCharged()
 	uint8_t battery = 0;
 	int8_t u8_returnValue = 1;
 
-	battery = RUN_Sensors_GetBatteryPercent();
+	battery = _RUN_Sensors_GetBatteryPercent();
 	
 	if (battery <= SENSOR_V_FAIBLE_WARN) 
 	{
 		if(battery <= SENSOR_V_EMPTY)
 		{
-			HAL_GPIO_SetErrorMower(EMPTY_BATTERY);
+			RUN_Mower_SetErrorMower(EMPTY_BATTERY);
 			u8_returnValue = -1;
 		}
 		else if (battery <= SENSOR_V_FAIBLE_ERR)
 		{
-			HAL_GPIO_SetErrorMower(VERY_LOW_BATTERY);
+			RUN_Mower_SetErrorMower(VERY_LOW_BATTERY);
 			u8_returnValue = 0;
 		}
 		else
 		{
-			HAL_GPIO_SetErrorMower(LOW_BATTERY);
+			RUN_Mower_SetErrorMower(LOW_BATTERY);
 			u8_returnValue = 0;
 		}
 	}
@@ -117,7 +103,7 @@ int8_t RUN_Sensors_IsEnoughCharged()
 //	95%  | 12,45 | 2,49  | 3091
 //	100% | 12,6  | 2,52  | 3128
 /*********************************************/
-uint8_t RUN_Sensors_GetBatteryPercent() 
+static uint8_t _RUN_Sensors_GetBatteryPercent() 
 {
 	uint32_t uTension;
 	uint8_t uPourcentage = 0;

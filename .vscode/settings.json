@@ -5,6 +5,8 @@
         "lld_pwm.h": "c",
         "hal_pwm.h": "c",
         "run_pwm.h": "c",
-        "hal_fifo.h": "c"
+        "hal_fifo.h": "c",
+        "run_mower.h": "c",
+        "lld_timer.h": "c"
     }
 }

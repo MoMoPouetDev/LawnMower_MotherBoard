@@ -24,23 +24,44 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
-#define DELTA_ANGLE 5
-
+/***  GuideWire ***/
 #define WIRE_DETECTION_LIMITE 600
 #define WIRE_DETECTION_LOAD 750
 #define WIRE_DETECTION_UNLOAD 450
-
+/*** Motor ***/
 #define HIGH_SPEED 100
 #define MIDDLE_SPEED 90
 #define LOW_SPEED 80
-
+/*** Timer ***/
 #define GPT_ONE_SECOND 100
 #define GPT_FIVE_SECOND 500
-
+/*** GPS ***/
 #define COORDINATES_BASE_LAT 49.2315928
 #define COORDINATES_BASE_LONG 1.2470619
-
-uint8_t gu8_deltaAngle;
+/*** Time to Mow ***/
+#define THRESHOLD_HOUR_MIN 9
+#define THRESHOLD_HOUR_MAX 18
+/*** Compass ***/
+#define DELTA_ANGLE 5
+#define M_PI 3.14
+#define DECLINATION ((54)*(M_PI/(60*180))) //0.015
+#define OFFSET (19*M_PI)/16
+#define CALIBRATION_X_MAX 646
+#define CALIBRATION_X_MIN 192
+#define CALIBRATION_Y_MAX 602
+#define CALIBRATION_Y_MIN 188
+#define CALIBRATION_Z_MAX 39
+#define CALIBRATION_Z_MIN -378
+#define OFFSET_X ((CALIBRATION_X_MAX + CALIBRATION_X_MIN)/2)
+#define OFFSET_Y ((CALIBRATION_Y_MAX + CALIBRATION_Y_MIN)/2)
+#define OFFSET_Z ((CALIBRATION_Z_MAX + CALIBRATION_Z_MIN)/2)
+/*** Accel ***/
+#define PITCH_MIN -30
+#define PITCH_MAX 30
+#define ROLL_MIN -30
+#define ROLL_MAX 30
+/*** Variables ***/
+static uint8_t gu8_deltaAngle;
 static uint8_t gu8_distanceFC;
 static uint8_t gu8_distanceFL;
 static uint8_t gu8_distanceFR;
@@ -50,10 +71,14 @@ static double gd_pitch;
 static double gd_roll;
 static uint16_t gu16_currentAngle;
 static uint16_t gu16_azimut;
+static EtatMower geEtatMower;
+static ErrorMower geErrorMower;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
-
+static uint16_t _RUN_Mower_MyRandDeg(uint16_t u16_modulo);
+static void _RUN_Mower_GetAnglePitchRoll(double* pd_pitch, double* pd_roll, uint8_t* pu8_rxBuffAccel, uint8_t* pu8_rxBuffAccelSize);
+static int16_t _RUN_Mower_GetAngleFromNorth(double d_pitch, double d_roll, uint8_t* pu8_rxBuffCompass, uint8_t* pu8_rxBuffAccelSize);
 /*--------------------------------------------------------------------------*/
 /*! ... FUNCTIONS DEFINITIONS    ...                                        */
 /*--------------------------------------------------------------------------*/
@@ -71,6 +96,21 @@ void RUN_Mower_Init()
 	gu16_azimut = 0;
 }
 
+uint8_t RUN_Mower_IsTimeToMow()
+{
+	uint8_t u8_returnValue = 0;
+	uint8_t u8_hours = 0;
+
+	u8_hours = 0;//RUN_Sensors_GetHoursFromGPS(); get from GPS throught I2C - MVE
+
+	if ((THRESHOLD_HOUR_MIN <= u8_hours) && (u8_hours < THRESHOLD_HOUR_MAX))
+	{
+		u8_returnValue = 1;
+	}
+
+	return u8_returnValue;
+}
+
 uint8_t RUN_Mower_LeaveDockCharger()
 {
 	static uint8_t _u8_leaveState = 0;
@@ -84,7 +124,7 @@ uint8_t RUN_Mower_LeaveDockCharger()
    	{
 		default:
 	  	case 0:
-			_u16_randAngle = HAL_Mower_MyRandDeg(180);
+			_u16_randAngle = _RUN_Mower_MyRandDeg(180);
 			_u16_startAngle = gu16_currentAngle;
 			_u8_leaveState = 1;
 
@@ -134,6 +174,11 @@ uint8_t RUN_Mower_LeaveDockCharger()
 	return u8_returnValue;
 }
 
+static uint16_t _RUN_Mower_MyRandDeg(uint16_t u16_modulo)
+{
+    return (uint16_t)((rand()%u16_modulo) + 1);
+}
+
 void RUN_Mower_GetAngles()
 {
 	static uint8_t _tu8_rxBuffCompass[6] = {0};
@@ -150,7 +195,7 @@ void RUN_Mower_GetAngles()
 			u8_flagI2c = HAL_I2C_ReadAccel(_tu8_rxBuffAccel, &_u8_rxBuffAccelSize);
 			if (u8_flagI2c)
 			{
-				HAL_Mower_GetAnglePitchRoll(&gd_pitch, &gd_roll, _tu8_rxBuffAccel, &_u8_rxBuffAccelSize);
+				_RUN_Mower_GetAnglePitchRoll(&gd_pitch, &gd_roll, _tu8_rxBuffAccel, &_u8_rxBuffAccelSize);
 				_u8_getAngleState = 1;
 			}
 
@@ -159,7 +204,7 @@ void RUN_Mower_GetAngles()
 			u8_flagI2c = HAL_I2C_ReadCompass(_tu8_rxBuffCompass, &_u8_rxBuffCompassSize);
 			if (u8_flagI2c)
 			{
-				gu16_currentAngle = HAL_Mower_GetAngleFromNorth(gd_pitch, gd_roll, _tu8_rxBuffCompass, &_u8_rxBuffCompassSize);
+				gu16_currentAngle = _RUN_Mower_GetAngleFromNorth(gd_pitch, gd_roll, _tu8_rxBuffCompass, &_u8_rxBuffCompassSize);
 				_u8_getAngleState = 0;
 			}
 
@@ -183,14 +228,92 @@ void RUN_Mower_GetAzimut()
 	gu16_azimut = 2*atan(y / (sqrt(x*x + y*y) + x));
 }
 
-void RUN_Mower_SonarDistance()
+static int16_t _RUN_Mower_GetAngleFromNorth(double d_pitch, double d_roll, uint8_t* pu8_rxBuffCompass, uint8_t* pu8_rxBuffAccelSize) 
 {
-	HAL_Sonar_Distance();
+    uint8_t dataLsbX,
+			dataMsbX,
+			dataLsbY,
+			dataMsbY,
+            dataLsbZ,
+            dataMsbZ;
+	static int16_t dataX = 0,
+                dataY = 0,
+                dataZ = 0,
+		        angle = 0;
+	float xh,
+		yh,
+		rPitch,
+		rRoll;
+			
+    dataLsbX = pu8_rxBuffCompass[1];
+    dataMsbX = pu8_rxBuffCompass[0];
+    dataLsbY = pu8_rxBuffCompass[5];
+    dataMsbY = pu8_rxBuffCompass[4];
+    dataLsbZ = pu8_rxBuffCompass[3];
+    dataMsbZ = pu8_rxBuffCompass[2];
+
+    dataX = (int16_t)((dataMsbX<<8) | dataLsbX);
+    dataY = (int16_t)((dataMsbY<<8) | dataLsbY);
+    dataZ = (int16_t)((dataMsbZ<<8) | dataLsbZ);
+	
+	rPitch = (M_PI/180)*d_pitch;
+	rRoll = (M_PI/180)*d_roll;
+  
+	xh = ((float)(dataX - OFFSET_X) * cos(rPitch)) + ((float)(dataY - OFFSET_Y) * sin(rRoll) * sin(rPitch)) - ((float)(dataZ - OFFSET_Z) * cos(rRoll) * sin(rPitch));
+	yh = ((float)(dataY - OFFSET_Y) * cos(rRoll)) + ((float)(dataZ - OFFSET_Z) * sin(rRoll));
+  
+	angle = (180/M_PI) * (atan2(-yh,xh)+ DECLINATION + OFFSET);
+  
+	return (int16_t)(-angle + 360) % 360;
 }
 
-void RUN_Mower_TiltProtection()
+static void _RUN_Mower_GetAnglePitchRoll(double* pd_pitch, double* pd_roll, uint8_t* pu8_rxBuffAccel, uint8_t* pu8_rxBuffAccelSize)
 {
-	HAL_Mower_TiltProtection(gd_pitch, gd_roll);
+    uint8_t dataLsbX,
+		dataMsbX,
+		dataLsbY,
+		dataMsbY,
+		dataLsbZ,
+		dataMsbZ;
+	static float   dataX = 0,
+                    dataY = 0,
+                    dataZ = 0;
+	double valuePitch,
+			valueRoll;
+
+    dataLsbX = pu8_rxBuffAccel[0];
+    dataMsbX = pu8_rxBuffAccel[1];
+    dataLsbY = pu8_rxBuffAccel[2];
+    dataMsbY = pu8_rxBuffAccel[3];
+    dataLsbZ = pu8_rxBuffAccel[4];
+    dataMsbZ = pu8_rxBuffAccel[5];
+    
+    dataX = ((float)(int16_t)((dataMsbX<<8) | dataLsbX))/256;
+    dataY = ((float)(int16_t)((dataMsbY<<8) | dataLsbY))/256;
+    dataZ = ((float)(int16_t)((dataMsbZ<<8) | dataLsbZ))/256;
+	
+    valuePitch = 180 * atan2(-dataX, sqrt(dataY*dataY + dataZ*dataZ))/M_PI;
+    valueRoll = 180 * atan2(dataY, sqrt(dataX*dataX + dataZ*dataZ))/M_PI;
+	
+	*pd_pitch = (double)RUN_FIFO_GetPitchAverage((int16_t)valuePitch);
+	*pd_roll = (double)RUN_FIFO_GetRollAverage((int16_t)valueRoll);
+}
+
+void RUN_Mower_TiltProtection(void)
+{	
+	if((gd_pitch <= PITCH_MIN) || (gd_pitch >= PITCH_MAX) || (gd_roll <= ROLL_MIN) || (gd_roll >= ROLL_MAX)) 
+	{ 
+		HAL_GPIO_UpdateBladeState(OFF);
+	}
+	else 
+	{
+		HAL_GPIO_UpdateBladeState(ON);
+	}
+}
+
+void RUN_Mower_SonarDistance()
+{
+	//HAL_Sonar_Distance(); get from Sonar throught I2C - MVE
 }
 
 uint8_t RUN_Mower_WireDetection()
@@ -388,7 +511,7 @@ uint8_t RUN_Mower_BumperDetection()
    	{
 		default:
 	  	case 0:
-			_u16_randAngle = HAL_Mower_MyRandDeg(360);
+			_u16_randAngle = _RUN_Mower_MyRandDeg(360);
 			_u16_startAngle = gu16_currentAngle;
 			_u16_endAngle = (_u16_startAngle + _u16_randAngle)%360;
 
@@ -511,7 +634,7 @@ uint8_t RUN_Mower_RunMower()
 	uint8_t u8_rightBumperState = 0;
 	uint8_t u8_returnValue = 0;
 
-	HAL_Sonar_GetDistance(&gu8_distanceFC, &gu8_distanceFL, &gu8_distanceFR);
+	//HAL_Sonar_GetDistance(&gu8_distanceFC, &gu8_distanceFL, &gu8_distanceFR); Get from I2C
 	HAL_FIFO_GetSonarAverage(&gu8_distanceFC, &gu8_distanceFL, &gu8_distanceFR);
 
 	gu16_distanceWireLeft = HAL_ADC_GetLeftWireValue();
@@ -585,4 +708,24 @@ uint8_t RUN_Mower_WireGuiding()
 uint16_t RUN_Mower_GetCurrentAngle()
 {
 	return gu16_currentAngle;
+}
+
+void RUN_Mower_SetEtatMower(EtatMower _eEtatMower)
+{
+	geEtatMower = _eEtatMower;
+}
+
+void RUN_Mower_SetErrorMower(ErrorMower _eErrorMower)
+{
+	geErrorMower = _eErrorMower;
+}
+
+EtatMower RUN_Mower_GetEtatMower(void)
+{
+	return geEtatMower;
+}
+
+ErrorMower RUN_Mower_GetErrorMower(void)
+{
+	return geErrorMower;
 }

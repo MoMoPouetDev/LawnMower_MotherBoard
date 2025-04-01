@@ -35,26 +35,6 @@ void HAL_GPIO_Init()
 	ge_bladeState = OFF;
 }
 
-void HAL_GPIO_SetEtatMower(EtatMower _eEtatMower)
-{
-	geEtatMower = _eEtatMower;
-}
-
-void HAL_GPIO_SetErrorMower(ErrorMower _eErrorMower)
-{
-	geErrorMower = _eErrorMower;
-}
-
-EtatMower HAL_GPIO_GetEtatMower()
-{
-	return geEtatMower;
-}
-
-ErrorMower HAL_GPIO_GetErrorMower()
-{
-	return geErrorMower;
-}
-
 void HAL_GPIO_UpdateBladeState(Etat e_bladeState)
 {
 	ge_bladeState = e_bladeState;
