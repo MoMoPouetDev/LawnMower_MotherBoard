@@ -7,6 +7,8 @@
         "run_pwm.h": "c",
         "hal_fifo.h": "c",
         "run_mower.h": "c",
-        "lld_timer.h": "c"
+        "lld_timer.h": "c",
+        "hal_adc.h": "c",
+        "run_adc.h": "c"
     }
 }
