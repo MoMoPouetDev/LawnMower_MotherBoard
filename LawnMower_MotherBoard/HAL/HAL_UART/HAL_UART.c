@@ -18,7 +18,7 @@
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
-static uint8_t _HAL_UART_SendCommand(char* pc_buffer, uint8_t u8_bufferSize);
+
 /*--------------------------------------------------------------------------*/
 /*! ... FUNCTIONS DEFINITIONS    ...                                        */
 /*--------------------------------------------------------------------------*/
@@ -47,42 +47,27 @@ void HAL_UART_Reception()
 
 }
 
-void HAL_UART_SendStatus(uint8_t* tu8_uart_txBuff, uint8_t u8_size)
+uint8_t HAL_UART_ReceiveCommand(uint8_t* pu8_RxBuffer, uint8_t u8_size)
 {
 	static uint8_t u8_uartState = 0;
-
-	switch (u8_uartState)
-	{
-		case 0:
-			LLD_UART_Send(*tu8_uart_txBuff);
-			u8_uartState = 1;
-			break;
-		case 1:
-			u8_uartState = 0;
-			break;
-		default:
-			u8_uartState = 0;
-			break;
-	}
-}
-
-uint8_t HAL_UART_ReceptionBLE(uint8_t* tu8_RxBuffer, uint8_t u8_size)
-{
-	static uint8_t tu8_uart_rxBuff[1] = {0};
-	static uint8_t u8_uartState = 0;
+	uint8_t u8_uartReturnState = 0;
 	uint8_t u8_returnValue = 0;
 
 	switch (u8_uartState)
 	{
 		case 0:
-			LLD_UART_Receive(*tu8_uart_rxBuff);
-			u8_uartState = 1;
+			u8_uartReturnState = LLD_UART_Receive(pu8_RxBuffer);
+			if (u8_uartReturnState != 0)
+			{
+				u8_uartState++;
+			}
 			break;
+
 		case 1:
 			u8_uartState = 0;
 			u8_returnValue = 1;
-			memcpy(tu8_RxBuffer, tu8_uart_rxBuff, BUFFER_SIZE);
 			break;
+
 		default:
 			u8_uartState = 0;
 			break;
@@ -90,14 +75,14 @@ uint8_t HAL_UART_ReceptionBLE(uint8_t* tu8_RxBuffer, uint8_t u8_size)
 	return u8_returnValue;
 }
 
-static uint8_t _HAL_UART_SendCommand(char* pc_buffer, uint8_t u8_bufferSize)
+uint8_t HAL_UART_SendCommand(uint8_t* pu8_buffer, uint8_t u8_bufferSize)
 {
 	static uint8_t u8_i = 0;
 	uint8_t u8_returnValue = 0;
 	
 	if (u8_i < u8_bufferSize)
 	{
-		LLD_UART_Send(pc_buffer + u8_i);
+		LLD_UART_Send(pu8_buffer + u8_i);
 		u8_i++;
 	}
 	else

@@ -25,9 +25,7 @@
 /*--------------------------------------------------------------------------*/
 void HAL_UART_Init(void);
 void HAL_UART_BleInit(void);
-uint8_t HAL_UART_ReceptionGPS(char* tu8_RxBuffer, uint8_t u8_size);
-uint8_t HAL_UART_ReceptionBLE(uint8_t* tu8_RxBuffer, uint8_t u8_size);
-void HAL_UART_SendStatus(uint8_t* tu8_uart_txBuff, uint8_t u8_size);
-void HAL_UART_BleInit(void);
+uint8_t HAL_UART_ReceiveCommand(uint8_t* pu8_RxBuffer, uint8_t u8_size);
+uint8_t HAL_UART_SendCommand(uint8_t* pu8_buffer, uint8_t u8_bufferSize);
 
 #endif /* HAL_HAL_UART_HAL_UART_H_ */

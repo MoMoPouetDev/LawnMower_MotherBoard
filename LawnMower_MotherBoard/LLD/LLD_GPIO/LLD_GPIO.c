@@ -102,15 +102,19 @@ void LLD_GPIO_WritePin(GPIO e_Gpio)
 			break;
 
 		case E_MOTOR_ONE_FORWARD_ENABLE:
+			PORTD |= (1<<PORTD4);
 			break;
 
 		case E_MOTOR_ONE_BACKWARD_ENABLE:
+			PORTD |= (1<<PORTD5);
 			break;
 
 		case E_MOTOR_TWO_FORWARD_ENABLE:
+			PORTD |= (1<<PORTD2);
 			break;
 
 		case E_MOTOR_TWO_BACKWARD_ENABLE:
+			PORTD |= (1<<PORTD3);
 			break;
 		
 		default:
@@ -133,15 +137,19 @@ void LLD_GPIO_ClearPin(GPIO e_Gpio)
 			break;
 
 		case E_MOTOR_ONE_FORWARD_ENABLE:
+			PORTD &= ~(1<<PORTD4);
 			break;
 
 		case E_MOTOR_ONE_BACKWARD_ENABLE:
+			PORTD &= ~(1<<PORTD5)
 			break;
 
 		case E_MOTOR_TWO_FORWARD_ENABLE:
+			PORTD &= ~(1<<PORTD2)
 			break;
 
 		case E_MOTOR_TWO_BACKWARD_ENABLE:
+			PORTD &= ~(1<<PORTD3)
 			break;
 		
 		default:

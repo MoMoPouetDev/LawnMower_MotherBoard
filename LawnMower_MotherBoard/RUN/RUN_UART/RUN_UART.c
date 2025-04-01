@@ -26,5 +26,4 @@
 void RUN_UART_Init()
 {
 	HAL_UART_Init();
-	HAL_UART_BleInit();
 }

@@ -33,6 +33,9 @@ void RUN_BLE_Init()
 
 void RUN_BLE_SendStatus()
 {
+	static uint8_t tu8_txBuffer[19] = {0};
+	static uint8_t u8_uartState = 0;
+	uint8_t u8_uartReturnState = 0;
 	Coordinates tLatitude;
 	Coordinates tLongitude;
 	EtatMower eEtatMower;
@@ -44,11 +47,6 @@ void RUN_BLE_SendStatus()
 	uint8_t uMonthsGPS;
 	uint8_t angleLSB, angleMSB;
 	uint16_t angleW;
-	uint8_t tu8_txBuffer[19] = {0};
-	static uint8_t u8_uartState = 0;
-	
-	angleLSB = angleW & 0xFF;
-	angleMSB = (angleW >> 8) & 0xFF;
 
 	eEtatMower = HAL_GPIO_GetEtatMower();
 	eErrorMower = HAL_GPIO_GetErrorMower();
@@ -59,31 +57,48 @@ void RUN_BLE_SendStatus()
 	angleLSB = angleW & 0xFF;
 	angleMSB = (angleW >> 8) & 0xFF;
 
-	tu8_txBuffer[0] = eEtatMower;
-	tu8_txBuffer[1] = eErrorMower;
-	tu8_txBuffer[2] = uBattery;
+	switch (u8_uartState)
+	{
+		case 0:
+			tu8_txBuffer[0] = eEtatMower;
+			tu8_txBuffer[1] = eErrorMower;
+			tu8_txBuffer[2] = uBattery;
 
-	tu8_txBuffer[3] = tLatitude.degrees;
-	tu8_txBuffer[4] = tLatitude.minutes;
-	tu8_txBuffer[5] = tLatitude.decimalMSB;
-	tu8_txBuffer[6] = tLatitude.decimalB;
-	tu8_txBuffer[7] = tLatitude.decimalLSB;
+			tu8_txBuffer[3] = tLatitude.degrees;
+			tu8_txBuffer[4] = tLatitude.minutes;
+			tu8_txBuffer[5] = tLatitude.decimalMSB;
+			tu8_txBuffer[6] = tLatitude.decimalB;
+			tu8_txBuffer[7] = tLatitude.decimalLSB;
 
-	tu8_txBuffer[8] = tLongitude.degrees;
-	tu8_txBuffer[9] = tLongitude.minutes;
-	tu8_txBuffer[10] = tLongitude.decimalMSB;
-	tu8_txBuffer[11] = tLongitude.decimalB;
-	tu8_txBuffer[12] = tLongitude.decimalLSB;
+			tu8_txBuffer[8] = tLongitude.degrees;
+			tu8_txBuffer[9] = tLongitude.minutes;
+			tu8_txBuffer[10] = tLongitude.decimalMSB;
+			tu8_txBuffer[11] = tLongitude.decimalB;
+			tu8_txBuffer[12] = tLongitude.decimalLSB;
 
-	tu8_txBuffer[13] = uHoursGPS;
-	tu8_txBuffer[14] = uMinutesGPS;
-	tu8_txBuffer[15] = uDaysGPS;
-	tu8_txBuffer[16] = uMonthsGPS;
+			tu8_txBuffer[13] = uHoursGPS;
+			tu8_txBuffer[14] = uMinutesGPS;
+			tu8_txBuffer[15] = uDaysGPS;
+			tu8_txBuffer[16] = uMonthsGPS;
 
-	tu8_txBuffer[17] = angleMSB;
-	tu8_txBuffer[18] = angleLSB;
+			tu8_txBuffer[17] = angleMSB;
+			tu8_txBuffer[18] = angleLSB;
 
-	HAL_UART_SendStatus(tu8_txBuffer , 19);
+			u8_uartState++;
+			break;
+
+		case 1:
+			u8_uartReturnState = HAL_UART_SendCommand(tu8_txBuffer , 19);
+			if (u8_uartReturnState != 0)
+			{
+				u8_uartState = 0;
+			}
+			break
+
+		default:
+			u8_uartState = 0;
+			break;
+	}
 }
 
 void RUN_BLE_ReceiveStatus()

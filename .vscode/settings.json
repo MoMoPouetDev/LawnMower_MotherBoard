@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "hal_gpio.h": "c",
-        "lld_i2c.h": "c"
+        "lld_i2c.h": "c",
+        "lld_pwm.h": "c",
+        "hal_pwm.h": "c",
+        "run_pwm.h": "c",
+        "hal_fifo.h": "c"
     }
 }

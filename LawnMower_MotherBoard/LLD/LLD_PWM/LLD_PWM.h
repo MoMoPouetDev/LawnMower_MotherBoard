@@ -1,6 +1,7 @@
 /**
  * @file LLD_PWM.h
- * @author ACR
+ * @author MVE
+ * @date 2019-03-26
  * @brief Header file for PWM peripheral
  * @details
 **/
@@ -18,47 +19,13 @@
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
 
-#define SOURCE_CLK (150000000UL)
-
-typedef enum
-{
-	LLD_PWM_PWM1_MODULE0,
-	LLD_PWM_PWM1_MODULE1,
-	LLD_PWM_PWM1_MODULE2,
-	LLD_PWM_PWM1_MODULE3,
-	LLD_PWM_PWM2_MODULE0,
-	LLD_PWM_PWM2_MODULE1,
-	LLD_PWM_PWM2_MODULE2,
-	LLD_PWM_PWM2_MODULE3,
-	LLD_PWM_PWM3_MODULE0,
-	LLD_PWM_PWM3_MODULE1,
-	LLD_PWM_PWM3_MODULE2,
-	LLD_PWM_PWM3_MODULE3,
-	LLD_PWM_PWM4_MODULE0,
-	LLD_PWM_PWM4_MODULE1,
-	LLD_PWM_PWM4_MODULE2,
-	LLD_PWM_PWM4_MODULE3,
-	LLD_PWM_NB
-}typ_Lld_Pwm;
-
-typedef enum
-{
-	LLD_PWM_CHANNEL_B,
-	LLD_PWM_CHANNEL_A,
-}typ_Lld_Pwm_Channel;
-
 /*--------------------------------------------------------------------------*/
 /*! ... GLOBAL FUNCTIONS DECLARATIONS ...                                   */
 /*--------------------------------------------------------------------------*/
-
-void LLD_PWM_Init(typ_Lld_Pwm e_Pwm, typ_Lld_Pwm_Channel e_Channel, uint32_t u32_Frequency);
-void LLD_PWM_Enable(typ_Lld_Pwm e_Pwm, typ_Lld_Pwm_Channel e_Channel, bool Enable);
-void LLD_PWM_SetDutyCycle(typ_Lld_Pwm e_Pwm, typ_Lld_Pwm_Channel e_Channel, uint8_t u8_Dutycycle);
+void LLD_PWM_Init(void);
+void LLD_PWM_Forward(uint8_t speed_ML, uint8_t speed_MR);
+void LLD_PWM_Right(void);
+void LLD_PWM_Left(void);
+void LLD_PWM_Stop(void);
 
 #endif /* LLD_PWM_H_ */
-
-
-
-
-
-

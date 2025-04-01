@@ -28,6 +28,6 @@
 void HAL_PWM_Init(void);
 void HAL_PWM_Stop(void);
 void HAL_PWM_Forward(uint8_t u8_speedLeft, uint8_t u8_speedRight);
-void HAL_PWM_Turn(void);
+void HAL_PWM_Turn(uint8_t u8_turn);
 
 #endif /* HAL_HAL_PWM_HAL_PWM_H_ */

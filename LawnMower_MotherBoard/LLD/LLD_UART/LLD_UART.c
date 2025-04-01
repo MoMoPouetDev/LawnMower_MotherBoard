@@ -64,7 +64,7 @@ uint8_t LLD_UART_Receive(uint8_t* pu8_rxBuff)
         case 1:
             (*pu8_rxBuff) = UDR0;
             _u8_uartState = 0;
-            u8_uartStatus = 1   
+            u8_uartStatus = 1;
             break;
         
         default:

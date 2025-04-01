@@ -16,23 +16,49 @@
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
 #define I2C_BAUDRATE   400000U
-#define COMPASS_ADDR 0x1E
-#define ACCELEROMETRE_ADDR 0x53
-
+#define MASTER_ADDR 0x10
+#define SLAVE_SENSOR_ADDR 0x02
+#define COMPASS_ADDR (0x1E<<1)
+#define ACCELEROMETRE_ADDR (0x53<<1)
+/*** Compass ***/
 #define ADDR_DATA_COMPASS_X_MSB 0x03
 #define ADDR_DATA_COMPASS_X_LSB 0x04
 #define ADDR_DATA_COMPASS_Z_MSB 0x05
 #define ADDR_DATA_COMPASS_Z_LSB 0x06
 #define ADDR_DATA_COMPASS_Y_MSB 0x07
 #define ADDR_DATA_COMPASS_Y_LSB 0x08
-
+/** Accelerometer ***/
 #define ADDR_DATA_ACCELEROMETER_X_LSB 0x32
 #define ADDR_DATA_ACCELEROMETER_X_MSB 0x33
 #define ADDR_DATA_ACCELEROMETER_Y_LSB 0x34
 #define ADDR_DATA_ACCELEROMETER_Y_MSB 0x35
 #define ADDR_DATA_ACCELEROMETER_Z_LSB 0x36
 #define ADDR_DATA_ACCELEROMETER_Z_MSB 0x37
-
+/*** Slave ***/
+#define ADDR_SENSOR_V 0x01
+#define ADDR_SENSOR_A 0x02
+#define ADDR_SENSOR_DOCK 0x03
+#define ADDR_SENSOR_RAIN 0x04
+#define ADDR_SONAR_FC 0x05
+#define ADDR_SONAR_FL 0x06
+#define ADDR_SONAR_FR 0x07
+#define ADDR_GPS_TIME_HOURS 0x08
+#define ADDR_GPS_TIME_MINUTES 0x09
+#define ADDR_GPS_DATE_DAYS 0x0A
+#define ADDR_GPS_DATE_MONTHS 0x0B
+#define ADDR_GPS_LONG_DEG 0x0C
+#define ADDR_GPS_LONG_MIN 0x0D
+#define ADDR_GPS_LONG_DEC_MSB 0x0E
+#define ADDR_GPS_LONG_DEC_B 0x0F
+#define ADDR_GPS_LONG_DEC_LSB 0x10
+#define ADDR_GPS_LAT_DEG 0x11
+#define ADDR_GPS_LAT_MIN 0x12
+#define ADDR_GPS_LAT_DEC_MSB 0x13
+#define ADDR_GPS_LAT_DEC_B 0x14
+#define ADDR_GPS_LAT_DEC_LSB 0x15
+#define ADDR_TIME_TO_MOW 0x16
+#define ADDR_LED_STATUS 0x17
+#define ADDR_UNKNOWN_DATA 0x00
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
@@ -212,32 +238,6 @@ uint8_t HAL_I2C_ReadCompass(uint8_t* pu8_RxBuff, uint8_t* pu8_Size)
 		default:
 			_u8_compassState = 0;
 			break;
-	}
-
-	return u8_ReturnValue;
-
-
-	*pu8_Size = u8_Size;
-
-	if (!u8_FlagReadSend)
-	{
-		LLD_I2C_Read(LLD_I2C_I2C4, COMPASS_ADDR, ADDR_DATA_COMPASS_X_MSB, 1, tu8_RxBuff, u8_Size);
-		u8_FlagReadSend = 1;
-		u8_ReturnValue = 0;
-	}
-	else if (gu8_FlagRx)
-	{
-		for(i = 0; i < u8_Size; i++)
-		{
-			pu8_RxBuff[i] = tu8_RxBuff[i];
-		}
-		gu8_FlagRx = 0;
-		u8_FlagReadSend = 0;
-		u8_ReturnValue = 1;
-	}
-	else
-	{
-		u8_ReturnValue = 0;
 	}
 
 	return u8_ReturnValue;
