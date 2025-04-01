@@ -20,11 +20,10 @@
 /*--------------------------------------------------------------------------*/
 static Etat ge_rain;
 static Etat ge_dock;
-
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
-static uint8_t _RUN_Sensors_GetBatteryPercent(void);
+
 /*--------------------------------------------------------------------------*/
 /*! ... FUNCTIONS DEFINITIONS    ...                                        */
 /*--------------------------------------------------------------------------*/
@@ -103,7 +102,7 @@ int8_t RUN_Sensors_IsEnoughCharged()
 //	95%  | 12,45 | 2,49  | 3091
 //	100% | 12,6  | 2,52  | 3128
 /*********************************************/
-static uint8_t _RUN_Sensors_GetBatteryPercent() 
+uint8_t RUN_Sensors_GetBatteryPercent(void) 
 {
 	uint32_t uTension;
 	uint8_t uPourcentage = 0;

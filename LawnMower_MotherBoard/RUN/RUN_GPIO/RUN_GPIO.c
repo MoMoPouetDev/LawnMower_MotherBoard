@@ -97,7 +97,3 @@ uint8_t RUN_GPIO_GetStopButton()
 	return u8_flagButton;
 }
 
-void RUN_GPIO_UpdateLed()
-{
-	HAL_GPIO_UpdateLed();
-}

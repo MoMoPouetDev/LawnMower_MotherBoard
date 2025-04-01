@@ -51,9 +51,9 @@ void FSM_Dock(S_MOWER_FSM_STATE e_FSM_Dock_State)
 	/***************************************************************************************************************/
 
     switch( e_FSM_Dock_State )
-   {
-	  	default:
-	  	case S_SUP_DOCK_Init:
+	{
+		default:
+		case S_SUP_DOCK_Init:
 			FSM_Dock_Init();
 			FSM_Dock_DisableAllMotor();
 			RUN_GPIO_UpdateBladeState(OFF);
@@ -72,7 +72,7 @@ void FSM_Dock(S_MOWER_FSM_STATE e_FSM_Dock_State)
 			}
 
 			break;
-	  	case S_SUP_DOCK_In_Charge :
+		case S_SUP_DOCK_In_Charge :
 			if ( (RUN_Sensors_GetRainState() == OFF) && (RUN_Sensors_IsEnoughCharged() == 1) && (RUN_GPIO_GetStartButton() == 1) )
 			{
 				FSM_Enum_SetFsmPhase(S_SUP_DOCK_Waiting_For_Leaving_Dock);
@@ -86,7 +86,7 @@ void FSM_Dock(S_MOWER_FSM_STATE e_FSM_Dock_State)
 				RUN_GPIO_SetEtatMowerInCharge();
 			}
 			
-		 	break;
+			break;
 		case S_SUP_DOCK_Waiting_For_Mow :
 			if ( (RUN_Sensors_IsTimeToMow() == 1) && (RUN_Sensors_GetRainState() == OFF) )
 			{
@@ -99,7 +99,7 @@ void FSM_Dock(S_MOWER_FSM_STATE e_FSM_Dock_State)
 			{
 				FSM_Enum_SetFsmPhase(S_SUP_DOCK_In_Charge);
 				RUN_GPIO_SetErrorMowerNtr();
-		  		RUN_GPIO_SetEtatMowerInTask();
+				RUN_GPIO_SetEtatMowerInTask();
 			}
 
 			break;
@@ -111,7 +111,7 @@ void FSM_Dock(S_MOWER_FSM_STATE e_FSM_Dock_State)
 			}
 
 			break;
-   }
+	}
 }
 
 void FSM_Dock_LeavingDockCharger(uint32_t u32_CyclicTask)

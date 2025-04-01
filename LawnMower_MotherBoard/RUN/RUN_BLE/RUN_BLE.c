@@ -48,10 +48,10 @@ void RUN_BLE_SendStatus()
 	uint8_t angleLSB, angleMSB;
 	uint16_t angleW;
 
-	eEtatMower = HAL_GPIO_GetEtatMower();
-	eErrorMower = HAL_GPIO_GetErrorMower();
+	eEtatMower = RUN_Mower_GetEtatMower();
+	eErrorMower = RUN_Mower_GetErrorMower();
 	uBattery = RUN_Sensors_GetBatteryPercent();
-	HAL_GPS_GetStructCoordinates(&tLatitude, &tLongitude);
+	//RUN_Sensors_GetStructCoordinates(&tLatitude, &tLongitude); - MVE
 
 	angleW = RUN_Mower_GetCurrentAngle();
 	angleLSB = angleW & 0xFF;

@@ -72,15 +72,13 @@ void FSM_Main( void )
 	/***************************************************************************************************************/
 	/*                                      MANAGE RUN TASK CYCLE                                                  */
 	/***************************************************************************************************************/
-
 		u32_CyclicTask = RUN_Task_GetCyclicTask();
 		
-		FSM_Main_GpsAcquisition(u32_CyclicTask);
-		FSM_Main_UpdateLed(u32_CyclicTask);
-		FSM_Main_GetAngles(u32_CyclicTask);
-		FSM_Main_ADCRead(u32_CyclicTask);
-		FSM_Main_SendStatus(u32_CyclicTask);
-		FSM_Main_TiltProtection(u32_CyclicTask);
+		_FSM_Main_UpdateLed(u32_CyclicTask);
+		_FSM_Main_GetAngles(u32_CyclicTask);
+		_FSM_Main_ADCRead(u32_CyclicTask);
+		_FSM_Main_SendStatus(u32_CyclicTask);
+		_FSM_Main_TiltProtection(u32_CyclicTask);
       /***************************************************************************************************************/
       /*                                  DEBUG                                                   */
       /***************************************************************************************************************/
@@ -122,7 +120,7 @@ static void _FSM_Main_UpdateFsmMower()
 static void _FSM_Main_GpsAcquisition(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_GPS_ACQUISITION) != 0) {
-		RUN_GPS_GpsAcquisition();
+		// Data slave Acquisition - RUN Sensors - MVE
 		RUN_Task_EraseCyclicTask(CYCLIC_TASK_GPS_ACQUISITION);
 	}
 }
@@ -130,7 +128,7 @@ static void _FSM_Main_GpsAcquisition(uint32_t u32_CyclicTask)
 static void _FSM_Main_UpdateLed(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_UPDATE_LED) != 0) {
-		RUN_GPIO_UpdateLed();
+		// Update Leds on slave maybe on run mower - MVE
 		RUN_Task_EraseCyclicTask(CYCLIC_TASK_UPDATE_LED);
 	}
 }
