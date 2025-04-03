@@ -28,7 +28,7 @@
 /*--------------------------------------------------------------------------*/
 /*! ... FUNCTIONS DEFINITIONS ...                                    */
 /*--------------------------------------------------------------------------*/
-void LLD_TIMER_Init(void)
+void LLD_Timer_Init(void)
 {
     /* Init Timer 1 for Run Task tick */
 	TCCR1B |= (1<<WGM12) | (1<<CS10); // CTC and No Prescale
