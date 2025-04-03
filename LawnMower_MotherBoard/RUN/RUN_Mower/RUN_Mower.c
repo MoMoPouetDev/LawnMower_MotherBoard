@@ -12,13 +12,13 @@
 #include <math.h>
 #include "HAL_ADC.h"
 #include "HAL_I2C.h"
-#include "HAL_FIFO.h"
 #include "HAL_Mower.h"
 #include "HAL_Timer.h"
 #include "HAL_Sonar.h"
 #include "HAL_GPIO.h"
 #include "HAL_GPS.h"
 #include "RUN_PWM.h"
+#include "RUN_FIFO.h"
 #include "RUN_Mower.h"
 
 /*--------------------------------------------------------------------------*/
@@ -634,8 +634,8 @@ uint8_t RUN_Mower_RunMower()
 	uint8_t u8_rightBumperState = 0;
 	uint8_t u8_returnValue = 0;
 
-	//HAL_Sonar_GetDistance(&gu8_distanceFC, &gu8_distanceFL, &gu8_distanceFR); Get from I2C
-	HAL_FIFO_GetSonarAverage(&gu8_distanceFC, &gu8_distanceFL, &gu8_distanceFR);
+	//HAL_Sonar_GetDistance(&gu8_distanceFC, &gu8_distanceFL, &gu8_distanceFR); Get from I2C - MVE
+	RUN_FIFO_GetSonarAverage(&gu8_distanceFC, &gu8_distanceFL, &gu8_distanceFR);
 
 	gu16_distanceWireLeft = HAL_ADC_GetLeftWireValue();
 	gu16_distanceWireRight = HAL_ADC_GetRightWireValue();
