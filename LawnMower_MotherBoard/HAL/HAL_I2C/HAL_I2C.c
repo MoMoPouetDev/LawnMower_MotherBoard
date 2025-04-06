@@ -149,7 +149,7 @@ uint8_t HAL_I2C_ReadAccel(uint8_t* pu8_RxBuff, uint8_t* pu8_Size)
 			break;
 
 		case 6:
-			for(i = 0; i < u8_Size; i++)
+			for(int i = 0; i < u8_Size; i++)
 			{
 				pu8_RxBuff[i] = tu8_RxBuff[i];
 			}
@@ -167,7 +167,6 @@ uint8_t HAL_I2C_ReadAccel(uint8_t* pu8_RxBuff, uint8_t* pu8_Size)
 
 uint8_t HAL_I2C_ReadCompass(uint8_t* pu8_RxBuff, uint8_t* pu8_Size)
 {
-	static uint8_t u8_FlagReadSend = 0;
 	static uint8_t tu8_RxBuff[6] = {0};
 	static uint8_t _u8_compassState = 0;
 	uint8_t u8_compassReturnState = 0;
@@ -227,7 +226,7 @@ uint8_t HAL_I2C_ReadCompass(uint8_t* pu8_RxBuff, uint8_t* pu8_Size)
 			break;
 
 		case 6:
-			for(i = 0; i < u8_Size; i++)
+			for(int i = 0; i < u8_Size; i++)
 			{
 				pu8_RxBuff[i] = tu8_RxBuff[i];
 			}

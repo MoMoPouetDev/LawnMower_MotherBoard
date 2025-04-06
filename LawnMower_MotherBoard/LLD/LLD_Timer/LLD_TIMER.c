@@ -8,12 +8,8 @@
 /*--------------------------------------------------------------------------*/
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
-
-#define LLD_TIMER_USE_LOCALS
 #include <stdint.h>
-#include <string.h>
-#include <stdbool.h>
-#include <assert.h>
+#include <avr/io.h>
 
 #include "LLD_TIMER.h"
 

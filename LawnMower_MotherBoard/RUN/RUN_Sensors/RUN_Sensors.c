@@ -8,8 +8,6 @@
 /*--------------------------------------------------------------------------*/
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
-#include "HAL_GPS.h"
-#include "HAL_Sonar.h"
 #include "HAL_GPIO.h"
 #include "HAL_ADC.h"
 #include "RUN_Mower.h"
@@ -31,8 +29,6 @@ void RUN_Sensors_Init()
 {
 	ge_rain = OFF;
 	ge_dock = OFF;
-
-	HAL_Sonar_Init();
 }
 
 uint8_t RUN_Sensors_IsCharging()
@@ -40,7 +36,7 @@ uint8_t RUN_Sensors_IsCharging()
 	uint8_t u8_returnValue = 0;
 	uint32_t u8_chargeValue;
 
-	u8_chargeValue = RUN_Sensors_GetChargeValue();
+	u8_chargeValue = 0;//RUN_Sensors_GetChargeValue(); Get from slave - MVE
 
 	if (u8_chargeValue <= CHARGING_THRESHOLD)
 	{
@@ -59,7 +55,7 @@ int8_t RUN_Sensors_IsEnoughCharged()
 	uint8_t battery = 0;
 	int8_t u8_returnValue = 1;
 
-	battery = _RUN_Sensors_GetBatteryPercent();
+	battery = RUN_Sensors_GetBatteryPercent();
 	
 	if (battery <= SENSOR_V_FAIBLE_WARN) 
 	{
@@ -107,7 +103,7 @@ uint8_t RUN_Sensors_GetBatteryPercent(void)
 	uint32_t uTension;
 	uint8_t uPourcentage = 0;
 
-	uTension = HAL_ADC_GetBatteryValue();
+	uTension = 0;//HAL_ADC_GetBatteryValue(); Get from slave - MVE 
 	
 	if(uTension <= 2300) { uPourcentage = 0; }
 	else if(uTension <= 2458) { uPourcentage = 5; }

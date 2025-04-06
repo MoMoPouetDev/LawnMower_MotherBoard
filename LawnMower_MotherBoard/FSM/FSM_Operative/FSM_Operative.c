@@ -79,9 +79,9 @@ void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
 			FSM_Operative_SensorRead(u32_CyclicTask);
 			FSM_Operative_RunMower(u32_CyclicTask);	
 
-			e_rain = RUN_Sensors_GetRainState();
-			s8_charge = RUN_Sensors_IsEnoughCharged();
-			u8_timeToMow = RUN_Sensors_IsTimeToMow();
+			//e_rain = RUN_Sensors_GetRainState();
+			//s8_charge = RUN_Sensors_IsEnoughCharged();
+			//u8_timeToMow = RUN_Sensors_IsTimeToMow();
 			u8_startButtonState = RUN_GPIO_GetStartButton();
 			u8_stopButtonState = RUN_GPIO_GetStopButton();
 			
@@ -94,8 +94,8 @@ void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
 				FSM_Enum_SetFsmPhase(S_SUP_OPERATIVE_Bumper_Detection);
 			}
 
-			RUN_GPIO_SetEtatMowerInTask();
-			RUN_GPIO_SetErrorMowerNtr();
+			//RUN_GPIO_SetEtatMowerInTask();
+			//RUN_GPIO_SetErrorMowerNtr();
 
 			if (u8_startButtonState)
 			{
@@ -111,12 +111,12 @@ void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
 			}
 			else if (s8_charge == -1)
 			{
-				RUN_GPIO_SetEtatMowerReturnToBase();
+				//RUN_GPIO_SetEtatMowerReturnToBase();
 				FSM_Enum_SetFsmPhase(S_SUP_ERROR_Init);
 			}
 			else if (e_rain == ON)
 			{
-				RUN_GPIO_SetErrorMowerRain();
+				//RUN_GPIO_SetErrorMowerRain();
 				FSM_Enum_SetFsmPhase(S_SUP_OPERATIVE_Waiting_For_Return_To_Base);
 			}
 			else if (u8_timeToMow == 0)
@@ -156,8 +156,8 @@ void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
 			u8_startButtonState = RUN_GPIO_GetStartButton();
 			u8_stopButtonState = RUN_GPIO_GetStopButton();
 
-			RUN_GPIO_SetEtatMowerInWait();
-			RUN_GPIO_SetErrorMowerNtr();
+			//RUN_GPIO_SetEtatMowerInWait();
+			//RUN_GPIO_SetErrorMowerNtr();
 
 			if (u8_startButtonState)
 			{
@@ -171,7 +171,7 @@ void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
 
 	  	case S_SUP_OPERATIVE_Waiting_For_Return_To_Base :
 			FSM_Operative_DisableAllMotor();
-			RUN_GPIO_SetEtatMowerReturnToBase();
+			//RUN_GPIO_SetEtatMowerReturnToBase();
 
 			FSM_Enum_SetFsmPhase(S_SUP_RETURN_TO_BASE_Init);
 			break;

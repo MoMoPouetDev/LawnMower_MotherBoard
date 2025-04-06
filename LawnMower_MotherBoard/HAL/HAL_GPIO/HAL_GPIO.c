@@ -10,15 +10,13 @@
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
 #include <stdint.h>
+
 #include "HAL_Timer.h"
 #include "HAL_GPIO.h"
-#include "LLD_GPIO.h"
 
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
-EtatMower geEtatMower;
-ErrorMower geErrorMower;
 Etat ge_bladeState;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
@@ -30,8 +28,6 @@ Etat ge_bladeState;
 void HAL_GPIO_Init()
 {
 	LLD_GPIO_Init();
-	geEtatMower = UNKNOWN_ETAT;
-	geErrorMower = NTR;
 	ge_bladeState = OFF;
 }
 

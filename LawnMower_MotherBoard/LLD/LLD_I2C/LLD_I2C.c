@@ -314,7 +314,7 @@ static uint8_t _LLD_I2C_WriteByte(uint8_t u8_byte)
     static uint8_t _u8_i2cState = 0;
     uint8_t u8_i2cStatus = 0;
 
-    TWDR = dataToSend;
+    TWDR = u8_byte;
 
     switch (_u8_i2cState)
     {

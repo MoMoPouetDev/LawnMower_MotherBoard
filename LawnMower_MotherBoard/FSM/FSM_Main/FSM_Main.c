@@ -12,7 +12,6 @@
 #include "RUN_ADC.h"
 #include "RUN_BLE.h"
 #include "RUN_GPIO.h"
-#include "RUN_GPS.h"
 #include "RUN_Mower.h"
 #include "RUN_Task.h"
 #include "RUN_Task_Interface.h"

@@ -28,13 +28,13 @@ static uint8_t gu8_wireGuidingState;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
-void FSM_ReturnToBase_SonarDistance(uint32_t u32_CyclicTask);
-void FSM_ReturnToBase_GetAngleToBase(uint32_t u32_CyclicTask);
-void FSM_ReturnToBase_SensorRead(uint32_t u32_CyclicTask);
-void FSM_ReturnToBase_RunMower(uint32_t u32_CyclicTask);
-void FSM_ReturnToBase_WireDetection(uint32_t u32_CyclicTask);
-void FSM_ReturnToBase_BumperDetection(uint32_t u32_CyclicTask);
-void FSM_ReturnToBase_WireGuiding(uint32_t u32_CyclicTask);
+static void _FSM_ReturnToBase_SonarDistance(uint32_t u32_CyclicTask);
+static void _FSM_ReturnToBase_GetAngleToBase(uint32_t u32_CyclicTask);
+static void _FSM_ReturnToBase_SensorRead(uint32_t u32_CyclicTask);
+static void _FSM_ReturnToBase_RunMower(uint32_t u32_CyclicTask);
+static void _FSM_ReturnToBase_WireDetection(uint32_t u32_CyclicTask);
+static void _FSM_ReturnToBase_BumperDetection(uint32_t u32_CyclicTask);
+static void _FSM_ReturnToBase_WireGuiding(uint32_t u32_CyclicTask);
 /*---------------------------------------------------------------------------*/
 /* ... FUNCTIONS DEFINITIONS...                                              */
 /*---------------------------------------------------------------------------*/
@@ -72,8 +72,8 @@ void FSM_ReturnToBase(S_MOWER_FSM_STATE e_FSM_ReturnToBase_State)
 
 			break;
 		case S_SUP_RETURN_TO_BASE_Angle_To_Base:
-			FSM_ReturnToBase_SonarDistance(u32_CyclicTask);
-		 	FSM_ReturnToBase_GetAngleToBase(u32_CyclicTask);
+			_FSM_ReturnToBase_SonarDistance(u32_CyclicTask);
+		 	_FSM_ReturnToBase_GetAngleToBase(u32_CyclicTask);
 
 		 	if (gu8_angleToBaseState == 1)
 		 	{
@@ -90,12 +90,12 @@ void FSM_ReturnToBase(S_MOWER_FSM_STATE e_FSM_ReturnToBase_State)
 
 		 	break;
 	  	case S_SUP_RETURN_TO_BASE_Moving :
-			FSM_ReturnToBase_SonarDistance(u32_CyclicTask);
-			FSM_ReturnToBase_RunMower(u32_CyclicTask);
+			_FSM_ReturnToBase_SonarDistance(u32_CyclicTask);
+			_FSM_ReturnToBase_RunMower(u32_CyclicTask);
 
-			e_rain = RUN_Sensors_GetRainState();
-			s8_charge = RUN_Sensors_IsEnoughCharged();
-			u8_timeToMow = RUN_Sensors_IsTimeToMow();
+			//e_rain = RUN_Sensors_GetRainState();
+			//s8_charge = RUN_Sensors_IsEnoughCharged();
+			//u8_timeToMow = RUN_Sensors_IsTimeToMow();
 
 			if (gu8_runMowerState == 1)
 			{
@@ -108,8 +108,8 @@ void FSM_ReturnToBase(S_MOWER_FSM_STATE e_FSM_ReturnToBase_State)
 
 		 	break;
 	  	case S_SUP_RETURN_TO_BASE_Wire_Detection :
-		  	FSM_Operative_SonarDistance(u32_CyclicTask);
-			FSM_ReturnToBase_WireDetection(u32_CyclicTask);
+		  	_FSM_ReturnToBase_SonarDistance(u32_CyclicTask);
+			_FSM_ReturnToBase_WireDetection(u32_CyclicTask);
 
 			if (gu8_wireDetectionState == 1)
 			{
@@ -122,8 +122,8 @@ void FSM_ReturnToBase(S_MOWER_FSM_STATE e_FSM_ReturnToBase_State)
 
 		 	break;
 	  	case S_SUP_RETURN_TO_BASE_Bumper_Detection :
-		  	FSM_Operative_SonarDistance(u32_CyclicTask);
-			FSM_ReturnToBase_BumperDetection(u32_CyclicTask);
+		  	_FSM_ReturnToBase_SonarDistance(u32_CyclicTask);
+			_FSM_ReturnToBase_BumperDetection(u32_CyclicTask);
 
 			if (gu8_bumperDetectionState == 1)
 			{
@@ -132,7 +132,7 @@ void FSM_ReturnToBase(S_MOWER_FSM_STATE e_FSM_ReturnToBase_State)
 
 		 	break;
 	  	case S_SUP_RETURN_TO_BASE_Wire_Guiding:
-		 	FSM_ReturnToBase_WireGuiding(u32_CyclicTask);
+		 	_FSM_ReturnToBase_WireGuiding(u32_CyclicTask);
 
 			if (gu8_wireGuidingState == 0)
 			{
@@ -148,7 +148,7 @@ void FSM_ReturnToBase(S_MOWER_FSM_STATE e_FSM_ReturnToBase_State)
    	}
 }
 
-void FSM_ReturnToBase_SonarDistance(uint32_t u32_CyclicTask)
+static void _FSM_ReturnToBase_SonarDistance(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_SONAR) != 0) {
 		RUN_Mower_SonarDistance(); // - MVE
@@ -156,7 +156,7 @@ void FSM_ReturnToBase_SonarDistance(uint32_t u32_CyclicTask)
 	}
 }
 
-void FSM_ReturnToBase_GetAngleToBase(uint32_t u32_CyclicTask)
+static void _FSM_ReturnToBase_GetAngleToBase(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_SONAR) != 0) {
 		RUN_Mower_DirectionFromBase();
@@ -164,7 +164,7 @@ void FSM_ReturnToBase_GetAngleToBase(uint32_t u32_CyclicTask)
 	}
 }
 
-void FSM_ReturnToBase_SensorRead(uint32_t u32_CyclicTask)
+static void _FSM_ReturnToBase_SensorRead(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_SENSOR_READ) != 0) {
 		// MVE
@@ -172,7 +172,7 @@ void FSM_ReturnToBase_SensorRead(uint32_t u32_CyclicTask)
 	}
 }
 
-void FSM_ReturnToBase_RunMower(uint32_t u32_CyclicTask)
+static void _FSM_ReturnToBase_RunMower(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_RUN_MOWER) != 0) {
 		gu8_runMowerState = RUN_Mower_RunMower();
@@ -180,7 +180,7 @@ void FSM_ReturnToBase_RunMower(uint32_t u32_CyclicTask)
 	}
 }
 
-void FSM_ReturnToBase_WireDetection(uint32_t u32_CyclicTask)
+static void _FSM_ReturnToBase_WireDetection(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_WIRE_DETECTION) != 0) {
 		gu8_wireDetectionState = RUN_Mower_WireDetectionOnReturn();
@@ -188,7 +188,7 @@ void FSM_ReturnToBase_WireDetection(uint32_t u32_CyclicTask)
 	}
 }
 
-void FSM_ReturnToBase_BumperDetection(uint32_t u32_CyclicTask)
+static void _FSM_ReturnToBase_BumperDetection(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_BUMPER_DETECTION) != 0) {
 		gu8_bumperDetectionState = RUN_Mower_BumperDetection();
@@ -196,7 +196,7 @@ void FSM_ReturnToBase_BumperDetection(uint32_t u32_CyclicTask)
 	}
 }
 
-void FSM_ReturnToBase_WireGuiding(uint32_t u32_CyclicTask)
+static void _FSM_ReturnToBase_WireGuiding(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_WIRE_GUIDING) != 0) {
 		gu8_wireGuidingState = RUN_Mower_WireGuiding();

@@ -20,8 +20,8 @@
 /*! ... GLOBAL FUNCTIONS DECLARATIONS ...                                   */
 /*--------------------------------------------------------------------------*/
 void LLD_I2C_Init(void);
-uint8_t LLD_I2C_Read(uint8_t u8_slaveAddr, uint8_t u8_dataAddr);
-void LLD_I2C_Write(uint8_t u8_slaveAddr, uint8_t u8_dataAddr, uint8_t u8_data);
+uint8_t LLD_I2C_Read(uint8_t u8_slaveAddr, uint8_t u8_dataAddr, uint8_t *pu8_receivedData);
+uint8_t LLD_I2C_Write(uint8_t u8_slaveAddr, uint8_t u8_dataAddr, uint8_t u8_data);
 /*--------------------------------------------------------------------------*/
 /* ... END OF FILE...                                                      */
 /*--------------------------------------------------------------------------*/

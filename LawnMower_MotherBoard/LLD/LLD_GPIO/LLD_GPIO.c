@@ -8,14 +8,8 @@
 /*--------------------------------------------------------------------------*/
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
-
-#define LLD_GPIO_USE_LOCALS
 #include <stdint.h>
-#include <string.h>
-#include <stdbool.h>
-#include <assert.h>
 
-#include "fsl_clock.h"
 #include "LLD_GPIO.h"
 
 /*--------------------------------------------------------------------------*/
@@ -141,15 +135,15 @@ void LLD_GPIO_ClearPin(GPIO e_Gpio)
 			break;
 
 		case E_MOTOR_ONE_BACKWARD_ENABLE:
-			PORTD &= ~(1<<PORTD5)
+			PORTD &= ~(1<<PORTD5);
 			break;
 
 		case E_MOTOR_TWO_FORWARD_ENABLE:
-			PORTD &= ~(1<<PORTD2)
+			PORTD &= ~(1<<PORTD2);
 			break;
 
 		case E_MOTOR_TWO_BACKWARD_ENABLE:
-			PORTD &= ~(1<<PORTD3)
+			PORTD &= ~(1<<PORTD3);
 			break;
 		
 		default:

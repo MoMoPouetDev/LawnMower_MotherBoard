@@ -9,9 +9,7 @@
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
 #include <stdint.h>
-#include <string.h>
-#include <stdbool.h>
-#include <assert.h>
+#include <avr/io.h>
 
 #include "LLD_ADC.h"
 
@@ -36,13 +34,12 @@ uint8_t LLD_ADC_ReadConversionValue(uint8_t u8_adcChannel, uint16_t* pu16_adcVal
 {
 	uint8_t u8_adcState = 0;
 	uint8_t u8_returnValue = 0;
-	uint16_t u16_adcValue = 0;
 
 	switch (u8_adcState)
 	{
 		case 0:
 			u8_adcChannel &= 0x03;
-    		ADMUX = ( ADMUX & 0xFC ) | pu8_adcChannel; // Mask pour selection de l'adc
+    		ADMUX = ( ADMUX & 0xFC ) | u8_adcChannel; // Mask pour selection de l'adc
 			ADCSRA |= (1<<ADSC); // Start Conversion
 			u8_adcState++;
 			break;
@@ -50,7 +47,7 @@ uint8_t LLD_ADC_ReadConversionValue(uint8_t u8_adcChannel, uint16_t* pu16_adcVal
 		case 1:
 			if ((ADCSRA & (1<<ADSC)) == 0) // Wait fin conversion
 			{
-				u16_adcValue = ADC;
+				(*pu16_adcValue) = ADC;
 				u8_adcState = 0;
 				u8_returnValue = 1;
 			}

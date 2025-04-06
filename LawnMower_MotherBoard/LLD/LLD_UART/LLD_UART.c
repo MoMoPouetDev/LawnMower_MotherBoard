@@ -8,13 +8,13 @@
 /*--------------------------------------------------------------------------*/
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
-#include <stdint.h>
-#include <string.h>
+#include <avr/io.h>
 
 #include "LLD_UART.h"
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES LLD UART ...                                               */
 /*--------------------------------------------------------------------------*/
+#define F_CPU 8000000UL
 #define BAUD 9600
 #define BAUD_PRESCALE ((F_CPU/ (16UL*BAUD))-1)
 
@@ -81,7 +81,7 @@ uint8_t LLD_UART_Receive(uint8_t* pu8_rxBuff)
 * @return		uint8_t
 * @details
 **/
-uint8_t LLD_UART_Send(uint8_t u8_txBuffer)
+uint8_t LLD_UART_Send(uint8_t* pu8_txBuffer)
 {
 	static uint8_t _u8_uartState = 0;
     uint8_t u8_uartStatus = 0;
@@ -96,9 +96,9 @@ uint8_t LLD_UART_Send(uint8_t u8_txBuffer)
             break;
         
         case 1:
-            UDR0 = u8_txBuffer;
+            UDR0 = (*pu8_txBuffer);
             _u8_uartState = 0;
-            u8_uartStatus = 1   
+            u8_uartStatus = 1;
             break;
         
         default:

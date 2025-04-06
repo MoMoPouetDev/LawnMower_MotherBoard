@@ -8,9 +8,9 @@
 /*--------------------------------------------------------------------------*/
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
-#include "HAL_UART.h"
-#include "HAL_GPS.h"
+#include <string.h>
 #include "LLD_UART.h"
+#include "HAL_UART.h"
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
@@ -35,11 +35,11 @@ void HAL_UART_BleInit()
 	char commandChar[] = "AT+CHAR0xFFE1";
 	char commandName[] = "AT+NAMEMower";
 
-	while (!(_HAL_UART_SendCommand(commandAT, strlen(commandAT))));
-	while (!(_HAL_UART_SendCommand(commandRole, strlen(commandRole))));
-	while (!(_HAL_UART_SendCommand(commandUuid, strlen(commandUuid))));
-	while (!(_HAL_UART_SendCommand(commandChar, strlen(commandChar))));
-	while (!(_HAL_UART_SendCommand(commandName, strlen(commandName))));
+	while (!(HAL_UART_SendCommand(commandAT, strlen(commandAT))));
+	while (!(HAL_UART_SendCommand(commandRole, strlen(commandRole))));
+	while (!(HAL_UART_SendCommand(commandUuid, strlen(commandUuid))));
+	while (!(HAL_UART_SendCommand(commandChar, strlen(commandChar))));
+	while (!(HAL_UART_SendCommand(commandName, strlen(commandName))));
 }
 
 void HAL_UART_Reception()

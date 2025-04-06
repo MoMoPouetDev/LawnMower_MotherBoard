@@ -34,6 +34,14 @@ typedef enum {
     VERY_LOW_BATTERY = 0x60,
     EMPTY_BATTERY = 0x70
 }ErrorMower;
+
+typedef struct {
+    uint8_t degrees;
+    uint8_t minutes;
+    uint8_t decimalMSB;
+    uint8_t decimalB;
+    uint8_t decimalLSB;
+}Coordinates;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/

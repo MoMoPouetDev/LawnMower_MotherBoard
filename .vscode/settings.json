@@ -12,6 +12,7 @@
         "run_adc.h": "c",
         "run_sensors.h": "c",
         "run_gpio.h": "c",
-        "run_fifo.h": "c"
+        "run_fifo.h": "c",
+        "stdint.h": "c"
     }
 }

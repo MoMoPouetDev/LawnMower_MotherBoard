@@ -12,11 +12,8 @@
 #include <math.h>
 #include "HAL_ADC.h"
 #include "HAL_I2C.h"
-#include "HAL_Mower.h"
 #include "HAL_Timer.h"
-#include "HAL_Sonar.h"
 #include "HAL_GPIO.h"
-#include "HAL_GPS.h"
 #include "RUN_PWM.h"
 #include "RUN_FIFO.h"
 #include "RUN_Mower.h"
@@ -43,7 +40,7 @@
 #define THRESHOLD_HOUR_MAX 18
 /*** Compass ***/
 #define DELTA_ANGLE 5
-#define M_PI 3.14
+//#define M_PI 3.14
 #define DECLINATION ((54)*(M_PI/(60*180))) //0.015
 #define OFFSET (19*M_PI)/16
 #define CALIBRATION_X_MAX 646
@@ -60,6 +57,11 @@
 #define PITCH_MAX 30
 #define ROLL_MIN -30
 #define ROLL_MAX 30
+/*** Sonar ***/
+#define SONAR_WARN 30
+#define SONAR_LIMITE 20
+#define SONAR_ERR 10
+#define SONAR_DIST_ERR 999
 /*** Variables ***/
 static uint8_t gu8_deltaAngle;
 static uint8_t gu8_distanceFC;
@@ -220,7 +222,7 @@ void RUN_Mower_GetAzimut()
 	float y = 0.0;
 
 
-	HAL_GPS_GetCoordinates(&f_latitude, &f_longitude);
+	//HAL_GPS_GetCoordinates(&f_latitude, &f_longitude); Get from slave - MVE
 	
 	x = cos(f_latitude)*sin(COORDINATES_BASE_LAT) - sin(f_latitude)*cos(COORDINATES_BASE_LAT)*cos(COORDINATES_BASE_LONG-f_longitude);
 	y = sin(COORDINATES_BASE_LONG-f_longitude)*cos(COORDINATES_BASE_LAT);
@@ -333,7 +335,7 @@ uint8_t RUN_Mower_WireDetection()
    	{
 		default:
 	  	case 0:
-			_u16_randAngle = HAL_Mower_MyRandDeg(360);
+			_u16_randAngle = _RUN_Mower_MyRandDeg(360);
 			_u16_startAngle = gu16_currentAngle;
 			_u16_endAngle = (_u16_startAngle + _u16_randAngle)%360;
 			

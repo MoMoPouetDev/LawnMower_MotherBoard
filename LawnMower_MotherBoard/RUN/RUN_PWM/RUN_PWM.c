@@ -14,7 +14,9 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
-
+#define HIGH_SPEED 100
+#define MIDDLE_SPEED 90
+#define LOW_SPEED 80
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
@@ -42,7 +44,7 @@ void RUN_PWM_Backward(uint8_t u8_speed)
 void RUN_PWM_Right()
 {
 	HAL_GPIO_UpdateWheelState(RIGHT);
-	HAL_PWM_Turn();
+	HAL_PWM_Turn(HIGH_SPEED);
 }
 
 void RUN_PWM_Forward(uint8_t u8_speedLeft, uint8_t u8_speedRight)
@@ -54,5 +56,5 @@ void RUN_PWM_Forward(uint8_t u8_speedLeft, uint8_t u8_speedRight)
 void RUN_PWM_Left()
 {
 	HAL_GPIO_UpdateWheelState(LEFT);
-	HAL_PWM_Turn();
+	HAL_PWM_Turn(HIGH_SPEED);
 }

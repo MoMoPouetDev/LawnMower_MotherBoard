@@ -8,7 +8,6 @@
 /*--------------------------------------------------------------------------*/
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
-#include "HAL_GPS.h"
 #include "HAL_GPIO.h"
 #include "HAL_UART.h"
 #include "RUN_BLE.h"
@@ -93,7 +92,7 @@ void RUN_BLE_SendStatus()
 			{
 				u8_uartState = 0;
 			}
-			break
+			break;
 
 		default:
 			u8_uartState = 0;
@@ -107,7 +106,7 @@ void RUN_BLE_ReceiveStatus()
     uint8_t u8_returnValueUART = 0;
 	uint8_t tu8_rxBuffer[1] = { 0 };
 
-    u8_returnValueUART = HAL_UART_ReceptionBLE(tu8_rxBuffer, 1);
+    u8_returnValueUART = HAL_UART_ReceiveCommand(tu8_rxBuffer, 1);
 
     if (u8_returnValueUART)
     {
