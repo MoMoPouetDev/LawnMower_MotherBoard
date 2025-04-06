@@ -31,7 +31,7 @@ S_MOWER_FSM_STATE ge_FSM_Phase;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
-static void _FSM_Main_GpsAcquisition(uint32_t u32_CyclicTask);
+static void _FSM_Main_ReadSlaveSensors(uint32_t u32_CyclicTask);
 static void _FSM_Main_UpdateLed(uint32_t u32_CyclicTask);
 static void _FSM_Main_GetAngles(uint32_t u32_CyclicTask);
 static void _FSM_Main_ADCRead(uint32_t u32_CyclicTask);
@@ -72,7 +72,7 @@ void FSM_Main( void )
 	/*                                      MANAGE RUN TASK CYCLE                                                  */
 	/***************************************************************************************************************/
 		u32_CyclicTask = RUN_Task_GetCyclicTask();
-		
+		_FSM_Main_ReadSlaveSensors(u32_CyclicTask);
 		_FSM_Main_UpdateLed(u32_CyclicTask);
 		_FSM_Main_GetAngles(u32_CyclicTask);
 		_FSM_Main_ADCRead(u32_CyclicTask);
@@ -116,7 +116,7 @@ static void _FSM_Main_UpdateFsmMower()
 	ge_FSM_Phase = FSM_Enum_GetFsmPhase();
 }
 
-static void _FSM_Main_GpsAcquisition(uint32_t u32_CyclicTask)
+static void _FSM_Main_ReadSlaveSensors(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_GPS_ACQUISITION) != 0) {
 		// Data slave Acquisition - RUN Sensors - MVE

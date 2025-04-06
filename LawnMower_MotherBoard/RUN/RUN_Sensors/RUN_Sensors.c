@@ -8,7 +8,7 @@
 /*--------------------------------------------------------------------------*/
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
-#include "HAL_GPIO.h"
+#include "HAL_I2C.h"
 #include "HAL_ADC.h"
 #include "RUN_Mower.h"
 #include "RUN_Sensors.h"
@@ -16,8 +16,14 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
-static Etat ge_rain;
+static uint8_t gu8_batteryVoltage;
+static uint8_t gu8_batteryAmp;
 static Etat ge_dock;
+static uint8_t gu8_distanceSonarFC;
+static uint8_t gu8_distanceSonarFL;
+static uint8_t gu8_distanceSonarFR;
+
+static Etat ge_rain;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
@@ -144,4 +150,18 @@ Etat RUN_Sensors_GetDockState()
 void RUN_Sensors_SetDockState(Etat e_dockState)
 {
 	ge_dock = e_dockState;
+}
+
+void RUN_Sensors_SlaveData(void)
+{
+	static uint8_t _tu8_rxBuffSlave[E_SLAVE_READ_DATA_NUMBER] = {0};
+	static uint8_t _u8_rxBuffSlaveSize = 0;
+	uint8_t u8_flagI2c = 0;
+
+	u8_flagI2c = HAL_I2C_ReadSlave(_tu8_rxBuffSlave, &_u8_rxBuffSlaveSize);
+	if (u8_flagI2c != 0)
+	{
+		/* code */
+	}
+	
 }

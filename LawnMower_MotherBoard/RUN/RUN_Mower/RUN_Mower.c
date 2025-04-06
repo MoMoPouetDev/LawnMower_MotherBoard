@@ -84,7 +84,7 @@ static int16_t _RUN_Mower_GetAngleFromNorth(double d_pitch, double d_roll, uint8
 /*--------------------------------------------------------------------------*/
 /*! ... FUNCTIONS DEFINITIONS    ...                                        */
 /*--------------------------------------------------------------------------*/
-void RUN_Mower_Init()
+void RUN_Mower_Init(void)
 {
 	gu8_deltaAngle = DELTA_ANGLE;
 	gu8_distanceFC = 255;
@@ -98,7 +98,7 @@ void RUN_Mower_Init()
 	gu16_azimut = 0;
 }
 
-uint8_t RUN_Mower_IsTimeToMow()
+uint8_t RUN_Mower_IsTimeToMow(void)
 {
 	uint8_t u8_returnValue = 0;
 	uint8_t u8_hours = 0;
@@ -113,7 +113,7 @@ uint8_t RUN_Mower_IsTimeToMow()
 	return u8_returnValue;
 }
 
-uint8_t RUN_Mower_LeaveDockCharger()
+uint8_t RUN_Mower_LeaveDockCharger(void)
 {
 	static uint8_t _u8_leaveState = 0;
 	static uint16_t _u16_randAngle = 0;
@@ -181,7 +181,7 @@ static uint16_t _RUN_Mower_MyRandDeg(uint16_t u16_modulo)
     return (uint16_t)((rand()%u16_modulo) + 1);
 }
 
-void RUN_Mower_GetAngles()
+void RUN_Mower_GetAngles(void)
 {
 	static uint8_t _tu8_rxBuffCompass[6] = {0};
 	static uint8_t _u8_rxBuffCompassSize = 0;
@@ -214,7 +214,7 @@ void RUN_Mower_GetAngles()
 	}
 }
 
-void RUN_Mower_GetAzimut() 
+void RUN_Mower_GetAzimut(void) 
 {
 	float f_latitude;
 	float f_longitude;
@@ -311,11 +311,6 @@ void RUN_Mower_TiltProtection(void)
 	{
 		HAL_GPIO_UpdateBladeState(ON);
 	}
-}
-
-void RUN_Mower_SonarDistance()
-{
-	//HAL_Sonar_Distance(); get from Sonar throught I2C - MVE
 }
 
 uint8_t RUN_Mower_WireDetection()

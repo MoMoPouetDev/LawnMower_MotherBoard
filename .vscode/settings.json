@@ -13,6 +13,7 @@
         "run_sensors.h": "c",
         "run_gpio.h": "c",
         "run_fifo.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "hal_i2c.h": "c"
     }
 }

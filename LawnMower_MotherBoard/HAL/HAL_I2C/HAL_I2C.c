@@ -34,7 +34,7 @@
 #define ADDR_DATA_ACCELEROMETER_Y_MSB 0x35
 #define ADDR_DATA_ACCELEROMETER_Z_LSB 0x36
 #define ADDR_DATA_ACCELEROMETER_Z_MSB 0x37
-/*** Slave ***/
+/*** Slave ***
 #define ADDR_SENSOR_V 0x01
 #define ADDR_SENSOR_A 0x02
 #define ADDR_SENSOR_DOCK 0x03
@@ -58,7 +58,8 @@
 #define ADDR_GPS_LAT_DEC_LSB 0x15
 #define ADDR_TIME_TO_MOW 0x16
 #define ADDR_LED_STATUS 0x17
-#define ADDR_UNKNOWN_DATA 0x00
+#define ADDR_UNKNOWN_DATA 0x00 */
+
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
@@ -239,5 +240,50 @@ uint8_t HAL_I2C_ReadCompass(uint8_t* pu8_RxBuff, uint8_t* pu8_Size)
 			break;
 	}
 
+	return u8_ReturnValue;
+}
+
+uint8_t HAL_I2C_ReadSlave(uint8_t* pu8_RxBuff, uint8_t* pu8_Size)
+{
+	static uint8_t tu8_RxBuff[E_SLAVE_READ_DATA_NUMBER] = {0};
+	static uint8_t _u8_slaveState = 0;
+	static E_SLAVE_READ_DATA _e_slaveReadDate = E_SLAVE_READ_DATA_V;
+	uint8_t u8_slaveReturnState = 0;
+	uint8_t u8_ReturnValue = 0;
+	uint8_t u8_Size = 6;
+
+	*pu8_Size = u8_Size;
+
+	switch (_u8_slaveState)
+	{
+		case 0:
+			u8_slaveReturnState = LLD_I2C_Read(SLAVE_SENSOR_ADDR, _e_slaveReadDate, &tu8_RxBuff[_e_slaveReadDate]);
+			if (u8_slaveReturnState != 0)
+			{
+				if (_e_slaveReadDate >= E_SLAVE_READ_DATA_NUMBER)
+				{
+					_u8_slaveState++;
+				}
+				else
+				{
+					_e_slaveReadDate++;
+				}
+			}
+			break;
+
+		case 1:
+			for(int i = 0; i < u8_Size; i++)
+			{
+				pu8_RxBuff[i] = tu8_RxBuff[i];
+			}
+			_u8_slaveState = 0;
+			_e_slaveReadDate = 0;
+			u8_ReturnValue = 1;
+			break;
+		
+		default:
+			_u8_slaveState = 0;
+			break;
+	}
 	return u8_ReturnValue;
 }

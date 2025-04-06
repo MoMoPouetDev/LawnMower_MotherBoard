@@ -27,8 +27,8 @@ uint8_t gu8_leavingDockState;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
-void FSM_Dock_LeavingDockCharger(uint32_t u32_CyclicTask);
-void FSM_Dock_DisableAllMotor(void);
+static void _FSM_Dock_LeavingDockCharger(uint32_t u32_CyclicTask);
+static void _FSM_Dock_DisableAllMotor(void);
 /*---------------------------------------------------------------------------*/
 /* ... FUNCTIONS DEFINITIONS...                                              */
 /*---------------------------------------------------------------------------*/
@@ -55,7 +55,7 @@ void FSM_Dock(S_MOWER_FSM_STATE e_FSM_Dock_State)
 		default:
 		case S_SUP_DOCK_Init:
 			FSM_Dock_Init();
-			FSM_Dock_DisableAllMotor();
+			_FSM_Dock_DisableAllMotor();
 			RUN_GPIO_UpdateBladeState(OFF);
 			
 			if (RUN_Sensors_IsCharging() == 1)
@@ -83,7 +83,7 @@ void FSM_Dock(S_MOWER_FSM_STATE e_FSM_Dock_State)
 			}
 			else
 			{
-				RUN_GPIO_SetEtatMowerInCharge();
+				RUN_Mower_SetEtatMower(EN_CHARGE);
 			}
 			
 			break;
@@ -93,13 +93,13 @@ void FSM_Dock(S_MOWER_FSM_STATE e_FSM_Dock_State)
 				FSM_Enum_SetFsmPhase(S_SUP_DOCK_Waiting_For_Leaving_Dock);
 			}
 
-			RUN_GPIO_SetEtatMowerWaitingForMow();
+			RUN_Mower_SetEtatMower(PAS_DE_TACHE_EN_COURS);
 
 			if (RUN_Sensors_IsCharging() == 1)
 			{
 				FSM_Enum_SetFsmPhase(S_SUP_DOCK_In_Charge);
-				RUN_GPIO_SetErrorMowerNtr();
-				RUN_GPIO_SetEtatMowerInTask();
+				RUN_Mower_SetEtatMower(NTR);
+				RUN_Mower_SetEtatMower(TACHE_EN_COURS);
 			}
 
 			break;
@@ -114,7 +114,7 @@ void FSM_Dock(S_MOWER_FSM_STATE e_FSM_Dock_State)
 	}
 }
 
-void FSM_Dock_LeavingDockCharger(uint32_t u32_CyclicTask)
+static void _FSM_Dock_LeavingDockCharger(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_LEAVE_DOCK) != 0) {
 		gu8_leavingDockState = RUN_Mower_LeaveDockCharger();
@@ -123,7 +123,7 @@ void FSM_Dock_LeavingDockCharger(uint32_t u32_CyclicTask)
 	}
 }
 
-void FSM_Dock_DisableAllMotor()
+static void _FSM_Dock_DisableAllMotor()
 {
 	RUN_GPIO_DisableAllMotor();
 	RUN_PWM_Stop();
