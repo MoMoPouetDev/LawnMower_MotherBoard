@@ -62,5 +62,6 @@ void RUN_Mower_SetErrorMower(ErrorMower _eErrorMower);
 EtatMower RUN_Mower_GetEtatMower(void);
 ErrorMower RUN_Mower_GetErrorMower(void);
 uint8_t RUN_Mower_IsTimeToMow(void);
+void RUN_Mower_SetTimeToMow(uint8_t u8_timeToMow);
 
 #endif /* RUN_RUN_MOWER_RUN_MOWER_H_ */

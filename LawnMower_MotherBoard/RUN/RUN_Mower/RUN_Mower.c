@@ -67,12 +67,13 @@ static uint8_t gu8_deltaAngle;
 static uint8_t gu8_distanceFC;
 static uint8_t gu8_distanceFL;
 static uint8_t gu8_distanceFR;
+static uint8_t gu8_timeToMow;
 static uint16_t gu16_distanceWireLeft;
 static uint16_t gu16_distanceWireRight;
-static double gd_pitch;
-static double gd_roll;
 static uint16_t gu16_currentAngle;
 static uint16_t gu16_azimut;
+static double gd_pitch;
+static double gd_roll;
 static EtatMower geEtatMower;
 static ErrorMower geErrorMower;
 /*--------------------------------------------------------------------------*/
@@ -90,6 +91,7 @@ void RUN_Mower_Init(void)
 	gu8_distanceFC = 255;
   	gu8_distanceFL = 255;
   	gu8_distanceFR = 255;
+	gu8_timeToMow = 0;
   	gu16_distanceWireLeft = WIRE_DETECTION_UNLOAD;
   	gu16_distanceWireRight = WIRE_DETECTION_UNLOAD;
 	gd_pitch = 0;
@@ -100,17 +102,12 @@ void RUN_Mower_Init(void)
 
 uint8_t RUN_Mower_IsTimeToMow(void)
 {
-	uint8_t u8_returnValue = 0;
-	uint8_t u8_hours = 0;
+	return gu8_timeToMow;
+}
 
-	u8_hours = 0;//RUN_Sensors_GetHoursFromGPS(); get from GPS throught I2C - MVE
-
-	if ((THRESHOLD_HOUR_MIN <= u8_hours) && (u8_hours < THRESHOLD_HOUR_MAX))
-	{
-		u8_returnValue = 1;
-	}
-
-	return u8_returnValue;
+void RUN_Mower_SetTimeToMow(uint8_t u8_timeToMow)
+{
+	gu8_timeToMow = u8_timeToMow;
 }
 
 uint8_t RUN_Mower_LeaveDockCharger(void)
@@ -632,7 +629,6 @@ uint8_t RUN_Mower_RunMower()
 	uint8_t u8_returnValue = 0;
 
 	//HAL_Sonar_GetDistance(&gu8_distanceFC, &gu8_distanceFL, &gu8_distanceFR); Get from I2C - MVE
-	RUN_FIFO_GetSonarAverage(&gu8_distanceFC, &gu8_distanceFL, &gu8_distanceFR);
 
 	gu16_distanceWireLeft = HAL_ADC_GetLeftWireValue();
 	gu16_distanceWireRight = HAL_ADC_GetRightWireValue();

@@ -25,16 +25,17 @@
 
 #define ERROR_DATA 0xFF
 
+
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
 void RUN_Sensors_Init(void);
-uint8_t RUN_Sensors_IsTimeToMow(void);
 uint8_t RUN_Sensors_IsCharging(void);
 int8_t RUN_Sensors_IsEnoughCharged(void);
 uint8_t RUN_Sensors_GetBatteryPercent(void);
 Etat RUN_Sensors_GetRainState(void);
 Etat RUN_Sensors_GetDockState(void);
 void RUN_Sensors_SetRainState(Etat e_rainState);
+void RUN_Sensors_ReadSlaveData(void);
 
 #endif /* RUN_RUN_SENSORS_RUN_SENSORS_H_ */

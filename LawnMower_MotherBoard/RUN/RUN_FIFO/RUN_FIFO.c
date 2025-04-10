@@ -17,9 +17,6 @@
 /*--------------------------------------------------------------------------*/
 #define FIFO_SIZE 10
 
-Fifo fifoSonarFC;
-Fifo fifoSonarFL;
-Fifo fifoSonarFR;
 Fifo fifoLeftWire;
 Fifo fifoRightWire;
 Fifo fifoPitch;
@@ -37,9 +34,6 @@ static int16_t _RUN_FIFO_GetAverage(Fifo *list, int value);
 /*--------------------------------------------------------------------------*/
 void RUN_FIFO_Init()
 {
-	_RUN_FIFO_InitList(&fifoSonarFC, 255);
-	_RUN_FIFO_InitList(&fifoSonarFL, 255);
-	_RUN_FIFO_InitList(&fifoSonarFR, 255);
 	_RUN_FIFO_InitList(&fifoLeftWire, 0);
 	_RUN_FIFO_InitList(&fifoRightWire, 0);
 	_RUN_FIFO_InitList(&fifoPitch, 0);
@@ -129,11 +123,4 @@ int16_t RUN_FIFO_GetRollAverage(int16_t s16_value)
 	s16_returnValue = _RUN_FIFO_GetAverage(&fifoRoll, s16_value);
 	
 	return s16_returnValue;
-}
-
-void RUN_FIFO_GetSonarAverage(uint8_t* u8_distFC, uint8_t* u8_distFL, uint8_t* u8_distFR)
-{
-	*u8_distFC = _RUN_FIFO_GetAverage(&fifoSonarFC, *u8_distFC);
-	*u8_distFL = _RUN_FIFO_GetAverage(&fifoSonarFC, *u8_distFL);
-	*u8_distFR = _RUN_FIFO_GetAverage(&fifoSonarFC, *u8_distFR);
 }

@@ -34,7 +34,6 @@
 void RUN_FIFO_Init(void);
 int16_t RUN_FIFO_GetPitchAverage(int16_t s16_value);
 int16_t RUN_FIFO_GetRollAverage(int16_t s16_value);
-void RUN_FIFO_GetSonarAverage(uint8_t* u8_distFC, uint8_t* u8_distFL, uint8_t* u8_distFR);
 
 #endif /* HAL_HAL_FIFO_HAL_FIFO_H_ */
  

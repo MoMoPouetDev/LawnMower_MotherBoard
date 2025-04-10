@@ -88,7 +88,7 @@ void FSM_Dock(S_MOWER_FSM_STATE e_FSM_Dock_State)
 			
 			break;
 		case S_SUP_DOCK_Waiting_For_Mow :
-			if ( (RUN_Sensors_IsTimeToMow() == 1) && (RUN_Sensors_GetRainState() == OFF) )
+			if ( (RUN_Mower_IsTimeToMow() == 1) && (RUN_Sensors_GetRainState() == OFF) )
 			{
 				FSM_Enum_SetFsmPhase(S_SUP_DOCK_Waiting_For_Leaving_Dock);
 			}
@@ -104,7 +104,7 @@ void FSM_Dock(S_MOWER_FSM_STATE e_FSM_Dock_State)
 
 			break;
 		case S_SUP_DOCK_Waiting_For_Leaving_Dock :			
-			FSM_Dock_LeavingDockCharger(u32_CyclicTask);
+			_FSM_Dock_LeavingDockCharger(u32_CyclicTask);
 			if (gu8_leavingDockState)
 			{
 				FSM_Enum_SetFsmPhase(S_SUP_OPERATIVE_Init);

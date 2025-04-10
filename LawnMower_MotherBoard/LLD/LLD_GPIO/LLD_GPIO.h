@@ -31,8 +31,6 @@ typedef enum
 	E_MOTOR_TWO_BACKWARD_ENABLE
 }GPIO;
 
-typedef void (*lld_gpio_transfer_callback_t)(void);
-
 /*--------------------------------------------------------------------------*/
 /*! ... GLOBAL FUNCTIONS DECLARATIONS ...                                   */
 /*--------------------------------------------------------------------------*/

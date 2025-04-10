@@ -12,6 +12,7 @@
 #include "RUN_ADC.h"
 #include "RUN_BLE.h"
 #include "RUN_GPIO.h"
+#include "RUN_Sensors.h"
 #include "RUN_Mower.h"
 #include "RUN_Task.h"
 #include "RUN_Task_Interface.h"
@@ -38,6 +39,8 @@ static void _FSM_Main_ADCRead(uint32_t u32_CyclicTask);
 static void _FSM_Main_SendStatus(uint32_t u32_CyclicTask);
 static void _FSM_Main_TiltProtection(uint32_t u32_CyclicTask);
 static void _FSM_Main_UpdateFsmMower(void);
+static void _FSM_TEST(uint32_t u32_CyclicTask);
+
 /*---------------------------------------------------------------------------*/
 /* ... FUNCTIONS DEFINITIONS...                                              */
 /*---------------------------------------------------------------------------*/
@@ -107,7 +110,7 @@ void FSM_Main( void )
 		{
 			FSM_Error( ge_FSM_Phase );
 		}
-		FSM_Main_UpdateFsmMower();
+		_FSM_Main_UpdateFsmMower();
    }
 }
 
@@ -118,9 +121,9 @@ static void _FSM_Main_UpdateFsmMower()
 
 static void _FSM_Main_ReadSlaveSensors(uint32_t u32_CyclicTask)
 {
-	if ( (u32_CyclicTask & CYCLIC_TASK_GPS_ACQUISITION) != 0) {
-		// Data slave Acquisition - RUN Sensors - MVE
-		RUN_Task_EraseCyclicTask(CYCLIC_TASK_GPS_ACQUISITION);
+	if ( (u32_CyclicTask & CYCLIC_TASK_READ_SLAVE_DATA) != 0) {
+		RUN_Sensors_ReadSlaveData();
+		RUN_Task_EraseCyclicTask(CYCLIC_TASK_READ_SLAVE_DATA);
 	}
 }
 
@@ -166,8 +169,8 @@ static void _FSM_Main_TiltProtection(uint32_t u32_CyclicTask)
 
 static void _FSM_TEST(uint32_t u32_CyclicTask)
 {
-	if ( (u32_CyclicTask & CYCLIC_TASK_SONAR) != 0) {
+	if ( (u32_CyclicTask & CYCLIC_TASK_DEBUG) != 0) {
 
-		RUN_Task_EraseCyclicTask(CYCLIC_TASK_SONAR);
+		RUN_Task_EraseCyclicTask(CYCLIC_TASK_DEBUG);
 	}
 }

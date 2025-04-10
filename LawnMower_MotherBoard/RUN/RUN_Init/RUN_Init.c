@@ -8,6 +8,7 @@
 /*--------------------------------------------------------------------------*/
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
+#include <avr/interrupt.h>
 #include "RUN_Task_Interface.h"
 #include "RUN_Init.h"
 #include "RUN_Timer.h"
@@ -46,4 +47,6 @@ void RUN_Init()
 	RUN_Mower_Init();
 	RUN_Timer_Init();
 	RUN_ADC_Init();
+	/*** Enable Interrupt */
+	sei();
 }

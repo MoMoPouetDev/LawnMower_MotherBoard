@@ -9,7 +9,6 @@
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
 #include "HAL_I2C.h"
-#include "HAL_ADC.h"
 #include "RUN_Mower.h"
 #include "RUN_Sensors.h"
 
@@ -22,7 +21,8 @@ static Etat ge_dock;
 static uint8_t gu8_distanceSonarFC;
 static uint8_t gu8_distanceSonarFL;
 static uint8_t gu8_distanceSonarFR;
-
+static float gf_longitude;
+static float gf_latitude;
 static Etat ge_rain;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
@@ -42,7 +42,7 @@ uint8_t RUN_Sensors_IsCharging()
 	uint8_t u8_returnValue = 0;
 	uint32_t u8_chargeValue;
 
-	u8_chargeValue = 0;//RUN_Sensors_GetChargeValue(); Get from slave - MVE
+	u8_chargeValue = gu8_batteryAmp;
 
 	if (u8_chargeValue <= CHARGING_THRESHOLD)
 	{
@@ -109,7 +109,7 @@ uint8_t RUN_Sensors_GetBatteryPercent(void)
 	uint32_t uTension;
 	uint8_t uPourcentage = 0;
 
-	uTension = 0;//HAL_ADC_GetBatteryValue(); Get from slave - MVE 
+	uTension = gu8_batteryVoltage;
 	
 	if(uTension <= 2300) { uPourcentage = 0; }
 	else if(uTension <= 2458) { uPourcentage = 5; }
@@ -152,16 +152,34 @@ void RUN_Sensors_SetDockState(Etat e_dockState)
 	ge_dock = e_dockState;
 }
 
-void RUN_Sensors_SlaveData(void)
+void RUN_Sensors_ReadSlaveData(void)
 {
 	static uint8_t _tu8_rxBuffSlave[E_SLAVE_READ_DATA_NUMBER] = {0};
 	static uint8_t _u8_rxBuffSlaveSize = 0;
 	uint8_t u8_flagI2c = 0;
+	uint32_t tempLatDecimal = 0;
+	uint32_t tempLongDecimal = 0;
+	char tempLat[9] = {0};
+	char tempLong[9] = {0};
 
 	u8_flagI2c = HAL_I2C_ReadSlave(_tu8_rxBuffSlave, &_u8_rxBuffSlaveSize);
 	if (u8_flagI2c != 0)
 	{
-		/* code */
+		gu8_batteryVoltage = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_V];
+		gu8_batteryAmp = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_A];
+		ge_dock = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_DOCK];
+		RUN_Mower_SetTimeToMow(_tu8_rxBuffSlave[E_SLAVE_READ_DATA_TIME_TO_MOW]);
+		gu8_distanceSonarFC = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_SONAR_FC];
+		gu8_distanceSonarFL = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_SONAR_FL];
+		gu8_distanceSonarFR = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_SONAR_FR];
+	
+		tempLongDecimal = ((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_DEC_MSB] << 16) | ((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_DEC_B] << 8) | ((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_DEC_LSB]);
+		sprintf(tempLong, "%d.%d",(int)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_MIN], (int)tempLongDecimal);
+		gf_longitude = (float)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_DEG] + (atof(tempLong)/60.0);
+
+		tempLatDecimal = ((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_DEC_MSB] << 16) | ((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_DEC_B] << 8) | ((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_DEC_LSB]);
+		sprintf(tempLat, "%d.%d",(int)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_MIN], (int)tempLatDecimal);
+		gf_latitude = (float)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_DEG] + (atof(tempLat)/60.0);
 	}
 	
 }

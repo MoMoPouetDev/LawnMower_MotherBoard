@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <util/delay.h>
 
 #include "FSM_Main.h"
 

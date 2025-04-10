@@ -45,7 +45,7 @@ void HAL_ADC_ReadValueGuideWire(void)
 		u8_adcReturn = LLD_ADC_ReadConversionValue(PIN_ADC0_LEFT_GUIDEWIRE, &u16_adcValue);
 		if (u8_adcReturn != 0)
 		{
-			u16_adcValue = gu16_adcValueLeftWire;
+			gu16_adcValueLeftWire = u16_adcValue;
 			u8_adcState = 1;
 		}
 		break;
@@ -54,7 +54,7 @@ void HAL_ADC_ReadValueGuideWire(void)
 		u8_adcReturn = LLD_ADC_ReadConversionValue(PIN_ADC1_RIGHT_GUIDEWIRE, &u16_adcValue);
 		if (u8_adcReturn != 0)
 		{
-			u16_adcValue = gu16_adcValueRightWire;
+			gu16_adcValueRightWire = u16_adcValue;
 			u8_adcState = 0;
 		}
 		break;

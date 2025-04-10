@@ -1,6 +1,6 @@
 /**
  * @file LLD_TIMER.c
- * @author ACR
+ * @author MVE
  * @brief Specific TIMER driver
  * @details
 **/
