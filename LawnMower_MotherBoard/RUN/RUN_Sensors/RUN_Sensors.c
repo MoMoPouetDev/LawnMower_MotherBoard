@@ -8,6 +8,8 @@
 /*--------------------------------------------------------------------------*/
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
+#include <stdlib.h>
+#include <stdio.h>
 #include "HAL_I2C.h"
 #include "RUN_Mower.h"
 #include "RUN_Sensors.h"
@@ -15,6 +17,8 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
+#define SENSORS_TIMER_ONE_SECOND	100
+
 static uint8_t gu8_batteryVoltage;
 static uint8_t gu8_batteryAmp;
 static Etat ge_dock;
@@ -24,10 +28,13 @@ static uint8_t gu8_distanceSonarFR;
 static float gf_longitude;
 static float gf_latitude;
 static Etat ge_rain;
+static Coordinates gst_latitude;
+static Coordinates gst_longitude;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
-
+static uint8_t _RUN_Sensors_ReadSlaveData(void);
+static uint8_t _RUN_Sensors_WriteSlaveData(void);
 /*--------------------------------------------------------------------------*/
 /*! ... FUNCTIONS DEFINITIONS    ...                                        */
 /*--------------------------------------------------------------------------*/
@@ -35,6 +42,23 @@ void RUN_Sensors_Init()
 {
 	ge_rain = OFF;
 	ge_dock = OFF;
+	gu8_batteryVoltage = 0;
+	gu8_batteryAmp = 0;
+	gu8_distanceSonarFC = 0;
+	gu8_distanceSonarFL = 0;
+	gu8_distanceSonarFR = 0;
+	gf_longitude = 0;
+	gf_latitude = 0;
+	gst_latitude.minutes = 0;
+	gst_latitude.degrees = 0;
+	gst_latitude.decimalMSB = 0;
+	gst_latitude.decimalB = 0;
+	gst_latitude.decimalLSB = 0;
+	gst_longitude.minutes = 0;
+	gst_longitude.degrees = 0;
+	gst_longitude.decimalMSB = 0;
+	gst_longitude.decimalB = 0;
+	gst_longitude.decimalLSB = 0;
 }
 
 uint8_t RUN_Sensors_IsCharging()
@@ -152,7 +176,45 @@ void RUN_Sensors_SetDockState(Etat e_dockState)
 	ge_dock = e_dockState;
 }
 
-void RUN_Sensors_ReadSlaveData(void)
+void RUN_Sensors_SlaveData(void)
+{
+	static uint8_t _u8_slaveState = 0;
+	static uint16_t _u16_slaveCpt = 0;
+	uint8_t u8_returnSlave = 0;
+
+	if (_u16_slaveCpt >= SENSORS_TIMER_ONE_SECOND)
+	{
+		switch (_u8_slaveState)
+		{
+			case 0:
+				u8_returnSlave = _RUN_Sensors_ReadSlaveData();
+				if(u8_returnSlave == 1)
+				{
+					_u8_slaveState++;
+				}
+				break;
+		
+			case 1:
+				u8_returnSlave = _RUN_Sensors_WriteSlaveData();
+				if(u8_returnSlave == 1)
+				{
+					_u8_slaveState++;
+				}
+				break;
+
+			default:
+				_u8_slaveState = 0;
+				_u16_slaveCpt = 0;
+				break;
+		}
+	}
+	else
+	{
+		_u16_slaveCpt++;
+	}
+}
+
+static uint8_t _RUN_Sensors_ReadSlaveData(void)
 {
 	static uint8_t _tu8_rxBuffSlave[E_SLAVE_READ_DATA_NUMBER] = {0};
 	static uint8_t _u8_rxBuffSlaveSize = 0;
@@ -181,5 +243,68 @@ void RUN_Sensors_ReadSlaveData(void)
 		sprintf(tempLat, "%d.%d",(int)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_MIN], (int)tempLatDecimal);
 		gf_latitude = (float)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_DEG] + (atof(tempLat)/60.0);
 	}
-	
+	return u8_flagI2c;
+}
+
+static uint8_t _RUN_Sensors_WriteSlaveData(void)
+{
+	static uint8_t _u8_mowerState = 0;
+	static uint8_t _u8_writeState = 0;
+	uint8_t u8_flagI2c = 0;
+	EtatMower e_etatMower = UNKNOWN_ETAT;
+	ErrorMower e_errorMower = NTR;
+
+	switch (_u8_writeState)
+	{
+		case 0:
+			e_etatMower = RUN_Mower_GetEtatMower();
+			e_errorMower = RUN_Mower_GetErrorMower();
+			_u8_mowerState = e_etatMower | e_errorMower;
+			_u8_writeState++;
+			break;
+
+		case 1:
+			u8_flagI2c = HAL_I2C_WriteSlave(_u8_mowerState);
+			if (u8_flagI2c != 0)
+			{
+				_u8_mowerState = 0;
+				_u8_writeState = 0;
+			}			
+			break;
+		
+		default:
+			break;
+	}
+	return u8_flagI2c;
+}
+
+uint8_t RUN_Sensors_GetDistanceSonarFC(void)
+{
+	return gu8_distanceSonarFC;
+}
+
+uint8_t RUN_Sensors_GetDistanceSonarFL(void)
+{
+	return gu8_distanceSonarFL;
+}
+
+uint8_t RUN_Sensors_GetDistanceSonarFR(void)
+{
+	return gu8_distanceSonarFR;
+}
+
+float RUN_Sensors_GetLongitude(void)
+{
+	return gf_longitude;
+}
+
+float RUN_Sensors_GetLatitude(void)
+{
+	return gf_latitude;
+}
+
+void RUN_Sensors_GetStructCoordinates(Coordinates* st_latitude, Coordinates* st_longitude)
+{
+	*st_latitude = gst_latitude;
+	*st_longitude = gst_longitude;
 }

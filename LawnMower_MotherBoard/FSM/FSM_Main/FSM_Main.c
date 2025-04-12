@@ -33,7 +33,6 @@ S_MOWER_FSM_STATE ge_FSM_Phase;
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
 static void _FSM_Main_ReadSlaveSensors(uint32_t u32_CyclicTask);
-static void _FSM_Main_UpdateLed(uint32_t u32_CyclicTask);
 static void _FSM_Main_GetAngles(uint32_t u32_CyclicTask);
 static void _FSM_Main_ADCRead(uint32_t u32_CyclicTask);
 static void _FSM_Main_SendStatus(uint32_t u32_CyclicTask);
@@ -76,7 +75,6 @@ void FSM_Main( void )
 	/***************************************************************************************************************/
 		u32_CyclicTask = RUN_Task_GetCyclicTask();
 		_FSM_Main_ReadSlaveSensors(u32_CyclicTask);
-		_FSM_Main_UpdateLed(u32_CyclicTask);
 		_FSM_Main_GetAngles(u32_CyclicTask);
 		_FSM_Main_ADCRead(u32_CyclicTask);
 		_FSM_Main_SendStatus(u32_CyclicTask);
@@ -121,17 +119,9 @@ static void _FSM_Main_UpdateFsmMower()
 
 static void _FSM_Main_ReadSlaveSensors(uint32_t u32_CyclicTask)
 {
-	if ( (u32_CyclicTask & CYCLIC_TASK_READ_SLAVE_DATA) != 0) {
-		RUN_Sensors_ReadSlaveData();
-		RUN_Task_EraseCyclicTask(CYCLIC_TASK_READ_SLAVE_DATA);
-	}
-}
-
-static void _FSM_Main_UpdateLed(uint32_t u32_CyclicTask)
-{
-	if ( (u32_CyclicTask & CYCLIC_TASK_UPDATE_LED) != 0) {
-		// Update Leds on slave maybe on run mower - MVE
-		RUN_Task_EraseCyclicTask(CYCLIC_TASK_UPDATE_LED);
+	if ( (u32_CyclicTask & CYCLIC_TASK_SLAVE_DATA) != 0) {
+		RUN_Sensors_SlaveData();
+		RUN_Task_EraseCyclicTask(CYCLIC_TASK_SLAVE_DATA);
 	}
 }
 
@@ -154,7 +144,7 @@ static void _FSM_Main_ADCRead(uint32_t u32_CyclicTask)
 static void _FSM_Main_SendStatus(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_BLE_SEND_STATUS) != 0) {
-		RUN_BLE_SendStatus();
+		//RUN_BLE_SendStatus();
 		RUN_Task_EraseCyclicTask(CYCLIC_TASK_BLE_SEND_STATUS);
 	}
 }

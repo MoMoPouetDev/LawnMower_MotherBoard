@@ -67,26 +67,21 @@
 /*--------------------------------------------------------------------------*/
 /*! ... FUNCTIONS DEFINITIONS    ...                                        */
 /*--------------------------------------------------------------------------*/
-void HAL_I2C_Init()
+void HAL_I2C_Init(void)
 {
 	LLD_I2C_Init();
 }
 
-void HAL_I2C_CompassInit()
+void HAL_I2C_CompassInit(void)
 {
 	while(!(LLD_I2C_Write(COMPASS_ADDR, 0x00, 0x70)));
 	while(!(LLD_I2C_Write(COMPASS_ADDR, 0x01, 0xE0)));
 	while(!(LLD_I2C_Write(COMPASS_ADDR, 0x02, 0x00)));
 }
 
-void HAL_I2C_AccelInit()
+void HAL_I2C_AccelInit(void)
 {
 	while(!(LLD_I2C_Write(ACCELEROMETRE_ADDR, 0x2D, 0x08)));
-}
-
-void HAL_I2C_Write()
-{
-
 }
 
 uint8_t HAL_I2C_ReadAccel(uint8_t* pu8_RxBuff, uint8_t* pu8_Size)
@@ -286,4 +281,11 @@ uint8_t HAL_I2C_ReadSlave(uint8_t* pu8_RxBuff, uint8_t* pu8_Size)
 			break;
 	}
 	return u8_ReturnValue;
+}
+
+uint8_t HAL_I2C_WriteSlave(uint8_t u8_mowerState)
+{
+	uint8_t u8_returnValue = 0;
+	u8_returnValue = LLD_I2C_Write(SLAVE_SENSOR_ADDR, E_SLAVE_WRITE_DATA_LED_STATUS, u8_mowerState);
+	return u8_returnValue;
 }

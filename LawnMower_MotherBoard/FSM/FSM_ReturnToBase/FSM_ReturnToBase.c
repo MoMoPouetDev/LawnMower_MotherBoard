@@ -47,9 +47,7 @@ void FSM_ReturnToBase_Init()
 
 void FSM_ReturnToBase(S_MOWER_FSM_STATE e_FSM_ReturnToBase_State)
 {
-	uint8_t u8_timeToMow = 0;
 	int8_t s8_charge = 0;
-	Etat e_rain = OFF;
 	uint32_t u32_CyclicTask;
 	/***************************************************************************************************************/
 	/*                                      MANAGE RUN TASK CYCLE                                                  */
@@ -89,9 +87,7 @@ void FSM_ReturnToBase(S_MOWER_FSM_STATE e_FSM_ReturnToBase_State)
 	  	case S_SUP_RETURN_TO_BASE_Moving :
 			_FSM_ReturnToBase_RunMower(u32_CyclicTask);
 
-			e_rain = RUN_Sensors_GetRainState();
 			s8_charge = RUN_Sensors_IsEnoughCharged();
-			u8_timeToMow = RUN_Mower_IsTimeToMow();
 
 			if (gu8_runMowerState == 1)
 			{

@@ -34,14 +34,6 @@ typedef enum {
     VERY_LOW_BATTERY = 0x60,
     EMPTY_BATTERY = 0x70
 }ErrorMower;
-
-typedef struct {
-    uint8_t degrees;
-    uint8_t minutes;
-    uint8_t decimalMSB;
-    uint8_t decimalB;
-    uint8_t decimalLSB;
-}Coordinates;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
@@ -50,12 +42,12 @@ uint8_t RUN_Mower_LeaveDockCharger(void);
 void RUN_Mower_GetAngles(void);
 void RUN_Mower_GetAzimut(void); 
 uint8_t RUN_Mower_RunMower(void);
-void RUN_Mower_SonarDistance(void);
 void RUN_Mower_TiltProtection(void);
 uint8_t RUN_Mower_WireDetection(void);
 uint8_t RUN_Mower_WireDetectionOnReturn(void);
 uint8_t RUN_Mower_BumperDetection(void);
 uint8_t RUN_Mower_DirectionFromBase(void);
+uint16_t RUN_Mower_GetCurrentAngle(void);
 uint8_t RUN_Mower_WireGuiding(void);
 void RUN_Mower_SetEtatMower(EtatMower _eEtatMower);
 void RUN_Mower_SetErrorMower(ErrorMower _eErrorMower);

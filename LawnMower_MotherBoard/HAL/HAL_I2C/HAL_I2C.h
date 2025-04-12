@@ -48,5 +48,6 @@ uint8_t HAL_I2C_Read(uint8_t* , uint8_t* );
 uint8_t HAL_I2C_ReadAccel(uint8_t* pu8_RxBuff, uint8_t* pu8_Size);
 uint8_t HAL_I2C_ReadCompass(uint8_t* pu8_RxBuff, uint8_t* pu8_Size);
 uint8_t HAL_I2C_ReadSlave(uint8_t* pu8_RxBuff, uint8_t* pu8_Size);
+uint8_t HAL_I2C_WriteSlave(uint8_t u8_mowerState);
 
 #endif /* HAL_HAL_I2C_HAL_I2C_H_ */

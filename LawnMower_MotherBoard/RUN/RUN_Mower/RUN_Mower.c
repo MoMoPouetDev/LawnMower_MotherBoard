@@ -9,6 +9,7 @@
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
 #include <stdint.h>
+#include <stdlib.h>
 #include <math.h>
 #include "HAL_ADC.h"
 #include "HAL_I2C.h"
@@ -17,6 +18,7 @@
 #include "RUN_PWM.h"
 #include "RUN_FIFO.h"
 #include "RUN_Mower.h"
+#include "RUN_Sensors.h"
 
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
@@ -64,9 +66,6 @@
 #define SONAR_DIST_ERR 999
 /*** Variables ***/
 static uint8_t gu8_deltaAngle;
-static uint8_t gu8_distanceFC;
-static uint8_t gu8_distanceFL;
-static uint8_t gu8_distanceFR;
 static uint8_t gu8_timeToMow;
 static uint16_t gu16_distanceWireLeft;
 static uint16_t gu16_distanceWireRight;
@@ -88,9 +87,6 @@ static int16_t _RUN_Mower_GetAngleFromNorth(double d_pitch, double d_roll, uint8
 void RUN_Mower_Init(void)
 {
 	gu8_deltaAngle = DELTA_ANGLE;
-	gu8_distanceFC = 255;
-  	gu8_distanceFL = 255;
-  	gu8_distanceFR = 255;
 	gu8_timeToMow = 0;
   	gu16_distanceWireLeft = WIRE_DETECTION_UNLOAD;
   	gu16_distanceWireRight = WIRE_DETECTION_UNLOAD;
@@ -218,8 +214,8 @@ void RUN_Mower_GetAzimut(void)
 	float x = 0.0;
 	float y = 0.0;
 
-
-	//HAL_GPS_GetCoordinates(&f_latitude, &f_longitude); Get from slave - MVE
+	f_latitude = RUN_Sensors_GetLatitude();
+	f_longitude = RUN_Sensors_GetLongitude();
 	
 	x = cos(f_latitude)*sin(COORDINATES_BASE_LAT) - sin(f_latitude)*cos(COORDINATES_BASE_LAT)*cos(COORDINATES_BASE_LONG-f_longitude);
 	y = sin(COORDINATES_BASE_LONG-f_longitude)*cos(COORDINATES_BASE_LAT);
@@ -623,12 +619,17 @@ uint8_t RUN_Mower_DirectionFromBase()
 
 uint8_t RUN_Mower_RunMower()
 {
+	uint8_t u8_distanceSonarFC = 0;
+	uint8_t u8_distanceSonarFL = 0;
+	uint8_t u8_distanceSonarFR = 0;
 	uint8_t u8_leftBumperState = 0;
 	uint8_t u8_centerBumperState = 0;
 	uint8_t u8_rightBumperState = 0;
 	uint8_t u8_returnValue = 0;
 
-	//HAL_Sonar_GetDistance(&gu8_distanceFC, &gu8_distanceFL, &gu8_distanceFR); Get from I2C - MVE
+	u8_distanceSonarFC = RUN_Sensors_GetDistanceSonarFC();
+	u8_distanceSonarFL = RUN_Sensors_GetDistanceSonarFL();
+	u8_distanceSonarFR = RUN_Sensors_GetDistanceSonarFR();
 
 	gu16_distanceWireLeft = HAL_ADC_GetLeftWireValue();
 	gu16_distanceWireRight = HAL_ADC_GetRightWireValue();
@@ -645,7 +646,7 @@ uint8_t RUN_Mower_RunMower()
 	{
 		u8_returnValue = 2;
 	}
-	else if ((gu8_distanceFC < SONAR_WARN) || (gu8_distanceFL < SONAR_WARN) || (gu8_distanceFR < SONAR_WARN))
+	else if ((u8_distanceSonarFC < SONAR_WARN) || (u8_distanceSonarFL < SONAR_WARN) || (u8_distanceSonarFR < SONAR_WARN))
 	{
 		RUN_PWM_Forward(MIDDLE_SPEED, MIDDLE_SPEED);
 	}

@@ -13,6 +13,7 @@
 #include "RUN_GPIO.h"
 #include "RUN_Sensors.h"
 #include "RUN_Mower.h"
+#include "RUN_PWM.h"
 
 #include "FSM_Enum.h"
 #include "FSM_Operative.h"
