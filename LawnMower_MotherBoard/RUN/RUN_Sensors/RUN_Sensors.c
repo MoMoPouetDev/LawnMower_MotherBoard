@@ -10,7 +10,7 @@
 /*--------------------------------------------------------------------------*/
 #include <stdlib.h>
 #include <stdio.h>
-#include "HAL_I2C.h"
+#include "RUN_I2C.h"
 #include "RUN_Mower.h"
 #include "RUN_Sensors.h"
 
@@ -44,9 +44,9 @@ void RUN_Sensors_Init()
 	ge_dock = OFF;
 	gu8_batteryVoltage = 0;
 	gu8_batteryAmp = 0;
-	gu8_distanceSonarFC = 0;
-	gu8_distanceSonarFL = 0;
-	gu8_distanceSonarFR = 0;
+	gu8_distanceSonarFC = 255;
+	gu8_distanceSonarFL = 255;
+	gu8_distanceSonarFR = 255;
 	gf_longitude = 0;
 	gf_latitude = 0;
 	gst_latitude.minutes = 0;
@@ -63,21 +63,7 @@ void RUN_Sensors_Init()
 
 uint8_t RUN_Sensors_IsCharging()
 {
-	uint8_t u8_returnValue = 0;
-	uint32_t u8_chargeValue;
-
-	u8_chargeValue = gu8_batteryAmp;
-
-	if (u8_chargeValue <= CHARGING_THRESHOLD)
-	{
-		u8_returnValue = 0;
-	}
-	else
-	{
-		u8_returnValue = 1;
-	}
-
-	return u8_returnValue;
+	return gu8_batteryAmp;
 }
 
 int8_t RUN_Sensors_IsEnoughCharged()
@@ -130,30 +116,7 @@ int8_t RUN_Sensors_IsEnoughCharged()
 /*********************************************/
 uint8_t RUN_Sensors_GetBatteryPercent(void) 
 {
-	uint32_t uTension;
-	uint8_t uPourcentage = 0;
-
-	uTension = gu8_batteryVoltage;
-	
-	if(uTension <= 2300) { uPourcentage = 0; }
-	else if(uTension <= 2458) { uPourcentage = 5; }
-	else if(uTension <= 2681) { uPourcentage = 10; }
-	else if(uTension <= 2718) { uPourcentage = 15; }
-	else if(uTension <= 2756) { uPourcentage = 20; }
-	else if(uTension <= 2775) { uPourcentage = 25; }
-	else if(uTension <= 2793) { uPourcentage = 30; }
-	else if(uTension <= 2823) { uPourcentage = 40; }
-	else if(uTension <= 2852) { uPourcentage = 50; }
-	else if(uTension <= 2882) { uPourcentage = 60; }
-	else if(uTension <= 2919) { uPourcentage = 70; }
-	else if(uTension <= 2939) { uPourcentage = 75; }
-	else if(uTension <= 2957) { uPourcentage = 80; }
-	else if(uTension <= 3004) { uPourcentage = 85; }
-	else if(uTension <= 3053) { uPourcentage = 90; }
-	else if(uTension <= 3091) { uPourcentage = 95; }
-	else { uPourcentage = 100; }
-	
-	return uPourcentage;
+	return gu8_batteryVoltage;
 }
 
 Etat RUN_Sensors_GetRainState()
@@ -181,31 +144,41 @@ void RUN_Sensors_SlaveData(void)
 	static uint8_t _u8_slaveState = 0;
 	static uint16_t _u16_slaveCpt = 0;
 	uint8_t u8_returnSlave = 0;
+	E_I2C_USED e_i2cUsed = E_I2C_USED_NONE;
 
+	e_i2cUsed = RUN_I2C_GetUsed();
+	
 	if (_u16_slaveCpt >= SENSORS_TIMER_ONE_SECOND)
 	{
-		switch (_u8_slaveState)
+		if ((e_i2cUsed == E_I2C_USED_NONE) || (e_i2cUsed == E_I2C_USED_SLAVE))
 		{
-			case 0:
-				u8_returnSlave = _RUN_Sensors_ReadSlaveData();
-				if(u8_returnSlave == 1)
-				{
-					_u8_slaveState++;
-				}
-				break;
-		
-			case 1:
-				u8_returnSlave = _RUN_Sensors_WriteSlaveData();
-				if(u8_returnSlave == 1)
-				{
-					_u8_slaveState++;
-				}
-				break;
+			RUN_I2C_SetUsed(E_I2C_USED_SLAVE);
+			switch (_u8_slaveState)
+			{
+				case 0:
+					u8_returnSlave = _RUN_Sensors_ReadSlaveData();
+					if(u8_returnSlave == 1)
+					{
+						_u8_slaveState++;
+						RUN_I2C_SetUsed(E_I2C_USED_NONE);
+					}
+					break;
+			
+				case 1:
+					u8_returnSlave = _RUN_Sensors_WriteSlaveData();
+					if(u8_returnSlave == 1)
+					{
+						_u8_slaveState++;
+						RUN_I2C_SetUsed(E_I2C_USED_NONE);
+					}
+					break;
 
-			default:
-				_u8_slaveState = 0;
-				_u16_slaveCpt = 0;
-				break;
+				default:
+					_u8_slaveState = 0;
+					_u16_slaveCpt = 0;
+					RUN_I2C_SetUsed(E_I2C_USED_NONE);
+					break;
+			}
 		}
 	}
 	else

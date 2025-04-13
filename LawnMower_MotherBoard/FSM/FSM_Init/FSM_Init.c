@@ -9,7 +9,7 @@
 /* ... INCLUDES ...                                                         */
 /*--------------------------------------------------------------------------*/
 #include "RUN_GPIO.h"
-
+#include "RUN_PWM.h"
 #include "FSM_Enum.h"
 #include "FSM_Init.h"
 
@@ -42,7 +42,8 @@ void FSM_Init(S_MOWER_FSM_STATE e_FSM_Init_State)
 			FSM_Init_Init();
 
 			u8_startButtonState = RUN_GPIO_GetStartButton();
-			RUN_GPIO_UpdateBladeState(OFF);
+			RUN_GPIO_UpdateBladeState(ON);
+			RUN_PWM_Forward(100, 100);
 			
 			if (u8_startButtonState != 0)
 			{

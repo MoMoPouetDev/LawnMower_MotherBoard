@@ -12,13 +12,13 @@
 #include <stdlib.h>
 #include <math.h>
 #include "HAL_ADC.h"
-#include "HAL_I2C.h"
 #include "HAL_Timer.h"
 #include "HAL_GPIO.h"
 #include "RUN_PWM.h"
 #include "RUN_FIFO.h"
 #include "RUN_Mower.h"
 #include "RUN_Sensors.h"
+#include "RUN_I2C.h"
 
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
@@ -182,28 +182,39 @@ void RUN_Mower_GetAngles(void)
 	static uint8_t _u8_rxBuffAccelSize = 0;
 	static uint8_t _u8_getAngleState = 1;
 	uint8_t u8_flagI2c = 0;
+	E_I2C_USED e_i2cUsed = E_I2C_USED_NONE;
 
-	switch (_u8_getAngleState)
+	e_i2cUsed = RUN_I2C_GetUsed();
+	if ((e_i2cUsed == E_I2C_USED_NONE) || (e_i2cUsed == E_I2C_USED_ANGLES))
 	{
-		default:
-		case 0 :
-			u8_flagI2c = HAL_I2C_ReadAccel(_tu8_rxBuffAccel, &_u8_rxBuffAccelSize);
-			if (u8_flagI2c)
-			{
-				_RUN_Mower_GetAnglePitchRoll(&gd_pitch, &gd_roll, _tu8_rxBuffAccel, &_u8_rxBuffAccelSize);
-				_u8_getAngleState = 1;
-			}
+		RUN_I2C_SetUsed(E_I2C_USED_ANGLES);
+		switch (_u8_getAngleState)
+		{
+			case 0 :
+				u8_flagI2c = HAL_I2C_ReadAccel(_tu8_rxBuffAccel, &_u8_rxBuffAccelSize);
+				if (u8_flagI2c)
+				{
+					_RUN_Mower_GetAnglePitchRoll(&gd_pitch, &gd_roll, _tu8_rxBuffAccel, &_u8_rxBuffAccelSize);
+					_u8_getAngleState++;
+					RUN_I2C_SetUsed(E_I2C_USED_NONE);
+				}
+				break;
 
-			break;
-		case 1 :
-			u8_flagI2c = HAL_I2C_ReadCompass(_tu8_rxBuffCompass, &_u8_rxBuffCompassSize);
-			if (u8_flagI2c)
-			{
-				gu16_currentAngle = _RUN_Mower_GetAngleFromNorth(gd_pitch, gd_roll, _tu8_rxBuffCompass, &_u8_rxBuffCompassSize);
+			case 1 :
+				u8_flagI2c = HAL_I2C_ReadCompass(_tu8_rxBuffCompass, &_u8_rxBuffCompassSize);
+				if (u8_flagI2c)
+				{
+					gu16_currentAngle = _RUN_Mower_GetAngleFromNorth(gd_pitch, gd_roll, _tu8_rxBuffCompass, &_u8_rxBuffCompassSize);
+					_u8_getAngleState++;
+					RUN_I2C_SetUsed(E_I2C_USED_NONE);
+				}
+				break;
+
+			default:
 				_u8_getAngleState = 0;
-			}
-
-			break;
+				RUN_I2C_SetUsed(E_I2C_USED_NONE);
+				break;
+		}
 	}
 }
 
