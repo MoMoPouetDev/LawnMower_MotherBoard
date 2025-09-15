@@ -17,7 +17,7 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
-#define SENSORS_TIMER_ONE_SECOND	100
+#define SENSORS_TIMER_ONE_SECOND	1000
 
 static uint8_t gu8_batteryVoltage;
 static uint8_t gu8_batteryAmp;
@@ -30,6 +30,7 @@ static float gf_latitude;
 static Etat ge_rain;
 static Coordinates gst_latitude;
 static Coordinates gst_longitude;
+static uint8_t gu8_flagSlaveData;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
@@ -59,6 +60,7 @@ void RUN_Sensors_Init()
 	gst_longitude.decimalMSB = 0;
 	gst_longitude.decimalB = 0;
 	gst_longitude.decimalLSB = 0;
+	gu8_flagSlaveData = 0;
 }
 
 uint8_t RUN_Sensors_IsCharging()
@@ -139,6 +141,11 @@ void RUN_Sensors_SetDockState(Etat e_dockState)
 	ge_dock = e_dockState;
 }
 
+uint8_t RUN_Sensors_GetSlaveState(void)
+{
+	return gu8_flagSlaveData;
+}
+
 void RUN_Sensors_SlaveData(void)
 {
 	static uint8_t _u8_slaveState = 0;
@@ -161,6 +168,7 @@ void RUN_Sensors_SlaveData(void)
 					{
 						_u8_slaveState++;
 						RUN_I2C_SetUsed(E_I2C_USED_NONE);
+						_u8_slaveState = 2;
 					}
 					break;
 			
@@ -176,6 +184,7 @@ void RUN_Sensors_SlaveData(void)
 				default:
 					_u8_slaveState = 0;
 					_u16_slaveCpt = 0;
+					gu8_flagSlaveData = 1;
 					RUN_I2C_SetUsed(E_I2C_USED_NONE);
 					break;
 			}
@@ -192,10 +201,8 @@ static uint8_t _RUN_Sensors_ReadSlaveData(void)
 	static uint8_t _tu8_rxBuffSlave[E_SLAVE_READ_DATA_NUMBER] = {0};
 	static uint8_t _u8_rxBuffSlaveSize = 0;
 	uint8_t u8_flagI2c = 0;
-	uint32_t tempLatDecimal = 0;
-	uint32_t tempLongDecimal = 0;
-	char tempLat[9] = {0};
-	char tempLong[9] = {0};
+	U_COORDINATES u_latitude = {0};
+	U_COORDINATES u_longitude = {0};
 
 	u8_flagI2c = HAL_I2C_ReadSlave(_tu8_rxBuffSlave, &_u8_rxBuffSlaveSize);
 	if (u8_flagI2c != 0)
@@ -208,13 +215,17 @@ static uint8_t _RUN_Sensors_ReadSlaveData(void)
 		gu8_distanceSonarFL = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_SONAR_FL];
 		gu8_distanceSonarFR = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_SONAR_FR];
 	
-		tempLongDecimal = ((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_DEC_MSB] << 16) | ((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_DEC_B] << 8) | ((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_DEC_LSB]);
-		sprintf(tempLong, "%d.%d",(int)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_MIN], (int)tempLongDecimal);
-		gf_longitude = (float)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_DEG] + (atof(tempLong)/60.0);
+		u_longitude.u32_coordinates = (((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_LLSB]) & 0x000000FF)
+									| ((((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_LSB]) << 8) & 0x0000FF00)
+									| ((((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_MSB]) << 16) & 0x00FF0000)
+									| ((((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_MMSB]) << 24) & 0xFF000000);
+		gf_longitude = u_longitude.f_coordinates;
 
-		tempLatDecimal = ((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_DEC_MSB] << 16) | ((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_DEC_B] << 8) | ((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_DEC_LSB]);
-		sprintf(tempLat, "%d.%d",(int)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_MIN], (int)tempLatDecimal);
-		gf_latitude = (float)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_DEG] + (atof(tempLat)/60.0);
+		u_latitude.u32_coordinates = (((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_LLSB]) & 0x000000FF)
+									| ((((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_LSB]) << 8) & 0x0000FF00)
+									| ((((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_MSB]) << 16) & 0x00FF0000)
+									| ((((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_MMSB]) << 24) & 0xFF000000);
+		gf_latitude = u_latitude.f_coordinates;
 	}
 	return u8_flagI2c;
 }

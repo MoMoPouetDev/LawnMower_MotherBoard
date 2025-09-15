@@ -70,8 +70,10 @@ void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
 			break;
 
 	  	case S_SUP_OPERATIVE_Moving :
+			RUN_GPIO_UpdateBladeState(ON);
+		  
 			_FSM_Operative_RunMower(u32_CyclicTask);	
-
+			
 			e_rain = RUN_Sensors_GetRainState();
 			s8_charge = RUN_Sensors_IsEnoughCharged();
 			u8_timeToMow = RUN_Mower_IsTimeToMow();

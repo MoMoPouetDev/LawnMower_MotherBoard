@@ -63,6 +63,7 @@ void FSM_Main_Init( void )
 
 	/*** RUN Init ***/
 	RUN_Init();
+	RUN_Init_WaitSlave();
 }
 
 void FSM_Main( void )

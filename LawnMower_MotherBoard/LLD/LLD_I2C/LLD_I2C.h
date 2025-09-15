@@ -14,14 +14,21 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
-#define F_CPU 8000000UL
+#define F_CPU 20000000UL
 #define SCL_CLOCK  400000UL
+#define LLD_I2C_BUFFER_SIZE 32
+
 /*--------------------------------------------------------------------------*/
 /*! ... GLOBAL FUNCTIONS DECLARATIONS ...                                   */
 /*--------------------------------------------------------------------------*/
+void LLD_I2C_UnlockBus(void);
 void LLD_I2C_Init(void);
-uint8_t LLD_I2C_Read(uint8_t u8_slaveAddr, uint8_t u8_dataAddr, uint8_t *pu8_receivedData);
-uint8_t LLD_I2C_Write(uint8_t u8_slaveAddr, uint8_t u8_dataAddr, uint8_t u8_data);
+void LLD_I2C_InitCompass(uint8_t addrSlave);
+void LLD_I2C_InitAccel(uint8_t addrSlave);
+uint8_t LLD_I2C_Read(uint8_t addrSlave, uint8_t addrData);
+void LLD_I2C_Write(uint8_t addrSlave, uint8_t addrData, uint8_t data);
+void LLD_I2C_Reset(void);
+uint8_t LLD_I2C_GetErrorFlag(void);
 /*--------------------------------------------------------------------------*/
 /* ... END OF FILE...                                                      */
 /*--------------------------------------------------------------------------*/

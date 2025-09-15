@@ -10,6 +10,7 @@
 /*--------------------------------------------------------------------------*/
 #include <avr/interrupt.h>
 #include "RUN_Task_Interface.h"
+#include "RUN_Task.h"
 #include "RUN_Init.h"
 #include "RUN_Timer.h"
 #include "RUN_ADC.h"
@@ -25,7 +26,7 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
-
+#define RUN_INIT_WAIT_ONESEC 1000
 
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
@@ -49,4 +50,10 @@ void RUN_Init()
 	RUN_ADC_Init();
 	/*** Enable Interrupt */
 	sei();
+	RUN_I2C_InitSlave();
+}
+
+void RUN_Init_WaitSlave(void)
+{
+	while (RUN_Task_GetTickCounter() <= RUN_INIT_WAIT_ONESEC);
 }

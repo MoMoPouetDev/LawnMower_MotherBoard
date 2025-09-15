@@ -23,6 +23,7 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
+#define SENSORS_TIMER_ONE_SECOND	10
 /***  GuideWire ***/
 #define WIRE_DETECTION_LIMITE 600
 #define WIRE_DETECTION_LOAD 750
@@ -41,16 +42,16 @@
 #define THRESHOLD_HOUR_MIN 9
 #define THRESHOLD_HOUR_MAX 18
 /*** Compass ***/
-#define DELTA_ANGLE 5
+#define DELTA_ANGLE 20
 //#define M_PI 3.14
 #define DECLINATION ((54)*(M_PI/(60*180))) //0.015
-#define OFFSET (19*M_PI)/16
-#define CALIBRATION_X_MAX 646
-#define CALIBRATION_X_MIN 192
-#define CALIBRATION_Y_MAX 602
-#define CALIBRATION_Y_MIN 188
-#define CALIBRATION_Z_MAX 39
-#define CALIBRATION_Z_MIN -378
+#define OFFSET -100
+#define CALIBRATION_X_MAX 406
+#define CALIBRATION_X_MIN 158
+#define CALIBRATION_Y_MAX 424
+#define CALIBRATION_Y_MIN 190
+#define CALIBRATION_Z_MAX -8
+#define CALIBRATION_Z_MIN -198
 #define OFFSET_X ((CALIBRATION_X_MAX + CALIBRATION_X_MIN)/2)
 #define OFFSET_Y ((CALIBRATION_Y_MAX + CALIBRATION_Y_MIN)/2)
 #define OFFSET_Z ((CALIBRATION_Z_MAX + CALIBRATION_Z_MIN)/2)
@@ -180,41 +181,65 @@ void RUN_Mower_GetAngles(void)
 	static uint8_t _u8_rxBuffCompassSize = 0;
 	static uint8_t _tu8_rxBuffAccel[6] = {0};
 	static uint8_t _u8_rxBuffAccelSize = 0;
-	static uint8_t _u8_getAngleState = 1;
+	static uint8_t _u8_getAngleState = 0;
+	static uint16_t _u16_sensorsCpt = 0;
 	uint8_t u8_flagI2c = 0;
+	uint8_t u8_flagErrorI2c = 0;
 	E_I2C_USED e_i2cUsed = E_I2C_USED_NONE;
 
 	e_i2cUsed = RUN_I2C_GetUsed();
-	if ((e_i2cUsed == E_I2C_USED_NONE) || (e_i2cUsed == E_I2C_USED_ANGLES))
+	
+	if (_u16_sensorsCpt >= SENSORS_TIMER_ONE_SECOND)
 	{
-		RUN_I2C_SetUsed(E_I2C_USED_ANGLES);
-		switch (_u8_getAngleState)
+		if ((e_i2cUsed == E_I2C_USED_NONE) || (e_i2cUsed == E_I2C_USED_ANGLES))
 		{
-			case 0 :
-				u8_flagI2c = HAL_I2C_ReadAccel(_tu8_rxBuffAccel, &_u8_rxBuffAccelSize);
-				if (u8_flagI2c)
-				{
-					_RUN_Mower_GetAnglePitchRoll(&gd_pitch, &gd_roll, _tu8_rxBuffAccel, &_u8_rxBuffAccelSize);
-					_u8_getAngleState++;
-					RUN_I2C_SetUsed(E_I2C_USED_NONE);
-				}
-				break;
+			RUN_I2C_SetUsed(E_I2C_USED_ANGLES);
+			switch (_u8_getAngleState)
+			{
+				case 0 :
+					u8_flagErrorI2c = RUN_I2C_CheckConsistency();
+					if (u8_flagErrorI2c != 0)
+					{
+						RUN_I2C_InitSlave();
+					}
+					else
+					{
+						_u8_getAngleState++;
+					}					
+					break;
 
-			case 1 :
-				u8_flagI2c = HAL_I2C_ReadCompass(_tu8_rxBuffCompass, &_u8_rxBuffCompassSize);
-				if (u8_flagI2c)
-				{
-					gu16_currentAngle = _RUN_Mower_GetAngleFromNorth(gd_pitch, gd_roll, _tu8_rxBuffCompass, &_u8_rxBuffCompassSize);
-					_u8_getAngleState++;
-					RUN_I2C_SetUsed(E_I2C_USED_NONE);
-				}
-				break;
+				case 1 :
+					u8_flagI2c = HAL_I2C_ReadAccel(_tu8_rxBuffAccel, &_u8_rxBuffAccelSize);
+					if (u8_flagI2c)
+					{
+						_RUN_Mower_GetAnglePitchRoll(&gd_pitch, &gd_roll, _tu8_rxBuffAccel, &_u8_rxBuffAccelSize);
+						//_u8_getAngleState++;
+						_u8_getAngleState = 0;
+						RUN_I2C_SetUsed(E_I2C_USED_NONE);
+					}
+					break;
 
-			default:
-				_u8_getAngleState = 0;
-				RUN_I2C_SetUsed(E_I2C_USED_NONE);
-				break;
+				case 2 :
+					u8_flagI2c = HAL_I2C_ReadCompass(_tu8_rxBuffCompass, &_u8_rxBuffCompassSize);
+					if (u8_flagI2c)
+					{
+						gu16_currentAngle = _RUN_Mower_GetAngleFromNorth(gd_pitch, gd_roll, _tu8_rxBuffCompass, &_u8_rxBuffCompassSize);
+						_u8_getAngleState++;
+						RUN_I2C_SetUsed(E_I2C_USED_NONE);
+					}
+					break;
+
+				default:
+					_u8_getAngleState = 0;
+					_u16_sensorsCpt = 0;
+					RUN_I2C_SetUsed(E_I2C_USED_NONE);
+					break;
+			}
 		}
+	}
+	else
+	{
+		_u16_sensorsCpt++;
 	}
 }
 
@@ -251,12 +276,12 @@ static int16_t _RUN_Mower_GetAngleFromNorth(double d_pitch, double d_roll, uint8
 		rPitch,
 		rRoll;
 			
-    dataLsbX = pu8_rxBuffCompass[1];
-    dataMsbX = pu8_rxBuffCompass[0];
-    dataLsbY = pu8_rxBuffCompass[5];
-    dataMsbY = pu8_rxBuffCompass[4];
-    dataLsbZ = pu8_rxBuffCompass[3];
-    dataMsbZ = pu8_rxBuffCompass[2];
+    dataLsbX = pu8_rxBuffCompass[0];
+    dataMsbX = pu8_rxBuffCompass[1];
+    dataLsbY = pu8_rxBuffCompass[2];
+    dataMsbY = pu8_rxBuffCompass[3];
+    dataLsbZ = pu8_rxBuffCompass[4];
+    dataMsbZ = pu8_rxBuffCompass[5];
 
     dataX = (int16_t)((dataMsbX<<8) | dataLsbX);
     dataY = (int16_t)((dataMsbY<<8) | dataLsbY);
@@ -268,7 +293,7 @@ static int16_t _RUN_Mower_GetAngleFromNorth(double d_pitch, double d_roll, uint8
 	xh = ((float)(dataX - OFFSET_X) * cos(rPitch)) + ((float)(dataY - OFFSET_Y) * sin(rRoll) * sin(rPitch)) - ((float)(dataZ - OFFSET_Z) * cos(rRoll) * sin(rPitch));
 	yh = ((float)(dataY - OFFSET_Y) * cos(rRoll)) + ((float)(dataZ - OFFSET_Z) * sin(rRoll));
   
-	angle = (180/M_PI) * (atan2(-yh,xh)+ DECLINATION + OFFSET);
+	angle = ((180/M_PI) * (atan2(-yh,xh)+ DECLINATION)) + OFFSET;
   
 	return (int16_t)(-angle + 360) % 360;
 }

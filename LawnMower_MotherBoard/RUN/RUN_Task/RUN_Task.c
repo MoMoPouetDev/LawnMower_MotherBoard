@@ -96,4 +96,9 @@ void RUN_Task_SetArraySlotTask(uint32_t *tu32_ArraySlotTask, uint8_t u8_Size)
 
 }
 
+uint32_t RUN_Task_GetTickCounter(void)
+{
+	return gu32_TickCounter;
+}
+
  /* eof RUN_Task.c */

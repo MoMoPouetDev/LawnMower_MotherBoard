@@ -32,6 +32,13 @@ typedef struct {
     uint8_t decimalB;
     uint8_t decimalLSB;
 }Coordinates;
+
+typedef union
+{
+    float f_coordinates;
+    uint32_t u32_coordinates;
+}U_COORDINATES;
+
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
@@ -42,6 +49,7 @@ uint8_t RUN_Sensors_GetBatteryPercent(void);
 Etat RUN_Sensors_GetRainState(void);
 Etat RUN_Sensors_GetDockState(void);
 void RUN_Sensors_SetRainState(Etat e_rainState);
+uint8_t RUN_Sensors_GetSlaveState(void);
 void RUN_Sensors_SlaveData(void);
 uint8_t RUN_Sensors_GetDistanceSonarFC(void);
 uint8_t RUN_Sensors_GetDistanceSonarFL(void);

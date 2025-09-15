@@ -26,7 +26,9 @@ typedef enum
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
 void RUN_I2C_Init(void);
+void RUN_I2C_InitSlave(void);
 void RUN_I2C_SetUsed(E_I2C_USED e_i2cUsed);
 E_I2C_USED RUN_I2C_GetUsed(void);
+uint8_t RUN_I2C_CheckConsistency(void);
 
 #endif /* RUN_RUN_I2C_RUN_I2C_H_ */

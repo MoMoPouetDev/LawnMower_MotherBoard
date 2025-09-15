@@ -38,16 +38,16 @@ void LLD_ADC_Init(void)
 
 uint8_t LLD_ADC_ReadConversionValue(uint8_t u8_adcChannel, uint16_t* pu16_adcValue)
 {
-	uint8_t u8_adcState = 0;
+	static uint8_t _u8_adcState = 0;
 	uint8_t u8_returnValue = 0;
 
-	switch (u8_adcState)
+	switch (_u8_adcState)
 	{
 		case 0:
 			u8_adcChannel &= 0x03;
     		ADMUX = ( ADMUX & 0xFC ) | u8_adcChannel; // Mask pour selection de l'adc
 			ADCSRA |= (1<<ADSC); // Start Conversion
-			u8_adcState++;
+			_u8_adcState++;
 			break;
 
 		case 1:
@@ -55,7 +55,7 @@ uint8_t LLD_ADC_ReadConversionValue(uint8_t u8_adcChannel, uint16_t* pu16_adcVal
 			{
 				(*pu16_adcValue) = ADC;
 				gu8_adcFlag = 0;
-				u8_adcState = 0;
+				_u8_adcState = 0;
 				u8_returnValue = 1;
 			}
 			break;
