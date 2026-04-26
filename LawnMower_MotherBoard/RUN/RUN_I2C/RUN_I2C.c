@@ -29,12 +29,6 @@ void RUN_I2C_Init(void)
 	ge_i2cUsed = E_I2C_USED_NONE;
 }
 
-void RUN_I2C_InitSlave(void)
-{
-	HAL_I2C_AccelInit();
-	HAL_I2C_CompassInit();
-}
-
 void RUN_I2C_SetUsed(E_I2C_USED e_i2cUsed)
 {
 	ge_i2cUsed = e_i2cUsed;

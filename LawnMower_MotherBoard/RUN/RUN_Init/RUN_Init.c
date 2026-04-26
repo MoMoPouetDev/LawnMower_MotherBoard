@@ -50,7 +50,6 @@ void RUN_Init()
 	RUN_ADC_Init();
 	/*** Enable Interrupt */
 	sei();
-	RUN_I2C_InitSlave();
 }
 
 void RUN_Init_WaitSlave(void)

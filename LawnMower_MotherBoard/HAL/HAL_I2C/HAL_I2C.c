@@ -18,22 +18,13 @@
 #define I2C_BAUDRATE   400000UL
 #define MASTER_ADDR 0x10
 #define SLAVE_SENSOR_ADDR (0x10<<1)
-#define COMPASS_ADDR (0x1E<<1)
-#define ACCELEROMETRE_ADDR (0x53<<1)
+#define COMPASS_ADDR (0x60<<1)
 /*** Compass ***/
-#define ADDR_DATA_COMPASS_X_MSB 0x03
-#define ADDR_DATA_COMPASS_X_LSB 0x04
-#define ADDR_DATA_COMPASS_Z_MSB 0x05
-#define ADDR_DATA_COMPASS_Z_LSB 0x06
-#define ADDR_DATA_COMPASS_Y_MSB 0x07
-#define ADDR_DATA_COMPASS_Y_LSB 0x08
+#define ADDR_DATA_COMPASS_MSB 0x02
+#define ADDR_DATA_COMPASS_LSB 0x03
 /** Accelerometer ***/
-#define ADDR_DATA_ACCELEROMETER_X_LSB 0x32
-#define ADDR_DATA_ACCELEROMETER_X_MSB 0x33
-#define ADDR_DATA_ACCELEROMETER_Y_LSB 0x34
-#define ADDR_DATA_ACCELEROMETER_Y_MSB 0x35
-#define ADDR_DATA_ACCELEROMETER_Z_LSB 0x36
-#define ADDR_DATA_ACCELEROMETER_Z_MSB 0x37
+#define ADDR_DATA_ACCELEROMETER_PITCH 0x04
+#define ADDR_DATA_ACCELEROMETER_ROLL 0x05
 /*** Slave ***
 #define ADDR_SENSOR_V 0x01
 #define ADDR_SENSOR_A 0x02
@@ -87,118 +78,25 @@ void HAL_I2C_Init(void)
 	LLD_I2C_Init();
 }
 
-void HAL_I2C_CompassInit(void)
+void HAL_I2C_ReadAccel(int8_t* pu8_pitch, int8_t* pu8_roll)
 {
-	LLD_I2C_InitCompass(COMPASS_ADDR);
+	*pu8_pitch = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_ACCELEROMETER_PITCH);
+	*pu8_roll = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_ACCELEROMETER_ROLL);
 }
 
-void HAL_I2C_AccelInit(void)
+uint16_t HAL_I2C_ReadCompass(void)
 {
-	LLD_I2C_InitAccel(ACCELEROMETRE_ADDR);
+	uint8_t u8_angleMSB = 0;
+	uint8_t u8_angleLSB = 0;
+	uint16_t u16_angleValue = 0;
+
+	u8_angleMSB = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_COMPASS_MSB);
+	u8_angleLSB = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_COMPASS_LSB);
+
+	u16_angleValue = ((uint16_t)(u8_angleMSB<<8) | u8_angleLSB)/10;
+
+	return u16_angleValue;
 }
-
-uint8_t HAL_I2C_ReadAccel(uint8_t* pu8_rxBuff, uint8_t* pu8_Size)
-{
-	static uint8_t _u8_accelState = 0;
-	uint8_t u8_ReturnValue = 0;
-
-	switch (_u8_accelState)
-	{
-		case 0:
-    		*(pu8_rxBuff+_u8_accelState) = LLD_I2C_Read(ACCELEROMETRE_ADDR, ADDR_DATA_ACCELEROMETER_X_LSB);
-			_u8_accelState++;
-			break;
-
-		case 1:
-    		*(pu8_rxBuff+_u8_accelState) = LLD_I2C_Read(ACCELEROMETRE_ADDR, ADDR_DATA_ACCELEROMETER_X_MSB);
-			_u8_accelState++;
-			break;
-    
-		case 2:
-    		*(pu8_rxBuff+_u8_accelState) = LLD_I2C_Read(ACCELEROMETRE_ADDR, ADDR_DATA_ACCELEROMETER_Y_LSB);
-			_u8_accelState++;
-			break;
-
-		case 3:
-    		*(pu8_rxBuff+_u8_accelState) = LLD_I2C_Read(ACCELEROMETRE_ADDR, ADDR_DATA_ACCELEROMETER_Y_MSB);
-			_u8_accelState++;
-			break;
-
-		case 4:    
-    		*(pu8_rxBuff+_u8_accelState) = LLD_I2C_Read(ACCELEROMETRE_ADDR, ADDR_DATA_ACCELEROMETER_Z_LSB);
-			_u8_accelState++;
-			break;
-		
-		case 5:
-    		*(pu8_rxBuff+_u8_accelState) = LLD_I2C_Read(ACCELEROMETRE_ADDR, ADDR_DATA_ACCELEROMETER_Z_MSB);			
-			_u8_accelState++;	
-			break;
-
-		case 6:
-			*pu8_Size = _u8_accelState;
-			_u8_accelState = 0;
-			u8_ReturnValue = 1;
-			break;
-	
-		default:
-			_u8_accelState = 0;
-			break;
-	}
-
-	return u8_ReturnValue;
-}
-
-uint8_t HAL_I2C_ReadCompass(uint8_t* pu8_rxBuff, uint8_t* pu8_Size)
-{
-	static uint8_t _u8_compassState = 0;
-	uint8_t u8_ReturnValue = 0;
-
-	switch (_u8_compassState)
-	{
-		case 0:
-    		*(pu8_rxBuff+_u8_compassState) = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_COMPASS_X_LSB);
-			_u8_compassState++;
-			break;
-
-		case 1:
-    		*(pu8_rxBuff+_u8_compassState) = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_COMPASS_X_MSB);
-			_u8_compassState++;
-			break;
-    
-		case 2:
-    		*(pu8_rxBuff+_u8_compassState) = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_COMPASS_Y_LSB);
-			_u8_compassState++;
-			break;
-
-		case 3:
-    		*(pu8_rxBuff+_u8_compassState) = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_COMPASS_Y_MSB);
-			_u8_compassState++;
-			break;
-
-		case 4:    
-    		*(pu8_rxBuff+_u8_compassState) = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_COMPASS_Z_LSB);
-			_u8_compassState++;
-			break;
-		
-		case 5:
-    		*(pu8_rxBuff+_u8_compassState) = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_COMPASS_Z_MSB);			
-			_u8_compassState++;	
-			break;
-
-		case 6:
-			*pu8_Size = _u8_compassState;
-			_u8_compassState = 0;
-			u8_ReturnValue = 1;
-			break;
-	
-		default:
-			_u8_compassState = 0;
-			break;
-	}
-
-	return u8_ReturnValue;
-}
-
 
 uint8_t HAL_I2C_ReadSlave(uint8_t* pu8_RxBuff, uint8_t* pu8_Size)
 {
