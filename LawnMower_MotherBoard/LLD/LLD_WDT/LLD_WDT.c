@@ -33,7 +33,7 @@
 /*--------------------------------------------------------------------------*/
 ISR(WDT_vect)
 {
-	LLD_I2C_Reset();
+	
 }
 /**
 * @brief		Watchdog time initialization

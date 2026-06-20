@@ -58,20 +58,6 @@
 /*--------------------------------------------------------------------------*/
 /*! ... FUNCTIONS DEFINITIONS    ...                                        */
 /*--------------------------------------------------------------------------*/
-void HAL_I2C_UnlockBus(void)
-{
-	LLD_I2C_UnlockBus();
-}
-
-void HAL_I2C_Reset(void)
-{
-	LLD_I2C_Reset();
-}
-
-uint8_t HAL_I2C_GetErrorFlag(void)
-{
-	return LLD_I2C_GetErrorFlag();
-}
 
 void HAL_I2C_Init(void)
 {
@@ -93,7 +79,7 @@ uint16_t HAL_I2C_ReadCompass(void)
 	u8_angleMSB = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_COMPASS_MSB);
 	u8_angleLSB = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_COMPASS_LSB);
 
-	u16_angleValue = ((uint16_t)(u8_angleMSB<<8) | u8_angleLSB)/10;
+	u16_angleValue = (((uint16_t)u8_angleMSB<<8) | (uint16_t)u8_angleLSB)/10;
 
 	return u16_angleValue;
 }

@@ -177,7 +177,6 @@ void RUN_Mower_GetAngles(void)
 {
 	static uint8_t _u8_getAngleState = 0;
 	static uint16_t _u16_sensorsCpt = 0;
-	uint8_t u8_flagErrorI2c = 0;
 	E_I2C_USED e_i2cUsed = E_I2C_USED_NONE;
 
 	e_i2cUsed = RUN_I2C_GetUsed();
@@ -190,7 +189,6 @@ void RUN_Mower_GetAngles(void)
 			switch (_u8_getAngleState)
 			{
 				case 0 :
-					u8_flagErrorI2c = RUN_I2C_CheckConsistency();
 					_u8_getAngleState++;				
 					break;
 
