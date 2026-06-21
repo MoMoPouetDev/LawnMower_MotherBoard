@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <avr/io.h>
 
-#include "LLD_TIMER.h"
+#include "LLD_Timer.h"
 
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                    */
