@@ -25,14 +25,6 @@
 
 #define ERROR_DATA 0xFF
 
-typedef struct {
-    uint8_t degrees;
-    uint8_t minutes;
-    uint8_t decimalMSB;
-    uint8_t decimalB;
-    uint8_t decimalLSB;
-}Coordinates;
-
 typedef union
 {
     float f_coordinates;
@@ -56,6 +48,6 @@ uint8_t RUN_Sensors_GetDistanceSonarFL(void);
 uint8_t RUN_Sensors_GetDistanceSonarFR(void);
 float RUN_Sensors_GetLongitude(void);
 float RUN_Sensors_GetLatitude(void);
-void RUN_Sensors_GetStructCoordinates(Coordinates* st_latitude, Coordinates* st_longitude);
+void RUN_Sensors_GetStructCoordinates(U_COORDINATES* u_latitude, U_COORDINATES* u_longitude);
 
 #endif /* RUN_RUN_SENSORS_RUN_SENSORS_H_ */
