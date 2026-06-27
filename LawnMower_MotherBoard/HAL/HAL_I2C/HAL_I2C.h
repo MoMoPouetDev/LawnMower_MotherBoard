@@ -44,7 +44,7 @@ uint8_t HAL_I2C_GetErrorFlag(void);
 void HAL_I2C_Init(void);
 void HAL_I2C_Write(void);
 uint8_t HAL_I2C_Read(uint8_t* , uint8_t* );
-void HAL_I2C_ReadAccel(int8_t* pu8_pitch, int8_t* pu8_roll);
+void HAL_I2C_ReadAccel(int16_t* pu16_pitch, int8_t* pu8_roll);
 uint16_t HAL_I2C_ReadCompass(void);
 uint8_t HAL_I2C_ReadSlave(uint8_t* pu8_RxBuff, uint8_t* pu8_Size);
 uint8_t HAL_I2C_WriteSlave(uint8_t u8_mowerState);

@@ -156,7 +156,6 @@ void RUN_Sensors_SlaveData(void)
 					{
 						_u8_slaveState++;
 						RUN_I2C_SetUsed(E_I2C_USED_NONE);
-						_u8_slaveState = 2;
 					}
 					break;
 			

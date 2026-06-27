@@ -72,7 +72,7 @@ static uint16_t gu16_distanceWireLeft;
 static uint16_t gu16_distanceWireRight;
 static uint16_t gu16_currentAngle;
 static uint16_t gu16_azimut;
-static int8_t gs8_pitch;
+static int16_t gs16_pitch;
 static int8_t gs8_roll;
 static EtatMower geEtatMower;
 static ErrorMower geErrorMower;
@@ -89,7 +89,7 @@ void RUN_Mower_Init(void)
 	gu8_timeToMow = 0;
   	gu16_distanceWireLeft = WIRE_DETECTION_UNLOAD;
   	gu16_distanceWireRight = WIRE_DETECTION_UNLOAD;
-	gs8_pitch = 0;
+	gs16_pitch = 0;
 	gs8_roll = 0;
 	gu16_currentAngle = 0;
 	gu16_azimut = 0;
@@ -193,7 +193,7 @@ void RUN_Mower_GetAngles(void)
 					break;
 
 				case 1 :
-					HAL_I2C_ReadAccel(&gs8_pitch, &gs8_roll);
+					HAL_I2C_ReadAccel(&gs16_pitch, &gs8_roll);
 					_u8_getAngleState++;
 					RUN_I2C_SetUsed(E_I2C_USED_NONE);
 					break;
@@ -236,7 +236,7 @@ void RUN_Mower_GetAzimut(void)
 
 void RUN_Mower_TiltProtection(void)
 {	
-	if((gs8_pitch <= PITCH_MIN) || (gs8_pitch >= PITCH_MAX) || (gs8_roll <= ROLL_MIN) || (gs8_roll >= ROLL_MAX)) 
+	if((gs16_pitch <= PITCH_MIN) || (gs16_pitch >= PITCH_MAX) || (gs8_roll <= ROLL_MIN) || (gs8_roll >= ROLL_MAX)) 
 	{ 
 		HAL_GPIO_UpdateBladeState(OFF);
 	}

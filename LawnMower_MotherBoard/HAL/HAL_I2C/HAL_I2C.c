@@ -23,7 +23,8 @@
 #define ADDR_DATA_COMPASS_MSB 0x02
 #define ADDR_DATA_COMPASS_LSB 0x03
 /** Accelerometer ***/
-#define ADDR_DATA_ACCELEROMETER_PITCH 0x04
+#define ADDR_DATA_ACCELEROMETER_PITCH_MSB 0x1C
+#define ADDR_DATA_ACCELEROMETER_PITCH_LSB 0x1D
 #define ADDR_DATA_ACCELEROMETER_ROLL 0x05
 /*** Slave ***
 #define ADDR_SENSOR_V 0x01
@@ -64,10 +65,15 @@ void HAL_I2C_Init(void)
 	LLD_I2C_Init();
 }
 
-void HAL_I2C_ReadAccel(int8_t* pu8_pitch, int8_t* pu8_roll)
+void HAL_I2C_ReadAccel(int16_t* ps16_pitch, int8_t* ps8_roll)
 {
-	*pu8_pitch = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_ACCELEROMETER_PITCH);
-	*pu8_roll = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_ACCELEROMETER_ROLL);
+	uint8_t u8_pitchMSB = 0;
+	uint8_t u8_pitchLSB = 0;
+
+	u8_pitchMSB = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_ACCELEROMETER_PITCH_MSB);
+	u8_pitchLSB = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_ACCELEROMETER_PITCH_LSB);
+	*ps16_pitch = (int16_t)((uint16_t)(u8_pitchMSB << 8) | (uint16_t)u8_pitchLSB);
+	*ps8_roll = LLD_I2C_Read(COMPASS_ADDR, ADDR_DATA_ACCELEROMETER_ROLL);
 }
 
 uint16_t HAL_I2C_ReadCompass(void)
