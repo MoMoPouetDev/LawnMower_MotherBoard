@@ -18,6 +18,7 @@
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
 #define SENSORS_TIMER_ONE_SECOND	1000
+#define SENSORS_TIMER_DEMI_SECOND	500
 
 static uint8_t gu8_batteryVoltage;
 static uint8_t gu8_batteryAmp;
@@ -143,7 +144,7 @@ void RUN_Sensors_SlaveData(void)
 
 	e_i2cUsed = RUN_I2C_GetUsed();
 	
-	if (_u16_slaveCpt >= SENSORS_TIMER_ONE_SECOND)
+	if (_u16_slaveCpt >= SENSORS_TIMER_DEMI_SECOND)
 	{
 		if ((e_i2cUsed == E_I2C_USED_NONE) || (e_i2cUsed == E_I2C_USED_SLAVE))
 		{
@@ -188,8 +189,6 @@ static uint8_t _RUN_Sensors_ReadSlaveData(void)
 	static uint8_t _tu8_rxBuffSlave[E_SLAVE_READ_DATA_NUMBER] = {0};
 	static uint8_t _u8_rxBuffSlaveSize = 0;
 	uint8_t u8_flagI2c = 0;
-	U_COORDINATES u_latitude = {0};
-	U_COORDINATES u_longitude = {0};
 
 	u8_flagI2c = HAL_I2C_ReadSlave(_tu8_rxBuffSlave, &_u8_rxBuffSlaveSize);
 	if (u8_flagI2c != 0)

@@ -54,7 +54,7 @@ void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
 	/*                                      MANAGE RUN TASK CYCLE                                                  */
 	/***************************************************************************************************************/
 	u32_CyclicTask = RUN_Task_GetCyclicTask();
-
+	RUN_GPIO_UpdateBladeState(ON);
 	/***************************************************************************************************************/
 	/*                                  ACU FINITE STATE MACHINE                                                   */
 	/***************************************************************************************************************/
@@ -64,13 +64,11 @@ void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
 	  	default:
 	  	case S_SUP_OPERATIVE_Init:
 		 	FSM_Operative_Init();
-			RUN_GPIO_UpdateBladeState(ON);
 			FSM_Enum_SetFsmPhase(S_SUP_OPERATIVE_Moving);
 
 			break;
 
 	  	case S_SUP_OPERATIVE_Moving :
-			RUN_GPIO_UpdateBladeState(ON);
 		  
 			_FSM_Operative_RunMower(u32_CyclicTask);	
 			
