@@ -61,8 +61,8 @@ void LLD_PWM_Forward(uint8_t speed_ML, uint8_t speed_MR)
 
 void LLD_PWM_Right(void)
 {
-    OCR0A = (( 0xFF / 100 ) * LOW_SPEED);
-    OCR2A = (( 0xFF / 100 ) * LOW_SPEED);
+    OCR0A = (( 0xFF / 100 ) * HIGH_SPEED);
+    OCR2A = (( 0xFF / 100 ) * HIGH_SPEED);
 }
 
 void LLD_PWM_Left(void)
