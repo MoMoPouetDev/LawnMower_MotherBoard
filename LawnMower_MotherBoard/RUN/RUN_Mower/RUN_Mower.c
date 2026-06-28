@@ -97,7 +97,7 @@ void RUN_Mower_Init(void)
 
 uint8_t RUN_Mower_IsTimeToMow(void)
 {
-	return gu8_timeToMow;
+	return 1;//gu8_timeToMow;
 }
 
 void RUN_Mower_SetTimeToMow(uint8_t u8_timeToMow)

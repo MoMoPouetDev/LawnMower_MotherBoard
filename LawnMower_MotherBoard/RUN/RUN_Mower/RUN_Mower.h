@@ -22,7 +22,8 @@ typedef enum {
     RETOUR_STATION = 0x02,
     EN_CHARGE = 0x03,
     PAS_DE_TACHE_EN_COURS = 0x04,
-    PAUSE = 0x05
+    PAUSE = 0x05,
+	GPS_READY = 0x06
 }EtatMower;
 
 typedef enum {

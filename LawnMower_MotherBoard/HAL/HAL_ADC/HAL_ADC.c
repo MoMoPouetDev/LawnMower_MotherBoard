@@ -66,10 +66,10 @@ void HAL_ADC_ReadValueGuideWire(void)
 
 uint16_t HAL_ADC_GetLeftWireValue()
 {
-	return gu16_adcValueLeftWire;
+	return 0;//gu16_adcValueLeftWire;
 }
 
 uint16_t HAL_ADC_GetRightWireValue()
 {
-	return gu16_adcValueRightWire;
+	return 0;//gu16_adcValueRightWire;
 }
