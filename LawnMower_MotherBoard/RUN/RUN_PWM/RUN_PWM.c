@@ -44,7 +44,7 @@ void RUN_PWM_Backward(uint8_t u8_speed)
 void RUN_PWM_Right()
 {
 	HAL_GPIO_UpdateWheelState(RIGHT);
-	HAL_PWM_Turn(HIGH_SPEED);
+	HAL_PWM_Turn(1); //RIGHT
 }
 
 void RUN_PWM_Forward(uint8_t u8_speedLeft, uint8_t u8_speedRight)
@@ -56,5 +56,5 @@ void RUN_PWM_Forward(uint8_t u8_speedLeft, uint8_t u8_speedRight)
 void RUN_PWM_Left()
 {
 	HAL_GPIO_UpdateWheelState(LEFT);
-	HAL_PWM_Turn(HIGH_SPEED);
+	HAL_PWM_Turn(0); //LEFT
 }

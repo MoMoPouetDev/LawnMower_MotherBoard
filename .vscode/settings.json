@@ -16,6 +16,9 @@
         "stdint.h": "c",
         "hal_i2c.h": "c",
         "lld_gpio.h": "c",
-        "hal_uart.h": "c"
+        "hal_uart.h": "c",
+        "run_init.h": "c",
+        "run_task_interface.h": "c",
+        "run_i2c.h": "c"
     }
 }

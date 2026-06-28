@@ -31,7 +31,10 @@
 /*--------------------------------------------------------------------------*/
 /*! ... GLOBAL FUNCTIONS DEFINITIONS ...                                    */
 /*--------------------------------------------------------------------------*/
-
+ISR(WDT_vect)
+{
+	
+}
 /**
 * @brief		Watchdog time initialization
 * @param		u8_TimeoutValue : Timeout of watchdog, 0x00 = 0.5s, 0x01 = 1s, ... 0xFF = 128s.
@@ -43,7 +46,7 @@ void LLD_WDT_Init(uint8_t u8_OutputValue)
     cli();
 	wdt_reset();
 	WDTCSR |= (1<<WDCE) | (1<<WDE);
-	WDTCSR = (1<<WDIE) | (1<<WDP2) | (1<<WDP1); //1s
+	WDTCSR = (1<<WDP2) | (1<<WDP1); //1s (1<<WDIE) | (1<<WDP2) | (1<<WDP1); //1s
 	sei();
 }
 
@@ -57,7 +60,7 @@ void LLD_WDT_Init(uint8_t u8_OutputValue)
 **/
 void LLD_WDT_Refresh(void)
 {
-
+	wdt_reset();
 }
 
 

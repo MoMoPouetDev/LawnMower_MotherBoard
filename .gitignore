@@ -4,4 +4,7 @@ LawnMower_MotherBoard.atsln
 LawnMower_MotherBoard/LawnMower_MotherBoard.componentinfo.xml
 LawnMower_MotherBoard/LawnMower_MotherBoard.cproj
 .vs/
-LawnMower_MotherBoard/Makefile
+*.o
+*.elf
+*.hex
+.vscode/

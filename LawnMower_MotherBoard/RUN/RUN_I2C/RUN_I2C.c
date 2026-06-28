@@ -21,11 +21,9 @@ E_I2C_USED ge_i2cUsed;
 /*--------------------------------------------------------------------------*/
 /*! ... FUNCTIONS DEFINITIONS    ...                                        */
 /*--------------------------------------------------------------------------*/
-void RUN_I2C_Init()
+void RUN_I2C_Init(void)
 {
 	HAL_I2C_Init();
-	HAL_I2C_AccelInit();
-	HAL_I2C_CompassInit();
 
 	ge_i2cUsed = E_I2C_USED_NONE;
 }
@@ -39,3 +37,4 @@ E_I2C_USED RUN_I2C_GetUsed(void)
 {
 	return ge_i2cUsed;
 }
+

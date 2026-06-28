@@ -35,8 +35,8 @@ void RUN_BLE_SendStatus()
 	static uint8_t tu8_txBuffer[15] = {0};
 	static uint8_t u8_uartState = 0;
 	uint8_t u8_uartReturnState = 0;
-	Coordinates tLatitude;
-	Coordinates tLongitude;
+	U_COORDINATES u_latitude;
+	U_COORDINATES u_longitude;
 	EtatMower eEtatMower;
 	ErrorMower eErrorMower;
 	uint8_t uBattery;
@@ -46,7 +46,7 @@ void RUN_BLE_SendStatus()
 	eEtatMower = RUN_Mower_GetEtatMower();
 	eErrorMower = RUN_Mower_GetErrorMower();
 	uBattery = RUN_Sensors_GetBatteryPercent();
-	RUN_Sensors_GetStructCoordinates(&tLatitude, &tLongitude);
+	RUN_Sensors_GetStructCoordinates(&u_latitude, &u_longitude);
 
 	angleW = RUN_Mower_GetCurrentAngle();
 	angleLSB = angleW & 0xFF;
@@ -58,7 +58,7 @@ void RUN_BLE_SendStatus()
 			tu8_txBuffer[0] = eEtatMower;
 			tu8_txBuffer[1] = eErrorMower;
 			tu8_txBuffer[2] = uBattery;
-
+/*
 			tu8_txBuffer[3] = tLatitude.degrees;
 			tu8_txBuffer[4] = tLatitude.minutes;
 			tu8_txBuffer[5] = tLatitude.decimalMSB;
@@ -70,7 +70,7 @@ void RUN_BLE_SendStatus()
 			tu8_txBuffer[10] = tLongitude.decimalMSB;
 			tu8_txBuffer[11] = tLongitude.decimalB;
 			tu8_txBuffer[12] = tLongitude.decimalLSB;
-
+*/
 			tu8_txBuffer[13] = angleMSB;
 			tu8_txBuffer[14] = angleLSB;
 

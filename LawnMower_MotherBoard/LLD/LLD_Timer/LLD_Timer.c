@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <avr/io.h>
 
-#include "LLD_TIMER.h"
+#include "LLD_Timer.h"
 
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                    */
@@ -28,6 +28,6 @@ void LLD_Timer_Init(void)
 {
     /* Init Timer 1 for Run Task tick */
 	TCCR1B |= (1<<WGM12) | (1<<CS10); // CTC and No Prescale
-	OCR1A = 0x1F40; // 16 bit
+	OCR1A = 0x4E20; // 16 bit
 	TIMSK1 |= (1<<OCIE1A); // Enable Timer 1 Output Compare A Match Interrupt
 }

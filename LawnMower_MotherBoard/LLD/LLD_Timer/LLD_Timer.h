@@ -1,5 +1,5 @@
 /**
- * @file LLD_TIMER.h
+ * @file LLD_Timer.h
  * @author ACR
  * @brief Header file for TIMER peripheral
  * @details
