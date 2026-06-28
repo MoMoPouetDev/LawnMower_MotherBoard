@@ -239,28 +239,14 @@ void RUN_Mower_GetAzimut(void)
 
 void RUN_Mower_TiltProtection(void)
 {	
-	static uint8_t _u8_cptBrake = 0;
-	static uint8_t _u8_flagBrake = 0;
-
 	if((gs16_pitch <= PITCH_MIN) || (gs16_pitch >= PITCH_MAX) || (gs8_roll <= ROLL_MIN) || (gs8_roll >= ROLL_MAX)) 
 	{ 
 		/** BRAKE **/
-		if((_u8_cptBrake <= 20) && (_u8_flagBrake == 0))
-		{
-			HAL_GPIO_BrakeBlade(ON);
-		}
-		else
-		{
-			HAL_GPIO_BrakeBlade(OFF);
-			_u8_flagBrake = 1;
-		}
-		_u8_cptBrake++;
+		HAL_GPIO_UpdateBladeState(OFF);
 	}
 	else 
 	{
 		HAL_GPIO_UpdateBladeState(ON);
-		_u8_cptBrake = 0;
-		_u8_flagBrake = 0;
 	}
 }
 
