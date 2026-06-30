@@ -23,7 +23,7 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
-#define SENSORS_TIMER_ONE_SECOND	10
+#define SENSORS_TIMER_ONE_SECOND	1000
 /***  GuideWire ***/
 #define WIRE_DETECTION_LIMITE 600
 #define WIRE_DETECTION_LOAD 750
@@ -43,6 +43,9 @@
 #define THRESHOLD_HOUR_MAX 18
 /*** Compass ***/
 #define DELTA_ANGLE 20
+#define HEADING_KP          0.30f
+#define HEADING_KD          0.8f
+#define HEADING_CORR_MAX    15.0f
 //#define M_PI 3.14
 #define DECLINATION ((54)*(M_PI/(60*180))) //0.015
 #define OFFSET -100
@@ -181,7 +184,7 @@ void RUN_Mower_GetAngles(void)
 
 	e_i2cUsed = RUN_I2C_GetUsed();
 	
-	if (_u16_sensorsCpt >= SENSORS_TIMER_ONE_SECOND)
+	if (_u16_sensorsCpt >= 2)
 	{
 		if ((e_i2cUsed == E_I2C_USED_NONE) || (e_i2cUsed == E_I2C_USED_ANGLES))
 		{
@@ -238,6 +241,7 @@ void RUN_Mower_TiltProtection(void)
 {	
 	if((gs16_pitch <= PITCH_MIN) || (gs16_pitch >= PITCH_MAX) || (gs8_roll <= ROLL_MIN) || (gs8_roll >= ROLL_MAX)) 
 	{ 
+		/** BRAKE **/
 		HAL_GPIO_UpdateBladeState(OFF);
 	}
 	else 
@@ -559,6 +563,15 @@ uint8_t RUN_Mower_DirectionFromBase()
 
 uint8_t RUN_Mower_RunMower()
 {
+	/* Regulation */
+	static uint16_t _u16_targetHeading = 0xFFFF;
+    static int16_t  _s16_prevError = 0;
+    int16_t s16_error = 0;
+    int16_t s16_dError = 0;
+    float   f_correction = 0.0;
+    uint8_t u8_speedLeft = 0;
+    uint8_t u8_speedRight = 0;
+	/*** ***/
 	uint8_t u8_distanceSonarFC = 0;
 	uint8_t u8_distanceSonarFL = 0;
 	uint8_t u8_distanceSonarFR = 0;
@@ -580,20 +593,52 @@ uint8_t RUN_Mower_RunMower()
 
 	if ( (gu16_distanceWireLeft > WIRE_DETECTION_LIMITE) || (gu16_distanceWireRight > WIRE_DETECTION_LIMITE) ) 
 	{
+		_u16_targetHeading = 0xFFFF;
+		_s16_prevError = 0;
 		u8_returnValue = 1;
 	}
 	else if ((u8_leftBumperState == 1) || (u8_centerBumperState == 1) || (u8_rightBumperState == 1)) 
 	{
+		_u16_targetHeading = 0xFFFF;
+		_s16_prevError = 0;
 		u8_returnValue = 2;
-	}
-	else if ((u8_distanceSonarFC < SONAR_WARN) || (u8_distanceSonarFL < SONAR_WARN) || (u8_distanceSonarFR < SONAR_WARN))
-	{
-		RUN_PWM_Forward(MIDDLE_SPEED, MIDDLE_SPEED);
 	}
 	else 
 	{
-		RUN_PWM_Forward(HIGH_SPEED, HIGH_SPEED);
-	}
+		/* --- Capture du cap cible au premier appel après un reset --- */
+        if (_u16_targetHeading == 0xFFFF)
+        {
+            _u16_targetHeading = gu16_currentAngle;
+            _s16_prevError = 0;
+        }
+
+        /* --- Calcul erreur avec wrap-around 0/360 --- */
+        s16_error = (int16_t)_u16_targetHeading - (int16_t)gu16_currentAngle;
+        if (s16_error >  180) { s16_error -= 360; }
+        if (s16_error < -180) { s16_error += 360; }
+
+        /* --- Terme dérivé --- */
+        s16_dError = s16_error - _s16_prevError;
+        _s16_prevError = s16_error;
+
+        /* --- Correction PD --- */
+        f_correction = (HEADING_KP * (float)s16_error) + (HEADING_KD * (float)s16_dError);
+        if (f_correction >  HEADING_CORR_MAX) { f_correction =  HEADING_CORR_MAX; }
+        if (f_correction < -HEADING_CORR_MAX) { f_correction = -HEADING_CORR_MAX; }
+
+        /* --- Application sur les deux moteurs --- */
+        if ((u8_distanceSonarFC < SONAR_WARN) || (u8_distanceSonarFL < SONAR_WARN) || (u8_distanceSonarFR < SONAR_WARN))
+        {
+            u8_speedLeft  = (uint8_t)((float)MIDDLE_SPEED + f_correction);
+            u8_speedRight = (uint8_t)((float)MIDDLE_SPEED - f_correction);
+        }
+        else
+        {
+            u8_speedLeft  = (uint8_t)((float)HIGH_SPEED + f_correction);
+            u8_speedRight = (uint8_t)((float)HIGH_SPEED - f_correction);
+        }
+        RUN_PWM_Forward(u8_speedLeft, u8_speedRight);
+    }
 
 	return u8_returnValue;
 }
