@@ -43,7 +43,7 @@
 #define THRESHOLD_HOUR_MAX 18
 /*** Compass ***/
 #define DELTA_ANGLE 20
-#define HEADING_KP          0.25f
+#define HEADING_KP          0.30f
 #define HEADING_KD          0.8f
 #define HEADING_CORR_MAX    15.0f
 //#define M_PI 3.14
