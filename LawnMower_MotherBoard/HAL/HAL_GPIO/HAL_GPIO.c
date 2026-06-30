@@ -17,7 +17,18 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
-Etat ge_bladeState;
+typedef enum {
+    E_BLADE_OFF = 0,
+    E_BLADE_STARTING,
+    E_BLADE_ON,
+    E_BLADE_BRAKING
+} BladeState_t;
+
+static BladeState_t ge_bladeState;
+static uint8_t      gu8_bladeBrakeRequest;
+
+/* Temps de démarrage lame avant de considérer qu'elle tourne (en ticks) */
+#define BLADE_START_DELAY_TICKS  50   /* à ajuster selon ton timer */
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
@@ -28,33 +39,8 @@ Etat ge_bladeState;
 void HAL_GPIO_Init()
 {
 	LLD_GPIO_Init();
-	ge_bladeState = OFF;
-}
-
-void HAL_GPIO_UpdateBladeState(Etat e_bladeState)
-{
-	ge_bladeState = e_bladeState;
-}
-
-void HAL_GPIO_BladeState(Etat e_bladeState)
-{
-	switch(e_bladeState) 
-	{
-		case ON:
-			if(ge_bladeState == ON)
-			{
-				LLD_GPIO_WritePin(E_MOTOR_BLADE_ENABLE);
-			}
-			else
-			{
-				LLD_GPIO_ClearPin(E_MOTOR_BLADE_ENABLE);
-			}
-			break;
-		default:
-		case OFF:
-			LLD_GPIO_ClearPin(E_MOTOR_BLADE_ENABLE);
-			break;
-	}
+	gu8_bladeBrakeRequest = 0;
+	ge_bladeState = E_BLADE_OFF;
 }
 
 void HAL_GPIO_UpdateWheelState(MotorState e_wheelState)
@@ -162,4 +148,59 @@ uint8_t HAL_GPIO_GetFlagBumper(GPIO e_flagBumper)
 			break;
 	}
 	return u8_flagBumper;
+}
+
+/*--------------------------------------------------------------------------*/
+/* Demande d'allumage normal (depuis FSM_Operative Moving)                 */
+/*--------------------------------------------------------------------------*/
+void HAL_GPIO_RequestBladeOn(void)
+{
+    if (ge_bladeState == E_BLADE_OFF)
+    {
+        ge_bladeState = E_BLADE_STARTING;
+        gu8_bladeBrakeRequest = 0;
+        /* Frein désactivé, ENABLE actif */
+        LLD_GPIO_ClearPin(E_MOTOR_BLADE_BRAKE);
+        LLD_GPIO_WritePin(E_MOTOR_BLADE_ENABLE);
+    }
+}
+
+/*--------------------------------------------------------------------------*/
+/* Arrêt normal — roue libre, pas de frein (depuis FSM hors soulèvement)  */
+/*--------------------------------------------------------------------------*/
+void HAL_GPIO_RequestBladeOff(void)
+{
+    ge_bladeState = E_BLADE_OFF;
+    gu8_bladeBrakeRequest = 0;
+    LLD_GPIO_ClearPin(E_MOTOR_BLADE_BRAKE);
+    LLD_GPIO_ClearPin(E_MOTOR_BLADE_ENABLE);
+}
+
+/*--------------------------------------------------------------------------*/
+/* Arrêt d'urgence avec frein — soulèvement uniquement                    */
+/*--------------------------------------------------------------------------*/
+void HAL_GPIO_RequestBladeBrake(void)
+{
+    if (ge_bladeState != E_BLADE_OFF)
+    {
+        ge_bladeState = E_BLADE_BRAKING;
+        gu8_bladeBrakeRequest = 1;
+        /* Coupe ENABLE d'abord, puis active le frein */
+        LLD_GPIO_ClearPin(E_MOTOR_BLADE_ENABLE);
+        LLD_GPIO_WritePin(E_MOTOR_BLADE_BRAKE);
+    }
+}
+
+/*--------------------------------------------------------------------------*/
+/* Libération du frein après fin de soulèvement → repasse en BLADE_OFF    */
+/* FSM_Operative devra appeler RequestBladeOn pour rallumer                */
+/*--------------------------------------------------------------------------*/
+void HAL_GPIO_RequestBladeRelease(void)
+{
+    if (ge_bladeState == E_BLADE_BRAKING)
+    {
+        ge_bladeState = E_BLADE_OFF;
+        LLD_GPIO_ClearPin(E_MOTOR_BLADE_BRAKE);
+        LLD_GPIO_ClearPin(E_MOTOR_BLADE_ENABLE);
+    }
 }

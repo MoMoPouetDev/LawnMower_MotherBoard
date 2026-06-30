@@ -36,10 +36,12 @@ typedef enum
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
 void HAL_GPIO_Init(void);
-void HAL_GPIO_UpdateBladeState(Etat e_bladeState);
-void HAL_GPIO_BladeState(Etat e_bladeState);
 void HAL_GPIO_UpdateWheelState(MotorState e_wheelState);
 uint8_t HAL_GPIO_GetFlagButton(GPIO e_flagButton);
 uint8_t HAL_GPIO_GetFlagBumper(GPIO e_flagBumper);
+void HAL_GPIO_RequestBladeOn(void);
+void HAL_GPIO_RequestBladeOff(void);
+void HAL_GPIO_RequestBladeBrake(void);
+void HAL_GPIO_RequestBladeRelease(void);
 
 #endif /* HAL_HAL_GPIO_HAL_GPIO_H_ */

@@ -242,11 +242,11 @@ void RUN_Mower_TiltProtection(void)
 	if((gs16_pitch <= PITCH_MIN) || (gs16_pitch >= PITCH_MAX) || (gs8_roll <= ROLL_MIN) || (gs8_roll >= ROLL_MAX)) 
 	{ 
 		/** BRAKE **/
-		HAL_GPIO_UpdateBladeState(OFF);
+		HAL_GPIO_RequestBladeBrake();
 	}
 	else 
 	{
-		HAL_GPIO_UpdateBladeState(ON);
+		HAL_GPIO_RequestBladeRelease();
 	}
 }
 

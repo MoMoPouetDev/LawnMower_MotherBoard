@@ -30,7 +30,7 @@ void RUN_GPIO_Init()
 
 void RUN_GPIO_DisableAllMotor()
 {
-	HAL_GPIO_UpdateBladeState(OFF);
+	HAL_GPIO_RequestBladeOff();
 	HAL_GPIO_UpdateWheelState(STOP);
 }
 
@@ -41,7 +41,19 @@ void RUN_GPIO_DisableMotor()
 
 void RUN_GPIO_UpdateBladeState(Etat e_bladeState)
 {
-	HAL_GPIO_BladeState(e_bladeState);
+	switch (e_bladeState)
+	{
+		case ON:
+			HAL_GPIO_RequestBladeOn();
+			break;
+
+		case OFF:
+			HAL_GPIO_RequestBladeOff();
+			break;
+	
+		default:
+			break;
+	}
 }
 
 uint8_t RUN_GPIO_GetStartButton()
