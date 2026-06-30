@@ -38,6 +38,9 @@
 /*** GPS ***/
 #define COORDINATES_BASE_LAT 49.2315928
 #define COORDINATES_BASE_LONG 1.2470619
+#define DEG_TO_RAD(d) ((d) * M_PI / 180.0)
+#define COORDINATES_BASE_LAT_RAD  DEG_TO_RAD(COORDINATES_BASE_LAT)
+#define COORDINATES_BASE_LONG_RAD DEG_TO_RAD(COORDINATES_BASE_LONG)
 /*** Time to Mow ***/
 #define THRESHOLD_HOUR_MIN 9
 #define THRESHOLD_HOUR_MAX 18
@@ -221,20 +224,30 @@ void RUN_Mower_GetAngles(void)
 	}
 }
 
-void RUN_Mower_GetAzimut(void) 
+void RUN_Mower_GetAzimut(void)
 {
 	float f_latitude;
 	float f_longitude;
+	float f_dLon;
 	float x = 0.0;
 	float y = 0.0;
+	float f_azimutRad;
+    float f_azimutDeg;
 
-	f_latitude = RUN_Sensors_GetLatitude();
-	f_longitude = RUN_Sensors_GetLongitude();
+	f_latitude = RUN_Sensors_GetLatitude()  * (float)(M_PI / 180.0);
+	f_longitude = RUN_Sensors_GetLongitude()  * (float)(M_PI / 180.0);
 	
-	x = cos(f_latitude)*sin(COORDINATES_BASE_LAT) - sin(f_latitude)*cos(COORDINATES_BASE_LAT)*cos(COORDINATES_BASE_LONG-f_longitude);
-	y = sin(COORDINATES_BASE_LONG-f_longitude)*cos(COORDINATES_BASE_LAT);
-	
-	gu16_azimut = 2*atan(y / (sqrt(x*x + y*y) + x));
+	x = cos(f_latitude)*sin(COORDINATES_BASE_LAT_RAD) - sin(f_latitude)*cos(COORDINATES_BASE_LAT_RAD)*cos(COORDINATES_BASE_LONG_RAD-f_longitude);
+	y = sin(COORDINATES_BASE_LONG_RAD-f_longitude)*cos(COORDINATES_BASE_LAT_RAD);
+
+	f_azimutRad = atan2(y, x);
+    f_azimutDeg = f_azimutRad * (float)(180.0 / M_PI);
+    if (f_azimutDeg < 0.0f) 
+	{ 
+		f_azimutDeg += 360.0f; 
+	}
+
+    gu16_azimut = (uint16_t)f_azimutDeg;
 }
 
 void RUN_Mower_TiltProtection(void)
