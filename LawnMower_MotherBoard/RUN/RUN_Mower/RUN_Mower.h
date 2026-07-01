@@ -47,6 +47,7 @@ void RUN_Mower_TiltProtection(void);
 uint8_t RUN_Mower_WireDetection(void);
 uint8_t RUN_Mower_WireDetectionOnReturn(void);
 uint8_t RUN_Mower_BumperDetection(void);
+uint8_t RUN_Mower_SonarDetection(void);
 uint8_t RUN_Mower_DirectionFromBase(void);
 uint16_t RUN_Mower_GetCurrentAngle(void);
 uint8_t RUN_Mower_WireGuiding(void);

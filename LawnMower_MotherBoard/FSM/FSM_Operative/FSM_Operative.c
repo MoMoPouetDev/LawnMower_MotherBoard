@@ -24,12 +24,14 @@
 static uint8_t gu8_runMowerState;
 static uint8_t gu8_wireDetectionState;
 static uint8_t gu8_bumperDetectionState;
+static uint8_t gu8_sonarDetectionState;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
 static void _FSM_Operative_RunMower(uint32_t u32_CyclicTask);
 static void _FSM_Operative_WireDetection(uint32_t u32_CyclicTask);
 static void _FSM_Operative_BumperDetection(uint32_t u32_CyclicTask);
+static void _FSM_Operative_SonarDetection(uint32_t u32_CyclicTask);
 static void _FSM_Operative_DisableAllMotor(void);
 static void _FSM_Operative_DisableMotor(void);
 /*---------------------------------------------------------------------------*/
@@ -40,6 +42,7 @@ void FSM_Operative_Init(void)
 	gu8_runMowerState = 0;
 	gu8_wireDetectionState = 0;
 	gu8_bumperDetectionState = 0;
+	gu8_sonarDetectionState = 0;
 }
 
 void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
@@ -85,6 +88,10 @@ void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
 			else if (gu8_runMowerState == 2)
 			{
 				FSM_Enum_SetFsmPhase(S_SUP_OPERATIVE_Bumper_Detection);
+			}
+			else if (gu8_runMowerState == 3)
+			{
+				FSM_Enum_SetFsmPhase(S_SUP_OPERATIVE_Sonar_Detection);
 			}
 
 			RUN_Mower_SetEtatMower(TACHE_EN_COURS);
@@ -140,6 +147,15 @@ void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
 			}
 		 	break;
 
+		case S_SUP_OPERATIVE_Sonar_Detection:
+			_FSM_Operative_SonarDetection(u32_CyclicTask);
+
+			if (gu8_sonarDetectionState == 1)
+			{
+				FSM_Enum_SetFsmPhase(S_SUP_OPERATIVE_Moving);
+			}
+		 	break;
+
 		case S_SUP_OPERATIVE_Waiting:
 			_FSM_Operative_DisableAllMotor();
 
@@ -189,6 +205,14 @@ static void _FSM_Operative_BumperDetection(uint32_t u32_CyclicTask)
 	if ( (u32_CyclicTask & CYCLIC_TASK_BUMPER_DETECTION) != 0) {
 		gu8_bumperDetectionState = RUN_Mower_BumperDetection();
 		RUN_Task_EraseCyclicTask(CYCLIC_TASK_BUMPER_DETECTION);
+	}
+}
+
+static void _FSM_Operative_SonarDetection(uint32_t u32_CyclicTask)
+{
+	if ( (u32_CyclicTask & CYCLIC_TASK_SONAR_DETECTION) != 0) {
+		gu8_sonarDetectionState = RUN_Mower_SonarDetection();
+		RUN_Task_EraseCyclicTask(CYCLIC_TASK_SONAR_DETECTION);
 	}
 }
 
