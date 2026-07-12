@@ -12,9 +12,11 @@
 /*! ... INCLUDES ...                                                        */
 /*--------------------------------------------------------------------------*/
 #include <stdint.h>
+#include "HAL_UART.h"
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
 void RUN_UART_Init(void);
+void RUN_UART_DebugSendStatus(void);
 
 #endif /* RUN_RUN_UART_RUN_UART_H_ */

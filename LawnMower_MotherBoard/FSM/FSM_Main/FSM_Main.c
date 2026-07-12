@@ -16,7 +16,7 @@
 #include "RUN_Mower.h"
 #include "RUN_Task.h"
 #include "RUN_Task_Interface.h"
-
+#include "RUN_UART.h"
 #include "FSM_Enum.h"
 #include "FSM_Init.h"
 #include "FSM_Dock.h"
@@ -145,7 +145,11 @@ static void _FSM_Main_ADCRead(uint32_t u32_CyclicTask)
 static void _FSM_Main_SendStatus(uint32_t u32_CyclicTask)
 {
 	if ( (u32_CyclicTask & CYCLIC_TASK_BLE_SEND_STATUS) != 0) {
-		//RUN_BLE_SendStatus();
+#ifndef DEBUG_UART
+		RUN_BLE_SendStatus();
+#else
+		RUN_UART_DebugSendStatus();
+#endif
 		RUN_Task_EraseCyclicTask(CYCLIC_TASK_BLE_SEND_STATUS);
 	}
 }
