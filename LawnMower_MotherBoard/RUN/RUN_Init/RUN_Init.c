@@ -45,7 +45,6 @@ void RUN_Init()
 	RUN_Sensors_Init();
 	RUN_Mower_Init();
 	RUN_Timer_Init();
-	RUN_ADC_Init();
 	/*** Enable Interrupt */
 	sei();
 }

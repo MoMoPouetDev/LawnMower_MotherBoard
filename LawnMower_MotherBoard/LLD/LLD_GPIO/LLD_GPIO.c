@@ -63,7 +63,7 @@ void LLD_GPIO_Init(void)
 	//DDRC |= (1<<DDC6); // reset
 
 	PORTC = 0x00;
-	//PORTC &= ~(1<<PORTC0) & ~(1<<PORTC1); // ADC - No Pull-Up
+	PORTC |= (1<<PORTC0) | (1<<PORTC1); // ADC - No Pull-Up -> Not used anymore pull up
 	PORTC |= (1<<PORTC2);// TBD Pull Up
 	//PORTC |= (1<<PORTC3); // Blade Brake
 	//PORTC &= ~(1<<PORTC4) & ~(1<<PORTC5); // I2C - Force à 0

@@ -9,7 +9,6 @@
 /* ... INCLUDES ...                                                         */
 /*--------------------------------------------------------------------------*/
 #include "RUN_Init.h"
-#include "RUN_ADC.h"
 #include "RUN_GPIO.h"
 #include "RUN_Sensors.h"
 #include "RUN_Mower.h"
@@ -33,7 +32,6 @@ S_MOWER_FSM_STATE ge_FSM_Phase;
 /*--------------------------------------------------------------------------*/
 static void _FSM_Main_ReadSlaveSensors(uint32_t u32_CyclicTask);
 static void _FSM_Main_GetAngles(uint32_t u32_CyclicTask);
-static void _FSM_Main_ADCRead(uint32_t u32_CyclicTask);
 static void _FSM_Main_SendStatus(uint32_t u32_CyclicTask);
 static void _FSM_Main_TiltProtection(uint32_t u32_CyclicTask);
 static void _FSM_Main_UpdateFsmMower(void);
@@ -75,7 +73,6 @@ void FSM_Main( void )
 		u32_CyclicTask = RUN_Task_GetCyclicTask();
 		_FSM_Main_ReadSlaveSensors(u32_CyclicTask);
 		_FSM_Main_GetAngles(u32_CyclicTask);
-		_FSM_Main_ADCRead(u32_CyclicTask);
 		_FSM_Main_SendStatus(u32_CyclicTask);
 		_FSM_Main_TiltProtection(u32_CyclicTask);
       /***************************************************************************************************************/
@@ -128,14 +125,6 @@ static void _FSM_Main_GetAngles(uint32_t u32_CyclicTask)
 	if ( (u32_CyclicTask & CYCLIC_TASK_ANGLE_READ) != 0) {
 		RUN_Mower_GetAngles();
 		RUN_Task_EraseCyclicTask(CYCLIC_TASK_ANGLE_READ);
-	}
-}
-
-static void _FSM_Main_ADCRead(uint32_t u32_CyclicTask)
-{
-	if ( (u32_CyclicTask & CYCLIC_TASK_ADC_READ_VALUE) != 0) {
-		RUN_ADC_ReadValue();
-		RUN_Task_EraseCyclicTask(CYCLIC_TASK_ADC_READ_VALUE);
 	}
 }
 

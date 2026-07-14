@@ -10,7 +10,6 @@
 /*--------------------------------------------------------------------------*/
 #include "RUN_Task.h"
 #include "RUN_Task_Interface.h"
-#include "RUN_ADC.h"
 #include "RUN_Sensors.h"
 #include "RUN_GPIO.h"
 #include "RUN_PWM.h"
@@ -118,7 +117,7 @@ static void _FSM_Dock_LeavingDockCharger(uint32_t u32_CyclicTask)
 	if ( (u32_CyclicTask & CYCLIC_TASK_LEAVE_DOCK) != 0) {
 		gu8_leavingDockState = RUN_Mower_LeaveDockCharger();
 
-		RUN_Task_EraseCyclicTask(CYCLIC_TASK_ADC_READ_VALUE);
+		RUN_Task_EraseCyclicTask(CYCLIC_TASK_LEAVE_DOCK);
 	}
 }
 

@@ -22,14 +22,12 @@
 /* ... DATAS TYPE ...                                                       */
 /*--------------------------------------------------------------------------*/
 static uint8_t gu8_runMowerState;
-static uint8_t gu8_wireDetectionState;
 static uint8_t gu8_bumperDetectionState;
 static uint8_t gu8_sonarDetectionState;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
 static void _FSM_Operative_RunMower(uint32_t u32_CyclicTask);
-static void _FSM_Operative_WireDetection(uint32_t u32_CyclicTask);
 static void _FSM_Operative_BumperDetection(uint32_t u32_CyclicTask);
 static void _FSM_Operative_SonarDetection(uint32_t u32_CyclicTask);
 static void _FSM_Operative_DisableAllMotor(void);
@@ -40,7 +38,6 @@ static void _FSM_Operative_DisableMotor(void);
 void FSM_Operative_Init(void)
 {
 	gu8_runMowerState = 0;
-	gu8_wireDetectionState = 0;
 	gu8_bumperDetectionState = 0;
 	gu8_sonarDetectionState = 0;
 }
@@ -81,11 +78,7 @@ void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
 			u8_startButtonState = RUN_GPIO_GetStartButton();
 			u8_stopButtonState = RUN_GPIO_GetStopButton();
 			
-			if (gu8_runMowerState == 1)
-			{
-				FSM_Enum_SetFsmPhase(S_SUP_OPERATIVE_Wire_Detection);
-			}
-			else if (gu8_runMowerState == 2)
+			if (gu8_runMowerState == 2)
 			{
 				FSM_Enum_SetFsmPhase(S_SUP_OPERATIVE_Bumper_Detection);
 			}
@@ -124,19 +117,6 @@ void FSM_Operative(S_MOWER_FSM_STATE e_FSM_Operative_State)
 				FSM_Enum_SetFsmPhase(S_SUP_OPERATIVE_Waiting_For_Return_To_Base);
 			}
 			break;
-
-	  	case S_SUP_OPERATIVE_Wire_Detection :
-			_FSM_Operative_WireDetection(u32_CyclicTask);
-
-			if (gu8_wireDetectionState == 1)
-			{
-				FSM_Enum_SetFsmPhase(S_SUP_OPERATIVE_Moving);
-			}
-			else if (gu8_wireDetectionState == 2)
-			{
-				FSM_Enum_SetFsmPhase(S_SUP_OPERATIVE_Bumper_Detection);
-			}
-		 	break;
 
 	  	case S_SUP_OPERATIVE_Bumper_Detection:
 			_FSM_Operative_BumperDetection(u32_CyclicTask);
@@ -189,14 +169,6 @@ static void _FSM_Operative_RunMower(uint32_t u32_CyclicTask)
 	if ( (u32_CyclicTask & CYCLIC_TASK_RUN_MOWER) != 0) {
 		gu8_runMowerState = RUN_Mower_RunMower();
 		RUN_Task_EraseCyclicTask(CYCLIC_TASK_RUN_MOWER);
-	}
-}
-
-static void _FSM_Operative_WireDetection(uint32_t u32_CyclicTask)
-{
-	if ( (u32_CyclicTask & CYCLIC_TASK_WIRE_DETECTION) != 0) {
-		gu8_wireDetectionState = RUN_Mower_WireDetection();
-		RUN_Task_EraseCyclicTask(CYCLIC_TASK_WIRE_DETECTION);
 	}
 }
 
