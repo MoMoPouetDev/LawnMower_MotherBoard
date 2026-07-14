@@ -21,7 +21,6 @@
 #include "RUN_FIFO.h"
 #include "RUN_Sensors.h"
 #include "RUN_Mower.h"
-#include "RUN_BLE.h"
 
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
@@ -41,7 +40,6 @@ void RUN_Init()
 	RUN_GPIO_Init();
 	RUN_I2C_Init();
 	RUN_UART_Init();
-	RUN_BLE_Init();
 	RUN_PWM_Init();
 	RUN_FIFO_Init();
 	RUN_Sensors_Init();

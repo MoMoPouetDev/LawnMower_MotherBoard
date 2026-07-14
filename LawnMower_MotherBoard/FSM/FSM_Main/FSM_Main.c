@@ -10,7 +10,6 @@
 /*--------------------------------------------------------------------------*/
 #include "RUN_Init.h"
 #include "RUN_ADC.h"
-#include "RUN_BLE.h"
 #include "RUN_GPIO.h"
 #include "RUN_Sensors.h"
 #include "RUN_Mower.h"
@@ -38,7 +37,6 @@ static void _FSM_Main_ADCRead(uint32_t u32_CyclicTask);
 static void _FSM_Main_SendStatus(uint32_t u32_CyclicTask);
 static void _FSM_Main_TiltProtection(uint32_t u32_CyclicTask);
 static void _FSM_Main_UpdateFsmMower(void);
-static void _FSM_TEST(uint32_t u32_CyclicTask);
 
 /*---------------------------------------------------------------------------*/
 /* ... FUNCTIONS DEFINITIONS...                                              */
@@ -83,7 +81,6 @@ void FSM_Main( void )
       /***************************************************************************************************************/
       /*                                  DEBUG                                                   */
       /***************************************************************************************************************/
-		//FSM_TEST_SonarDistance(u32_CyclicTask);
 
 	  /***************************************************************************************************************/
 	  /*                                   FINITE STATE MACHINE                                                      */
@@ -144,13 +141,12 @@ static void _FSM_Main_ADCRead(uint32_t u32_CyclicTask)
 
 static void _FSM_Main_SendStatus(uint32_t u32_CyclicTask)
 {
-	if ( (u32_CyclicTask & CYCLIC_TASK_BLE_SEND_STATUS) != 0) {
+	if ( (u32_CyclicTask & CYCLIC_TASK_DEBUG) != 0) {
 #ifndef DEBUG_UART
-		RUN_BLE_SendStatus();
 #else
 		RUN_UART_DebugSendStatus();
 #endif
-		RUN_Task_EraseCyclicTask(CYCLIC_TASK_BLE_SEND_STATUS);
+		RUN_Task_EraseCyclicTask(CYCLIC_TASK_DEBUG);
 	}
 }
 
@@ -159,13 +155,5 @@ static void _FSM_Main_TiltProtection(uint32_t u32_CyclicTask)
 	if ( (u32_CyclicTask & CYCLIC_TASK_TILT_PROTECTION) != 0) {
 		RUN_Mower_TiltProtection();
 		RUN_Task_EraseCyclicTask(CYCLIC_TASK_TILT_PROTECTION);
-	}
-}
-
-static void _FSM_TEST(uint32_t u32_CyclicTask)
-{
-	if ( (u32_CyclicTask & CYCLIC_TASK_DEBUG) != 0) {
-
-		RUN_Task_EraseCyclicTask(CYCLIC_TASK_DEBUG);
 	}
 }

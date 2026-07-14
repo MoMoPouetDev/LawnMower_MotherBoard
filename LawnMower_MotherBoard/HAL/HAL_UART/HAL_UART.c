@@ -27,23 +27,6 @@ void HAL_UART_Init()
 	LLD_UART_Init();
 }
 
-void HAL_UART_BleInit()
-{
-#ifndef DEBUG_UART
-	char commandAT[] = "AT";
-	char commandRole[] = "AT+ROLE0";
-	char commandUuid[] = "AT+UUID0xFFE0";
-	char commandChar[] = "AT+CHAR0xFFE1";
-	char commandName[] = "AT+NAMEMower";
-
-	while (!(HAL_UART_SendCommand(commandAT, strlen(commandAT))));
-	while (!(HAL_UART_SendCommand(commandRole, strlen(commandRole))));
-	while (!(HAL_UART_SendCommand(commandUuid, strlen(commandUuid))));
-	while (!(HAL_UART_SendCommand(commandChar, strlen(commandChar))));
-	while (!(HAL_UART_SendCommand(commandName, strlen(commandName))));
-#endif
-}
-
 void HAL_UART_Reception()
 {
 
