@@ -17,7 +17,7 @@
 #ifndef DEBUG_UART
 #define BAUD 9600
 #else
-#define BAUD 115200
+#define BAUD 57600
 #endif
 #define BAUD_PRESCALE ((F_CPU/ (16UL*BAUD))-1)
 

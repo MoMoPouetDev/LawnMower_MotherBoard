@@ -35,6 +35,7 @@
 /*** Timer ***/
 #define GPT_ONE_SECOND 100
 #define GPT_FIVE_SECOND 500
+#define GPT_SEVEN_SECOND 700
 /*** GPS ***/
 #define COORDINATES_BASE_LAT 49.2315928
 #define COORDINATES_BASE_LONG 1.2470619
@@ -466,7 +467,7 @@ uint8_t RUN_Mower_BumperDetection()
 			_u16_endAngle = (_u16_startAngle + _u16_randAngle)%360;
 
 			RUN_PWM_Backward(MIDDLE_SPEED);
-
+			_u16_cptValue = 0;
 			_u8_bumperState = 1;
 			
 			break;
@@ -488,6 +489,7 @@ uint8_t RUN_Mower_BumperDetection()
 			if ( (gu16_currentAngle > ((_u16_endAngle - gu8_deltaAngle)%360)) && (gu16_currentAngle < ((_u16_endAngle + gu8_deltaAngle)%360)) )
 			{
 				_u8_bumperState = 3;
+				_u16_cptValue = 0;
 			}
 			else
 			{
@@ -518,6 +520,12 @@ uint8_t RUN_Mower_BumperDetection()
 				{
 					_u8_bumperState = 3;
 				}
+				else if (_u16_cptValue > GPT_SEVEN_SECOND)
+				{
+					_u8_bumperState = 3;
+					_u16_cptValue = 0;
+				}
+				_u16_cptValue++;
 			}
 
 			break;
