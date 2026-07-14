@@ -14,7 +14,11 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES LLD UART ...                                               */
 /*--------------------------------------------------------------------------*/
+#ifndef DEBUG_UART
 #define BAUD 9600
+#else
+#define BAUD 57600
+#endif
 #define BAUD_PRESCALE ((F_CPU/ (16UL*BAUD))-1)
 
 /*--------------------------------------------------------------------------*/
@@ -31,13 +35,21 @@
 **/
 void LLD_UART_Init(void)
 {
+    uint16_t u16_baudPrescale = 0;
+
+    /* Arrondi correct : (F_CPU + 8*baud) / (16*baud) - 1
+       au lieu d'une simple troncature qui décale l'UBRR de 1 */
+    u16_baudPrescale = (uint16_t)(((F_CPU + (8UL * BAUD)) / (16UL * BAUD)) - 1UL);
+
     /***** UART BaudRate *****/
-    UBRR0H = (unsigned char) (BAUD_PRESCALE>>8);
-    UBRR0L = (unsigned char) BAUD_PRESCALE;
-    
+    UBRR0H = (unsigned char)(u16_baudPrescale >> 8);
+    UBRR0L = (unsigned char)u16_baudPrescale;
+
+    /***** Frame format: 8-bit, no parity, 1 stop bit *****/
+    UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);
+
     /***** Autoriser Transmition et Reception *****/
-    UCSR0B = (1<<TXEN0) | (1<<RXEN0);
-    UCSR0C = (1<<UCSZ01) | (1<<UCSZ00); 
+    UCSR0B = (1 << TXEN0) | (1 << RXEN0);
 }
 
 /**

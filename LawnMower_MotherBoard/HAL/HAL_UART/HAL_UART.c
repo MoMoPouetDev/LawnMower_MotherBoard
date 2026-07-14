@@ -29,6 +29,7 @@ void HAL_UART_Init()
 
 void HAL_UART_BleInit()
 {
+#ifndef DEBUG_UART
 	char commandAT[] = "AT";
 	char commandRole[] = "AT+ROLE0";
 	char commandUuid[] = "AT+UUID0xFFE0";
@@ -40,6 +41,7 @@ void HAL_UART_BleInit()
 	while (!(HAL_UART_SendCommand(commandUuid, strlen(commandUuid))));
 	while (!(HAL_UART_SendCommand(commandChar, strlen(commandChar))));
 	while (!(HAL_UART_SendCommand(commandName, strlen(commandName))));
+#endif
 }
 
 void HAL_UART_Reception()
@@ -92,4 +94,15 @@ uint8_t HAL_UART_SendCommand(uint8_t* pu8_buffer, uint8_t u8_bufferSize)
 	}
 
 	return u8_returnValue;
+}
+
+void HAL_UART_SendString(const char* pc_string)
+{
+    uint8_t u8_i = 0;
+    uint8_t u8_length = (uint8_t)strlen(pc_string);
+
+    for (u8_i = 0; u8_i < u8_length; u8_i++)
+    {
+        while (LLD_UART_Send((uint8_t*)(pc_string + u8_i)) == 0);
+    }
 }

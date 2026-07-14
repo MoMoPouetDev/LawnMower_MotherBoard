@@ -35,6 +35,7 @@
 /*** Timer ***/
 #define GPT_ONE_SECOND 100
 #define GPT_FIVE_SECOND 500
+#define GPT_SEVEN_SECOND 700
 /*** GPS ***/
 #define COORDINATES_BASE_LAT 49.2315928
 #define COORDINATES_BASE_LONG 1.2470619
@@ -68,8 +69,8 @@
 #define ROLL_MAX 30
 /*** Sonar ***/
 #define SONAR_WARN 30
-#define SONAR_LIMITE 20
-#define SONAR_ERR 10
+#define SONAR_LIMITE 10
+#define SONAR_ERR 5
 #define SONAR_DIST_ERR 999
 /*** Variables ***/
 static uint8_t gu8_deltaAngle;
@@ -452,6 +453,9 @@ uint8_t RUN_Mower_BumperDetection()
 	uint8_t u8_leftBumperState = 0;
 	uint8_t u8_centerBumperState = 0;
 	uint8_t u8_rightBumperState = 0;
+	uint8_t u8_distanceSonarFC     = 0;
+    uint8_t u8_distanceSonarFL     = 0;
+    uint8_t u8_distanceSonarFR     = 0;
 	uint8_t u8_returnValue = 0;
 
 	switch(_u8_bumperState)
@@ -463,7 +467,7 @@ uint8_t RUN_Mower_BumperDetection()
 			_u16_endAngle = (_u16_startAngle + _u16_randAngle)%360;
 
 			RUN_PWM_Backward(MIDDLE_SPEED);
-
+			_u16_cptValue = 0;
 			_u8_bumperState = 1;
 			
 			break;
@@ -485,6 +489,7 @@ uint8_t RUN_Mower_BumperDetection()
 			if ( (gu16_currentAngle > ((_u16_endAngle - gu8_deltaAngle)%360)) && (gu16_currentAngle < ((_u16_endAngle + gu8_deltaAngle)%360)) )
 			{
 				_u8_bumperState = 3;
+				_u16_cptValue = 0;
 			}
 			else
 			{
@@ -495,15 +500,32 @@ uint8_t RUN_Mower_BumperDetection()
 				u8_centerBumperState = HAL_GPIO_GetFlagBumper(E_CENTER_BUMPER);
 				u8_rightBumperState = HAL_GPIO_GetFlagBumper(E_RIGHT_BUMPER);
 
+				u8_distanceSonarFC = RUN_Sensors_GetDistanceSonarFC();
+                u8_distanceSonarFL = RUN_Sensors_GetDistanceSonarFL();
+                u8_distanceSonarFR = RUN_Sensors_GetDistanceSonarFR();
+
 				if ( (u8_leftBumperState == 1) || (u8_centerBumperState == 1) || (u8_rightBumperState == 1) )
 				{
 					RUN_PWM_Stop();
 					_u8_bumperState = 0;
 				}
+				else if ((u8_distanceSonarFC <= SONAR_LIMITE)
+                      || (u8_distanceSonarFL <= SONAR_LIMITE)
+                      || (u8_distanceSonarFR <= SONAR_LIMITE))
+                {
+                    RUN_PWM_Stop();
+                    _u8_bumperState = 3;
+                }
 				else if ((gu16_distanceWireLeft > WIRE_DETECTION_LIMITE) || (gu16_distanceWireRight > WIRE_DETECTION_LIMITE) )
 				{
 					_u8_bumperState = 3;
 				}
+				else if (_u16_cptValue > GPT_SEVEN_SECOND)
+				{
+					_u8_bumperState = 3;
+					_u16_cptValue = 0;
+				}
+				_u16_cptValue++;
 			}
 
 			break;
@@ -515,6 +537,101 @@ uint8_t RUN_Mower_BumperDetection()
 			break;
     }
 	return u8_returnValue;
+}
+
+uint8_t RUN_Mower_SonarDetection(void)
+{
+    static uint8_t  _u8_sonarState   = 0;
+    static uint16_t _u16_randAngle   = 0;
+    static uint16_t _u16_startAngle  = 0;
+    static uint16_t _u16_endAngle    = 0;
+    static uint16_t _u16_cptValue    = 0;
+	uint8_t u8_leftBumperState       = 0;
+    uint8_t u8_centerBumperState     = 0;
+    uint8_t u8_rightBumperState      = 0;
+    uint8_t u8_distanceSonarFC       = 0;
+    uint8_t u8_distanceSonarFL       = 0;
+    uint8_t u8_distanceSonarFR       = 0;
+    uint8_t u8_returnValue           = 0;
+
+    switch(_u8_sonarState)
+    {
+        default:
+        case 0:
+            _u16_randAngle  = _RUN_Mower_MyRandDeg(360);
+            _u16_startAngle = gu16_currentAngle;
+            _u16_endAngle   = (_u16_startAngle + _u16_randAngle) % 360;
+
+            RUN_PWM_Backward(MIDDLE_SPEED);
+
+            _u8_sonarState = 1;
+
+            break;
+
+        case 1:
+            if (_u16_cptValue >= GPT_ONE_SECOND)
+            {
+                RUN_PWM_Stop();
+                RUN_PWM_Right();
+                _u16_cptValue  = 0;
+                _u8_sonarState = 2;
+            }
+            else
+            {
+                _u16_cptValue++;
+            }
+
+            break;
+
+        case 2:
+            if ( (gu16_currentAngle > ((_u16_endAngle - gu8_deltaAngle) % 360))
+              && (gu16_currentAngle < ((_u16_endAngle + gu8_deltaAngle) % 360)) )
+            {
+                _u8_sonarState = 3;
+            }
+            else
+            {
+                gu16_distanceWireLeft  = HAL_ADC_GetLeftWireValue();
+                gu16_distanceWireRight = HAL_ADC_GetRightWireValue();
+
+				u8_leftBumperState = HAL_GPIO_GetFlagBumper(E_LEFT_BUMPER);
+				u8_centerBumperState = HAL_GPIO_GetFlagBumper(E_CENTER_BUMPER);
+				u8_rightBumperState = HAL_GPIO_GetFlagBumper(E_RIGHT_BUMPER);
+
+                u8_distanceSonarFC = RUN_Sensors_GetDistanceSonarFC();
+                u8_distanceSonarFL = RUN_Sensors_GetDistanceSonarFL();
+                u8_distanceSonarFR = RUN_Sensors_GetDistanceSonarFR();
+
+				if ((u8_distanceSonarFC <= SONAR_LIMITE)
+                      || (u8_distanceSonarFL <= SONAR_LIMITE)
+                      || (u8_distanceSonarFR <= SONAR_LIMITE))
+                {
+                    RUN_PWM_Stop();
+                    _u8_sonarState = 0;
+                }
+				else if ((u8_leftBumperState == 1) || (u8_centerBumperState == 1) || (u8_rightBumperState == 1))
+				{
+					RUN_PWM_Stop();
+					_u8_sonarState = 3;
+				}
+                else if ((gu16_distanceWireLeft > WIRE_DETECTION_LIMITE)
+                 || (gu16_distanceWireRight > WIRE_DETECTION_LIMITE))
+                {
+                    _u8_sonarState = 3;
+                }
+            }
+
+            break;
+
+        case 3:
+            RUN_PWM_Stop();
+            _u8_sonarState = 0;
+            u8_returnValue = 1;
+
+            break;
+    }
+
+    return u8_returnValue;
 }
 
 uint8_t RUN_Mower_DirectionFromBase() 
@@ -615,6 +732,14 @@ uint8_t RUN_Mower_RunMower()
 		_u16_targetHeading = 0xFFFF;
 		_s16_prevError = 0;
 		u8_returnValue = 2;
+	}
+	else if ((u8_distanceSonarFC <= SONAR_LIMITE)
+      || (u8_distanceSonarFL <= SONAR_LIMITE)
+      || (u8_distanceSonarFR <= SONAR_LIMITE))
+	{
+		_u16_targetHeading = 0xFFFF;
+		_s16_prevError     = 0;
+		u8_returnValue     = 3;
 	}
 	else 
 	{

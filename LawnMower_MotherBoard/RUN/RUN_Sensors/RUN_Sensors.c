@@ -17,8 +17,8 @@
 /*--------------------------------------------------------------------------*/
 /* ... DATATYPES ...                                                        */
 /*--------------------------------------------------------------------------*/
-#define SENSORS_TIMER_ONE_SECOND	1000
-#define SENSORS_TIMER_DEMI_SECOND	500
+#define SENSORS_TIMER_ONE_SECOND	100
+#define SENSORS_TIMER_DEMI_SECOND	50
 
 static uint8_t gu8_batteryVoltage;
 static uint8_t gu8_batteryAmp;
@@ -64,7 +64,7 @@ int8_t RUN_Sensors_IsEnoughCharged()
 
 	battery = RUN_Sensors_GetBatteryPercent();
 	
-	if (battery <= SENSOR_V_FAIBLE_WARN) 
+	if (battery <= 5) 
 	{
 		if(battery <= SENSOR_V_EMPTY)
 		{
@@ -144,7 +144,7 @@ void RUN_Sensors_SlaveData(void)
 
 	e_i2cUsed = RUN_I2C_GetUsed();
 	
-	if (_u16_slaveCpt >= SENSORS_TIMER_DEMI_SECOND)
+	if (_u16_slaveCpt >= SENSORS_TIMER_ONE_SECOND)
 	{
 		if ((e_i2cUsed == E_I2C_USED_NONE) || (e_i2cUsed == E_I2C_USED_SLAVE))
 		{

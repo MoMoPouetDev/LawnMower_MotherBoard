@@ -28,7 +28,8 @@
      S_SUP_OPERATIVE_Moving                         = S_SUP_OPERATIVE_Init + 1U,//68
      S_SUP_OPERATIVE_Wire_Detection                 = S_SUP_OPERATIVE_Moving + 1U,
      S_SUP_OPERATIVE_Bumper_Detection               = S_SUP_OPERATIVE_Wire_Detection + 1U,
-     S_SUP_OPERATIVE_Waiting                        = S_SUP_OPERATIVE_Bumper_Detection + 1U,
+     S_SUP_OPERATIVE_Sonar_Detection                = S_SUP_OPERATIVE_Bumper_Detection + 1U,
+     S_SUP_OPERATIVE_Waiting                        = S_SUP_OPERATIVE_Sonar_Detection + 1U,
      S_SUP_OPERATIVE_Waiting_For_Return_To_Base     = PHASE_OPERATIVE_WAITING_FOR_RETURN_TO_BASE,
 
      S_SUP_RETURN_TO_BASE_Init                      = PHASE_RETURN_TO_BASE_INIT, //80
@@ -36,7 +37,8 @@
      S_SUP_RETURN_TO_BASE_Moving                    = S_SUP_RETURN_TO_BASE_Angle_To_Base + 1U,
      S_SUP_RETURN_TO_BASE_Wire_Detection            = S_SUP_RETURN_TO_BASE_Moving + 1U,//82
      S_SUP_RETURN_TO_BASE_Bumper_Detection          = S_SUP_RETURN_TO_BASE_Wire_Detection + 1U,
-     S_SUP_RETURN_TO_BASE_Wire_Guiding              = S_SUP_RETURN_TO_BASE_Bumper_Detection + 1U,//83
+     S_SUP_RETURN_TO_BASE_Sonar_Detection           = S_SUP_RETURN_TO_BASE_Bumper_Detection + 1U,
+     S_SUP_RETURN_TO_BASE_Wire_Guiding              = S_SUP_RETURN_TO_BASE_Sonar_Detection + 1U,//83
      S_SUP_RETURN_TO_BASE_Waiting_For_Docking      = PHASE_RETURN_TO_BASE_WAITING_DOCKING,//95
 
      S_SUP_ERROR_Init                               = PHASE_ERROR_INIT,
