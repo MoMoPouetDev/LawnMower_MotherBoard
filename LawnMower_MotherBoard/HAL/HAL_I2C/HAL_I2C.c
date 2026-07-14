@@ -19,6 +19,7 @@
 #define MASTER_ADDR 0x10
 #define SLAVE_SENSOR_ADDR (0x10<<1)
 #define COMPASS_ADDR (0x60<<1)
+#define ESP32_ADDR (0x20<<1)
 /*** Compass ***/
 #define ADDR_DATA_COMPASS_MSB 0x02
 #define ADDR_DATA_COMPASS_LSB 0x03
@@ -138,6 +139,76 @@ uint8_t HAL_I2C_WriteSlave(uint8_t u8_mowerState)
 			break;
 
 		case 1:
+			_u8_slaveState = 0;
+			u8_ReturnValue = 1;
+			break;
+		
+		default:
+			_u8_slaveState = 0;
+			break;
+	}
+
+	return u8_ReturnValue;
+}
+
+uint8_t HAL_I2C_ReadESP32(uint8_t* pu8_RxBuff, uint8_t* pu8_Size)
+{
+	static E_SLAVE_READ_DATA _e_slaveReadData = 0;
+	static uint8_t _u8_slaveState = 0;
+	uint8_t u8_ReturnValue = 0;
+
+	switch (_u8_slaveState)
+	{
+		case 0:
+			*(pu8_RxBuff+_e_slaveReadData) = LLD_I2C_Read(ESP32_ADDR, _e_slaveReadData);
+			if(_e_slaveReadData == (E_ESP32_READ_DATA_NUMBER-1))
+			{
+				_u8_slaveState++;
+			}
+			else
+			{
+				_e_slaveReadData++;
+			}
+			break;
+
+		case 1:
+			*pu8_Size = _e_slaveReadData;
+			_e_slaveReadData = 0;
+			_u8_slaveState = 0;
+			u8_ReturnValue = 1;
+			break;
+		
+		default:
+			_u8_slaveState = 0;
+			_e_slaveReadData = 0;
+			break;
+	}
+	return u8_ReturnValue;
+}
+
+uint8_t HAL_I2C_WriteESP32(uint8_t u8_mowerState, uint16_t u16_angle)
+{
+	static uint8_t _u8_slaveState = 0;
+	uint8_t u8_ReturnValue = 0;
+
+	switch (_u8_slaveState)
+	{
+		case 0:
+			LLD_I2C_Write(ESP32_ADDR, E_ESP32_WRITE_DATA_LED_STATUS, u8_mowerState);
+			_u8_slaveState++;
+			break;
+
+		case 1:
+			LLD_I2C_Write(ESP32_ADDR, E_ESP32_WRITE_DATA_AZIMUT_MSB, (uint8_t)((u16_angle>>8) & 0x00FF));
+			_u8_slaveState++;
+			break;
+
+		case 2:
+			LLD_I2C_Write(ESP32_ADDR, E_ESP32_WRITE_DATA_AZIMUT_MSB, (uint8_t)((u16_angle) & 0x00FF));
+			_u8_slaveState++;
+			break;	
+		
+		case 3:
 			_u8_slaveState = 0;
 			u8_ReturnValue = 1;
 			break;

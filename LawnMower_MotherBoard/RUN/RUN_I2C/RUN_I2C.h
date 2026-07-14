@@ -21,6 +21,7 @@ typedef enum
     E_I2C_USED_NONE,
     E_I2C_USED_ANGLES,
     E_I2C_USED_SLAVE,
+    E_I2C_USED_ESP32
 }E_I2C_USED;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */

@@ -70,6 +70,7 @@
 /*** Variables ***/
 static uint8_t gu8_deltaAngle;
 static uint8_t gu8_timeToMow;
+static uint8_t gu8_enrolled;
 static uint16_t gu16_currentAngle;
 static uint16_t gu16_azimut;
 static int16_t gs16_pitch;
@@ -87,6 +88,7 @@ void RUN_Mower_Init(void)
 {
 	gu8_deltaAngle = DELTA_ANGLE;
 	gu8_timeToMow = 0;
+	gu8_enrolled = 0;
 	gs16_pitch = 0;
 	gs8_roll = 0;
 	gu16_currentAngle = 0;
@@ -101,6 +103,16 @@ uint8_t RUN_Mower_IsTimeToMow(void)
 void RUN_Mower_SetTimeToMow(uint8_t u8_timeToMow)
 {
 	gu8_timeToMow = u8_timeToMow;
+}
+
+uint8_t RUN_Mower_IsEnrolled(void)
+{
+	return gu8_enrolled;
+}
+
+void RUN_Mower_SetEnrolled(uint8_t u8_enrolled)
+{
+	gu8_enrolled = u8_enrolled;
 }
 
 uint8_t RUN_Mower_LeaveDockCharger(void)

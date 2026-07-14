@@ -11,8 +11,11 @@
 #define PHASE_RETURN_TO_BASE_INIT                                   0x20   //32
 #define PHASE_RETURN_TO_BASE_WAITING_DOCKING                        0x2F   //47
 
-#define PHASE_ERROR_INIT                                            0x30   //46
-#define PHASE_ERROR_WAITING_FOR_USER_DECISION                       0x3F   //61
+#define PHASE_ENROLL_INIT                                           0x40
+#define PHASE_ENROLL_END                                            0x4F
+
+#define PHASE_ERROR_INIT                                            0x40   //46
+#define PHASE_ERROR_WAITING_FOR_USER_DECISION                       0x4F   //61
 
 /* DECLARATION DES ETATS DU MODULE SUPERVISOR */
  typedef enum
@@ -36,7 +39,11 @@
      S_SUP_RETURN_TO_BASE_Moving                    = S_SUP_RETURN_TO_BASE_Angle_To_Base + 1U,
      S_SUP_RETURN_TO_BASE_Bumper_Detection          = S_SUP_RETURN_TO_BASE_Moving + 1U,
      S_SUP_RETURN_TO_BASE_Sonar_Detection           = S_SUP_RETURN_TO_BASE_Bumper_Detection + 1U,
-     S_SUP_RETURN_TO_BASE_Waiting_For_Docking      = PHASE_RETURN_TO_BASE_WAITING_DOCKING,//95
+     S_SUP_RETURN_TO_BASE_Waiting_For_Docking       = PHASE_RETURN_TO_BASE_WAITING_DOCKING,//95
+
+     S_SUP_ENROLL_Init                              = PHASE_ENROLL_INIT,
+     S_SUP_ENROLL_In_Progress                       = S_SUP_ENROLL_Init + 1U,
+     S_SUP_ENROLL_End                               = PHASE_ENROLL_END,
 
      S_SUP_ERROR_Init                               = PHASE_ERROR_INIT,
      S_SUP_ERROR_Waiting_For_User_Decision          = PHASE_ERROR_WAITING_FOR_USER_DECISION

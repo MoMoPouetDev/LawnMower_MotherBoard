@@ -1,18 +1,14 @@
 /*
- * FSM_Init.c
+ * FSM_Enroll.c
  *
- *  Created on: 14 OCT 2023
+ *  Created on: 14 Juillet 2026
  *      Author: morgan.venandy
  */
 
 /*--------------------------------------------------------------------------*/
 /* ... INCLUDES ...                                                         */
 /*--------------------------------------------------------------------------*/
-#include "RUN_Sensors.h"
-#include "RUN_GPIO.h"
-#include "RUN_Mower.h"
-#include "FSM_Enum.h"
-#include "FSM_Init.h"
+#include "FSM_Enroll.h"
 
 /*--------------------------------------------------------------------------*/
 /* ... DATAS TYPE ...                                                       */
@@ -24,51 +20,30 @@
 /*---------------------------------------------------------------------------*/
 /* ... FUNCTIONS DEFINITIONS...                                              */
 /*---------------------------------------------------------------------------*/
-void FSM_Init_Init()
+void FSM_Enroll_Init()
 {
 
 }
 
-void FSM_Init(S_MOWER_FSM_STATE e_FSM_Init_State)
+void FSM_Enroll(S_MOWER_FSM_STATE e_FSM_Init_State)
 {
-	uint8_t u8_startButtonState = 0;
-	uint8_t u8_stopButtonState = 0;
-	uint8_t u8_slaveState = 0;
-	uint8_t u8_esp32State = 0;
-	uint8_t u8_isEnrolled = 0;
-	float f_latitude = 0.0;
-	float f_longitude = 0.0;
 	/***************************************************************************************************************/
 	/*                                  ACU FINITE STATE MACHINE                                                   */
 	/***************************************************************************************************************/
     switch( e_FSM_Init_State )
 	{
 		default:
-		case S_SUP_INIT_Init:
-			FSM_Init_Init();
+		case S_SUP_ENROLL_Init:
+			FSM_Enroll_Init();
 
-			u8_startButtonState = RUN_GPIO_GetStartButton();
-			u8_stopButtonState = RUN_GPIO_GetStopButton();
-			u8_slaveState = RUN_Sensors_GetSlaveState();
-			u8_esp32State = RUN_Sensors_GetESP32State();
-			u8_isEnrolled = RUN_Mower_IsEnrolled();
-			f_latitude = RUN_Sensors_GetLatitude();
-			f_longitude = RUN_Sensors_GetLongitude();
-			RUN_GPIO_UpdateBladeState(OFF);
-			
-			if ((f_latitude!= 0.0) && (f_longitude!= 0.0))
-			{
-				RUN_Mower_SetEtatMower(GPS_READY);
-			}
+			break;
 
-			if((u8_esp32State != 0) && ((u8_isEnrolled != 0) || (u8_stopButtonState != 0)))
-			{
-				FSM_Enum_SetFsmPhase(S_SUP_ENROLL_Init);
-			}
-			else if ((u8_startButtonState != 0) && (u8_slaveState != 0) && (u8_esp32State != 0) && (f_latitude!= 0.0) && (f_longitude!= 0.0))
-			{
-				FSM_Enum_SetFsmPhase(S_SUP_DOCK_Init);
-			}
+        case S_SUP_ENROLL_In_Progress:
+
+			break;
+
+        case S_SUP_ENROLL_End:
+
 			break;
 	}
 }

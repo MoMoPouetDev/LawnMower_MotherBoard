@@ -30,13 +30,14 @@ static Etat ge_rain;
 static U_COORDINATES gu_latitude;
 static U_COORDINATES gu_longitude;
 static uint8_t gu8_flagSlaveData;
+static uint8_t gu8_flagESP32Data;
 /*--------------------------------------------------------------------------*/
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
 static uint8_t _RUN_Sensors_ReadSlaveData(void);
 static uint8_t _RUN_Sensors_WriteSlaveData(void);
 static uint8_t _RUN_Sensors_ReadESP32Data(void);
-
+static uint8_t _RUN_Sensors_WriteESP32Data(void);
 /*--------------------------------------------------------------------------*/
 /*! ... FUNCTIONS DEFINITIONS    ...                                        */
 /*--------------------------------------------------------------------------*/
@@ -52,6 +53,7 @@ void RUN_Sensors_Init()
 	gu_latitude.f_coordinates = 0.0;
 	gu_longitude.f_coordinates = 0.0;
 	gu8_flagSlaveData = 0;
+	gu8_flagESP32Data = 0;
 }
 
 uint8_t RUN_Sensors_IsCharging()
@@ -135,6 +137,11 @@ void RUN_Sensors_SetDockState(Etat e_dockState)
 uint8_t RUN_Sensors_GetSlaveState(void)
 {
 	return gu8_flagSlaveData;
+}
+
+uint8_t RUN_Sensors_GetESP32State(void)
+{
+	return gu8_flagESP32Data;
 }
 
 void RUN_Sensors_SlaveData(void)
@@ -237,16 +244,66 @@ static uint8_t _RUN_Sensors_WriteSlaveData(void)
 	return u8_flagI2c;
 }
 
+void RUN_Sensors_ESP32Data(void)
+{
+	static uint8_t _u8_esp32State = 0;
+	static uint16_t _u16_esp32Cpt = 0;
+	uint8_t u8_returnEsp32 = 0;
+	E_I2C_USED e_i2cUsed = E_I2C_USED_NONE;
+
+	e_i2cUsed = RUN_I2C_GetUsed();
+	
+	if (_u16_esp32Cpt >= SENSORS_TIMER_ONE_SECOND)
+	{
+		if ((e_i2cUsed == E_I2C_USED_NONE) || (e_i2cUsed == E_I2C_USED_ESP32))
+		{
+			RUN_I2C_SetUsed(E_I2C_USED_ESP32);
+			switch (_u8_esp32State)
+			{
+				case 0:
+					u8_returnEsp32 = _RUN_Sensors_ReadESP32Data();
+					if(u8_returnEsp32 == 1)
+					{
+						_u8_esp32State++;
+						RUN_I2C_SetUsed(E_I2C_USED_NONE);
+					}
+					break;
+			
+				case 1:
+					u8_returnEsp32 = _RUN_Sensors_WriteESP32Data();
+					if(u8_returnEsp32 == 1)
+					{
+						_u8_esp32State++;
+						RUN_I2C_SetUsed(E_I2C_USED_NONE);
+					}
+					break;
+
+				default:
+					_u8_esp32State = 0;
+					_u16_esp32Cpt = 0;
+					gu8_flagESP32Data = 1;
+					RUN_I2C_SetUsed(E_I2C_USED_NONE);
+					break;
+			}
+		}
+	}
+	else
+	{
+		_u16_esp32Cpt++;
+	}
+}
+
 static uint8_t _RUN_Sensors_ReadESP32Data(void)
 {
 	static uint8_t _tu8_rxBuffSlave[E_ESP32_READ_DATA_NUMBER] = {0};
 	static uint8_t _u8_rxBuffSlaveSize = 0;
 	uint8_t u8_flagI2c = 0;
 
-	u8_flagI2c = HAL_I2C_ReadSlave(_tu8_rxBuffSlave, &_u8_rxBuffSlaveSize);
+	u8_flagI2c = HAL_I2C_ReadESP32(_tu8_rxBuffSlave, &_u8_rxBuffSlaveSize);
 	if (u8_flagI2c != 0)
 	{
 		RUN_Mower_SetTimeToMow(_tu8_rxBuffSlave[E_ESP32_READ_DATA_TIME_TO_MOW]);
+		RUN_Mower_SetEnrolled(_tu8_rxBuffSlave[E_ESP32_READ_DATA_ENROLLED]);
 	
 		gu_longitude.u32_coordinates = (((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LONG_LLSB]) & 0x000000FF)
 									| ((((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LONG_LSB]) << 8) & 0x0000FF00)
@@ -257,6 +314,41 @@ static uint8_t _RUN_Sensors_ReadESP32Data(void)
 									| ((((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LAT_LSB]) << 8) & 0x0000FF00)
 									| ((((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LAT_MSB]) << 16) & 0x00FF0000)
 									| ((((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LAT_MMSB]) << 24) & 0xFF000000);
+	}
+	return u8_flagI2c;
+}
+
+static uint8_t _RUN_Sensors_WriteESP32Data(void)
+{
+	static uint8_t _u8_mowerState = 0;
+	static uint8_t _u8_writeState = 0;
+	static uint16_t _u16_angle = 0;
+	uint8_t u8_flagI2c = 0;
+	EtatMower e_etatMower = UNKNOWN_ETAT;
+	ErrorMower e_errorMower = NTR;
+
+	switch (_u8_writeState)
+	{
+		case 0:
+			e_etatMower = RUN_Mower_GetEtatMower();
+			e_errorMower = RUN_Mower_GetErrorMower();
+			_u16_angle = RUN_Mower_GetCurrentAngle();
+
+			_u8_mowerState = e_etatMower | e_errorMower;
+			_u8_writeState++;
+			break;
+
+		case 1:
+			u8_flagI2c = HAL_I2C_WriteESP32(_u8_mowerState, _u16_angle);
+			if (u8_flagI2c != 0)
+			{
+				_u8_mowerState = 0;
+				_u8_writeState = 0;
+			}			
+			break;
+		
+		default:
+			break;
 	}
 	return u8_flagI2c;
 }

@@ -25,7 +25,7 @@ static uint32_t gArraySlotTask[NB_SLOT_CYCLIC_TASK] =
 	  CYCLIC_TASK_DEBUG,  // 6
 	  CYCLIC_TASK_LEAVE_DOCK,  // 7
 	  CYCLIC_TASK_RUN_MOWER,  // 8
-	  0,  // 9
+	  CYCLIC_TASK_ESP32_DATA,  // 9
 };
 
 /*--------------------------------------------------------------------------*/

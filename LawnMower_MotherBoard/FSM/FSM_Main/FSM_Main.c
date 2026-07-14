@@ -31,6 +31,7 @@ S_MOWER_FSM_STATE ge_FSM_Phase;
 /*! ... LOCAL FUNCTIONS DECLARATIONS ...                                    */
 /*--------------------------------------------------------------------------*/
 static void _FSM_Main_ReadSlaveSensors(uint32_t u32_CyclicTask);
+static void _FSM_Main_ReadESP32Sensors(uint32_t u32_CyclicTask);
 static void _FSM_Main_GetAngles(uint32_t u32_CyclicTask);
 static void _FSM_Main_SendStatus(uint32_t u32_CyclicTask);
 static void _FSM_Main_TiltProtection(uint32_t u32_CyclicTask);
@@ -72,6 +73,7 @@ void FSM_Main( void )
 	/***************************************************************************************************************/
 		u32_CyclicTask = RUN_Task_GetCyclicTask();
 		_FSM_Main_ReadSlaveSensors(u32_CyclicTask);
+		_FSM_Main_ReadESP32Sensors(u32_CyclicTask);
 		_FSM_Main_GetAngles(u32_CyclicTask);
 		_FSM_Main_SendStatus(u32_CyclicTask);
 		_FSM_Main_TiltProtection(u32_CyclicTask);
@@ -117,6 +119,14 @@ static void _FSM_Main_ReadSlaveSensors(uint32_t u32_CyclicTask)
 	if ( (u32_CyclicTask & CYCLIC_TASK_SLAVE_DATA) != 0) {
 		RUN_Sensors_SlaveData();
 		RUN_Task_EraseCyclicTask(CYCLIC_TASK_SLAVE_DATA);
+	}
+}
+
+static void _FSM_Main_ReadESP32Sensors(uint32_t u32_CyclicTask)
+{
+	if ( (u32_CyclicTask & CYCLIC_TASK_ESP32_DATA) != 0) {
+		RUN_Sensors_ESP32Data();
+		RUN_Task_EraseCyclicTask(CYCLIC_TASK_ESP32_DATA);
 	}
 }
 
