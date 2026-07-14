@@ -35,6 +35,8 @@ static uint8_t gu8_flagSlaveData;
 /*--------------------------------------------------------------------------*/
 static uint8_t _RUN_Sensors_ReadSlaveData(void);
 static uint8_t _RUN_Sensors_WriteSlaveData(void);
+static uint8_t _RUN_Sensors_ReadESP32Data(void);
+
 /*--------------------------------------------------------------------------*/
 /*! ... FUNCTIONS DEFINITIONS    ...                                        */
 /*--------------------------------------------------------------------------*/
@@ -196,20 +198,9 @@ static uint8_t _RUN_Sensors_ReadSlaveData(void)
 		gu8_batteryVoltage = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_V];
 		gu8_batteryAmp = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_A];
 		ge_dock = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_DOCK];
-		RUN_Mower_SetTimeToMow(_tu8_rxBuffSlave[E_SLAVE_READ_DATA_TIME_TO_MOW]);
 		gu8_distanceSonarFC = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_SONAR_FC];
 		gu8_distanceSonarFL = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_SONAR_FL];
 		gu8_distanceSonarFR = _tu8_rxBuffSlave[E_SLAVE_READ_DATA_SONAR_FR];
-	
-		gu_longitude.u32_coordinates = (((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_LLSB]) & 0x000000FF)
-									| ((((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_LSB]) << 8) & 0x0000FF00)
-									| ((((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_MSB]) << 16) & 0x00FF0000)
-									| ((((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LONG_MMSB]) << 24) & 0xFF000000);
-
-		gu_latitude.u32_coordinates = (((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_LLSB]) & 0x000000FF)
-									| ((((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_LSB]) << 8) & 0x0000FF00)
-									| ((((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_MSB]) << 16) & 0x00FF0000)
-									| ((((uint32_t)_tu8_rxBuffSlave[E_SLAVE_READ_DATA_GPS_LAT_MMSB]) << 24) & 0xFF000000);
 	}
 	return u8_flagI2c;
 }
@@ -242,6 +233,30 @@ static uint8_t _RUN_Sensors_WriteSlaveData(void)
 		
 		default:
 			break;
+	}
+	return u8_flagI2c;
+}
+
+static uint8_t _RUN_Sensors_ReadESP32Data(void)
+{
+	static uint8_t _tu8_rxBuffSlave[E_ESP32_READ_DATA_NUMBER] = {0};
+	static uint8_t _u8_rxBuffSlaveSize = 0;
+	uint8_t u8_flagI2c = 0;
+
+	u8_flagI2c = HAL_I2C_ReadSlave(_tu8_rxBuffSlave, &_u8_rxBuffSlaveSize);
+	if (u8_flagI2c != 0)
+	{
+		RUN_Mower_SetTimeToMow(_tu8_rxBuffSlave[E_ESP32_READ_DATA_TIME_TO_MOW]);
+	
+		gu_longitude.u32_coordinates = (((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LONG_LLSB]) & 0x000000FF)
+									| ((((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LONG_LSB]) << 8) & 0x0000FF00)
+									| ((((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LONG_MSB]) << 16) & 0x00FF0000)
+									| ((((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LONG_MMSB]) << 24) & 0xFF000000);
+
+		gu_latitude.u32_coordinates = (((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LAT_LLSB]) & 0x000000FF)
+									| ((((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LAT_LSB]) << 8) & 0x0000FF00)
+									| ((((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LAT_MSB]) << 16) & 0x00FF0000)
+									| ((((uint32_t)_tu8_rxBuffSlave[E_ESP32_READ_DATA_GPS_LAT_MMSB]) << 24) & 0xFF000000);
 	}
 	return u8_flagI2c;
 }
