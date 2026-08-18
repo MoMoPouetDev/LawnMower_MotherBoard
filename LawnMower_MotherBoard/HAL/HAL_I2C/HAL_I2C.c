@@ -153,7 +153,7 @@ uint8_t HAL_I2C_WriteSlave(uint8_t u8_mowerState)
 
 uint8_t HAL_I2C_ReadESP32(uint8_t* pu8_RxBuff, uint8_t* pu8_Size)
 {
-	static E_SLAVE_READ_DATA _e_slaveReadData = 0;
+	static E_ESP32_READ_DATA _e_slaveReadData = 0;
 	static uint8_t _u8_slaveState = 0;
 	uint8_t u8_ReturnValue = 0;
 
@@ -204,7 +204,7 @@ uint8_t HAL_I2C_WriteESP32(uint8_t u8_mowerState, uint16_t u16_angle)
 			break;
 
 		case 2:
-			LLD_I2C_Write(ESP32_ADDR, E_ESP32_WRITE_DATA_AZIMUT_MSB, (uint8_t)((u16_angle) & 0x00FF));
+			LLD_I2C_Write(ESP32_ADDR, E_ESP32_WRITE_DATA_AZIMUT_LSB, (uint8_t)((u16_angle) & 0x00FF));
 			_u8_slaveState++;
 			break;	
 		

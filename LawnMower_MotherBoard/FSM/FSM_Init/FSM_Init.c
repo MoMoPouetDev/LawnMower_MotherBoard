@@ -61,7 +61,7 @@ void FSM_Init(S_MOWER_FSM_STATE e_FSM_Init_State)
 				RUN_Mower_SetEtatMower(GPS_READY);
 			}
 
-			if((u8_esp32State != 0) && ((u8_isEnrolled != 0) || (u8_stopButtonState != 0)))
+			if((u8_esp32State != 0) && ((u8_isEnrolled == 0) || (u8_stopButtonState != 0)))
 			{
 				FSM_Enum_SetFsmPhase(S_SUP_ENROLL_Init);
 			}

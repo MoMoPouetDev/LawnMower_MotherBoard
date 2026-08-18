@@ -64,7 +64,7 @@
 #define ROLL_MAX 30
 /*** Sonar ***/
 #define SONAR_WARN 30
-#define SONAR_LIMITE 10
+#define SONAR_LIMITE 15
 #define SONAR_ERR 5
 #define SONAR_DIST_ERR 999
 /*** Variables ***/

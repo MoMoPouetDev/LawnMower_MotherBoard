@@ -11,8 +11,8 @@
 #define PHASE_RETURN_TO_BASE_INIT                                   0x20   //32
 #define PHASE_RETURN_TO_BASE_WAITING_DOCKING                        0x2F   //47
 
-#define PHASE_ENROLL_INIT                                           0x40
-#define PHASE_ENROLL_END                                            0x4F
+#define PHASE_ENROLL_INIT                                           0x30
+#define PHASE_ENROLL_END                                            0x3F
 
 #define PHASE_ERROR_INIT                                            0x40   //46
 #define PHASE_ERROR_WAITING_FOR_USER_DECISION                       0x4F   //61
